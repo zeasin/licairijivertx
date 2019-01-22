@@ -2,3 +2,4 @@
 .idea/vcs.xml
 target/*
 .vertx/*
+logs/*

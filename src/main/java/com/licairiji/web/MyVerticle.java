@@ -9,7 +9,12 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
+import io.vertx.ext.web.common.template.TemplateEngine;
 import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
+//import io.vertx.ext.web.templ.ThymeleafTemplateEngine;
+
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +24,7 @@ import java.util.List;
  */
 public class MyVerticle extends AbstractVerticle {
     //Template Engine
-//    private ThymeleafTemplateEngine engine;
-
+    private ThymeleafTemplateEngine templateEngine;
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
@@ -28,6 +32,8 @@ public class MyVerticle extends AbstractVerticle {
 
 
         Vertx vertx = Vertx.vertx();
+
+
         vertx.deployVerticle(myVerticle);
 //
 //        vertx.deployVerticle(new MyVerticle());
@@ -37,19 +43,29 @@ public class MyVerticle extends AbstractVerticle {
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
         //加载模版引擎
-//        engine = ThymeleafTemplateEngine.create(vertx);
-//        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
-//        resolver.setPrefix("templates/");
-//        resolver.setSuffix(".html");
-//        resolver.setTemplateMode("HTML");
-//        engine.getThymeleafTemplateEngine().setTemplateResolver(resolver);
-//        context.put("TemplateEngine", engine);
+         templateEngine = ThymeleafTemplateEngine.create(vertx);
+        // 定时模板解析器,表示从类加载路径下找模板
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        // 设置模板的前缀，我们设置的是templates目录
+        templateResolver.setPrefix("templates");
+        // 设置后缀为.html文件
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode("HTML5");
+        templateEngine.getThymeleafTemplateEngine().setTemplateResolver(templateResolver);
+
+
+        context.put("TemplateEngine", templateEngine);
     }
 
 
     @Override
     public void start() throws Exception {
+
+
         Router router = Router.router(vertx);
+
+
+
         // 配置静态文件
         router.route("/static/*").handler(StaticHandler.create("static"));
 
@@ -79,18 +95,19 @@ public class MyVerticle extends AbstractVerticle {
             response.end(jsonObject.encode());
         });
 
-//        router.get("/html").handler(routingContext -> {
-//            routingContext.put("welcome", "hello world,page好人医生");
-//
-//
-//            engine.render(routingContext, "", "/index", res -> {
-//                if (res.succeeded()) {
-//                    routingContext.response().end(res.result());
-//                } else {
-//                    routingContext.fail(res.cause());
-//                }
-//            });
-//        });
+        router.get("/html").handler(routingContext -> {
+            routingContext.put("welcome", "hello world,page好人医生");
+            JsonObject jsonObject = new JsonObject();
+
+
+            templateEngine.render(routingContext.data(), "/index", res -> {
+                if (res.succeeded()) {
+                    routingContext.response().end(res.result());
+                } else {
+                    routingContext.fail(res.cause());
+                }
+            });
+        });
 
         //定义服务器
         HttpServer server = vertx.createHttpServer();
