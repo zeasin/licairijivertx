@@ -35,7 +35,7 @@ public class MyVerticle extends AbstractVerticle {
 
     @Override
     public void init(Vertx vertx, Context context) {
-//        super.init(vertx, context);
+        super.init(vertx, context);
         //加载模版引擎
 //        engine = ThymeleafTemplateEngine.create(vertx);
 //        ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
