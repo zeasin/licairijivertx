@@ -9,9 +9,9 @@ public class DataSourceHelper {
 
   public static DataSource dataSource() {
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl("jdbc:mysql://192.168.1.117:3306/huayi?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true");
+    config.setJdbcUrl("jdbc:mysql://localhost:3306/investment?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true");
     config.setUsername("root");
-    config.setPassword("qbz@123");
+    config.setPassword("123456");
     config.addDataSourceProperty("cachePrepStmts", "true");
     config.addDataSourceProperty("prepStmtCacheSize", "250");
     config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

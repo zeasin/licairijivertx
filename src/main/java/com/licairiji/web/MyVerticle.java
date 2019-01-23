@@ -1,6 +1,7 @@
 package com.licairiji.web;
 
 import com.licairiji.web.handler.ArticleHandler;
+import com.licairiji.web.handler.InvestHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Verticle;
@@ -34,17 +35,14 @@ public class MyVerticle extends AbstractVerticle {
         System.out.println("Hello World!");
         Verticle myVerticle = new MyVerticle();
 
-
         Vertx vertx = Vertx.vertx();
-
-
         vertx.deployVerticle(myVerticle);
-//
-//        vertx.deployVerticle(new MyVerticle());
     }
 
     //资讯Handler
     private ArticleHandler articleHandler;
+    //投资Handler
+    private InvestHandler investHandler;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -75,6 +73,7 @@ public class MyVerticle extends AbstractVerticle {
 
         //定义handler
         articleHandler = new ArticleHandler(context, templateEngine, mySQLClient);
+        investHandler = new InvestHandler(context, templateEngine, mySQLClient);
     }
 
 
@@ -172,9 +171,15 @@ public class MyVerticle extends AbstractVerticle {
             });
         });
 
+        //文章模块
         router.get("/article/list").handler(articleHandler::handleList);
         router.get("/article/publish").handler(articleHandler::handlePublishGet);
         router.post("/article/publish").handler(articleHandler::handlePublishPost);
+
+        //投资模块
+        router.get("/invest/add").handler(investHandler::handleAddGet);
+        router.get("/invest/list").handler(investHandler::handleInvestList);
+        router.post("/invest/add_post").handler(investHandler::handleInvestAddPost);
 
         //定义服务器
         HttpServer server = vertx.createHttpServer();
