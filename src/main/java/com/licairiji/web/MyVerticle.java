@@ -1,7 +1,15 @@
 package com.licairiji.web;
 
+import com.google.gson.Gson;
 import com.licairiji.web.handler.ArticleHandler;
 import com.licairiji.web.handler.InvestHandler;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.util.Auth;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Verticle;
@@ -18,6 +26,8 @@ import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -114,20 +124,89 @@ public class MyVerticle extends AbstractVerticle {
         //上传图片
         router.post("/upload_image").handler(routingContext -> {
 
-            JsonObject jsonObject = new JsonObject();
-
-            JsonObject data = new JsonObject();
-            data.put("src", "https://imgsa.baidu.com/news/q%3D100/sign=8b21d5584a10b912b9c1f2fef3fcfcb5/f636afc379310a55f5294c17ba4543a9832610c7.jpg");
-            data.put("title", "");
-
-            jsonObject.put("code", 0).put("msg", "").put("data", data);
-
-//            jsonObject.put("success", true).put("pages", pages);
-
             HttpServerResponse response = routingContext.response();
             response.setStatusCode(200);
             response.putHeader("Content-Type", "application/json");
-            response.end(jsonObject.encode());
+            JsonObject jsonObject = new JsonObject();
+            JsonObject data = new JsonObject();
+
+            if (routingContext.fileUploads() == null || routingContext.fileUploads().isEmpty()) {
+                jsonObject.put("code", 1).put("msg", "请上传文件").put("data", data);
+                response.end(jsonObject.encode());
+            }
+
+
+            FileUpload file = (FileUpload) routingContext.fileUploads().toArray()[0];
+            String fileSuffix = file.fileName().substring(file.fileName().lastIndexOf(".") + 1, file.fileName().length());
+            ;
+            ArrayList<String> a = new ArrayList<>();
+            a.add("gif");
+            a.add("jpg");
+            a.add("jpeg");
+            a.add("png");
+
+            //上传文件到七牛云
+            if (a.contains(fileSuffix) == false) {
+                jsonObject.put("code", 400).put("msg", "不支持的格式").put("data", data);
+                response.end(jsonObject.encode());
+            }
+
+            //...生成上传凭证，然后准备上传
+            String accessKey = "sDfL7yNlSy16MqL7vh6M_UaPgKscCbiti5GWZJmu";
+            String secretKey = "utM-_huV78h7GaWWsxKDl97P5EFK5jmb0ba-3HIG";
+            String bucket = "licairiji";
+            Auth auth = Auth.create(accessKey, secretKey);
+
+            String upToken = auth.uploadToken(bucket);//上传的凭据
+
+            //构造一个带指定Zone对象的配置类
+            Configuration cfg = new Configuration(Zone.zone2());
+
+            UploadManager uploadManager = new UploadManager(cfg);
+            //默认不指定key的情况下，以文件内容的hash值作为文件名
+            String key = null;
+
+            try {
+                File uploadedFile = new File(file.uploadedFileName());
+
+                Response uploadResponse = uploadManager.put(uploadedFile, key, upToken);
+                //解析上传成功的结果
+                DefaultPutRet putRet = new Gson().fromJson(uploadResponse.bodyString(), DefaultPutRet.class);
+//                System.out.println(putRet.key);
+//                System.out.println(putRet.hash);
+                data.put("src", "http://licai.xiguanapp.com/" + putRet.key);
+                data.put("title", "");
+
+                jsonObject.put("code", 0).put("msg", "").put("data", data);
+                response.end(jsonObject.encode());
+
+            } catch (QiniuException ex) {
+                Response r = ex.response;
+
+                System.err.println(r.toString());
+                try {
+                    System.err.println(r.bodyString());
+                    jsonObject.put("code", 500).put("msg", r.bodyString());
+                    response.end(jsonObject.encode());
+                } catch (QiniuException ex2) {
+                    //ignore
+                    jsonObject.put("code", 500).put("msg", "图片上传错误");
+                    response.end(jsonObject.encode());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                jsonObject.put("code", 400).put("msg", "图片格式错误");
+                response.end(jsonObject.encode());
+//                return new ApiResult<>(400, "图片格式错误");
+            }
+
+
+//            jsonObject.put("code", 0).put("msg", "").put("data", data);
+
+//            jsonObject.put("success", true).put("pages", pages);
+
+
+//            response.end(jsonObject.encode());
         });
 
         //上传文件
