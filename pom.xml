@@ -77,25 +77,20 @@
       <artifactId>pegdown</artifactId>
       <version>1.6.0</version>
     </dependency>
-    <!--  word  -->
-    <!--<dependency>-->
-      <!--<groupId>org.apache.poi</groupId>-->
-      <!--<artifactId>poi</artifactId>-->
-      <!--<version>4.0.1</version>-->
-    <!--</dependency>-->
+    <!--  poi  -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi</artifactId>
       <version>4.0.0</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-scratchpad -->
+    <!-- word doc -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-scratchpad</artifactId>
       <version>4.0.0</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
+    <!-- word docx -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>

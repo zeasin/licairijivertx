@@ -2,6 +2,7 @@ package com.licairiji.web;
 
 import com.google.gson.Gson;
 import com.licairiji.web.handler.ArticleHandler;
+import com.licairiji.web.handler.HomeHandler;
 import com.licairiji.web.handler.InvestHandler;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
@@ -61,6 +62,7 @@ public class MyVerticle extends AbstractVerticle {
     private ArticleHandler articleHandler;
     //投资Handler
     private InvestHandler investHandler;
+    private HomeHandler homeHandler;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -92,6 +94,7 @@ public class MyVerticle extends AbstractVerticle {
         //定义handler
         articleHandler = new ArticleHandler(context, templateEngine, mySQLClient);
         investHandler = new InvestHandler(context, templateEngine, mySQLClient);
+        homeHandler = new HomeHandler(context, templateEngine, mySQLClient);
     }
 
 
@@ -108,8 +111,10 @@ public class MyVerticle extends AbstractVerticle {
             routingContext.next();
         });
 
+
+
         //定义路由
-        router.get("/").handler(routingContext -> {
+        router.get("/hello").handler(routingContext -> {
             HttpServerResponse response = routingContext.response();
             response.putHeader("content-type", "text/plain");
             response.end("Hello");
@@ -420,6 +425,8 @@ public class MyVerticle extends AbstractVerticle {
                 }
             });
         });
+
+        router.get("/").handler(homeHandler::handleHome);
 
         //文章模块
         router.get("/article/list").handler(articleHandler::handleList);
