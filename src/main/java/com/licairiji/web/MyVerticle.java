@@ -180,6 +180,8 @@ public class MyVerticle extends AbstractVerticle {
         router.get("/invest/add").handler(investHandler::handleAddGet);
         router.get("/invest/list").handler(investHandler::handleInvestList);
         router.post("/invest/add_post").handler(investHandler::handleInvestAddPost);
+        router.post("/invest/add_log_post").handler(investHandler::handleInvestLogAdd);
+        router.get("/invest/log_list").handler(investHandler::handleInvestLogList);
 
         //定义服务器
         HttpServer server = vertx.createHttpServer();

@@ -10,14 +10,10 @@
     <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
 </head>
 <body>
-<blockquote class="layui-elem-quote">
-    投资交易记录
-    <!--本页面只是演示静态表格，如果你需要的是数据表格，可前往：-->
-    <a class="layui-btn layui-btn-normal" href="/invest/add">添加交易记录</a>
-</blockquote>
+
 
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-    <legend>默认表格</legend>
+    <legend>记录</legend>
 </fieldset>
 
 <div class="layui-form">
@@ -26,35 +22,27 @@
             <col width="150">
             <col width="150">
             <col width="150">
-            <col width="150">
-            <col width="150">
-            <col width="200">
+
             <col>
 
             <col>
         </colgroup>
         <thead>
         <tr>
-            <th>股票代码</th>
-            <th>股票名称</th>
-            <th>成交价</th>
-            <th>成本价</th>
-            <th>成交量</th>
-            <th>交易时间</th>
-            <th>策略说明</th>
-            <th></th>
+            <th>日期</th>
+            <th>收盘价</th>
+            <th>涨跌幅</th>
+            <th>备注</th>
+
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item:${invest_list}">
-            <td th:text="${item.code}">贤心</td>
-            <td th:text="${item.name}">汉族</td>
-            <td th:text="${#numbers.formatDecimal(item.price_buy,0,2)}"></td>
-            <td th:text="${#numbers.formatDecimal(item.price_cost,0,2)}"></td>
-            <td th:text="${item.count}"></td>
-            <td th:text="${item.transactionTime}">1989-10-14</td>
-            <td th:text="${item.strategy}">人生似修行</td>
-            <td><a href="javascript:;" th:attr="invest_id=${item.id}" id="log_list">查看记录</a>&nbsp;&nbsp;&nbsp;<a href="javascript:;" th:attr="invest_id=${item.id}" id="add_log">添加记录</a></td>
+        <tr th:each="item:${invest_log_list}">
+            <td th:text="${item.date}">贤心</td>
+            <td th:text="${#numbers.formatDecimal(item.price,0,2)}"></td>
+            <td th:text="${#numbers.formatDecimal(item.rate,0,2)}"></td>
+            <td th:text="${item.comment}"></td>
+
         </tr>
         </tbody>
     </table>
@@ -115,19 +103,6 @@
 
             });
 
-        })
-
-        $("#log_list").click(function(){
-            var investId = $(this).attr("invest_id");
-            layer.open({
-                type: 2,
-                title: '查看记录',
-                shadeClose: true,
-                shade: false,
-                maxmin: false, //开启最大化最小化按钮
-                area: ['600px', '600px'],
-                content: '/invest/log_list?id='+investId
-            });
         })
     })
 </script>
