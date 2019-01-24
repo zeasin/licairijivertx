@@ -10,6 +10,7 @@ import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
+import io.netty.util.internal.StringUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Verticle;
@@ -24,10 +25,17 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
 import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.ooxml.POIXMLProperties;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.pegdown.Extensions;
+import org.pegdown.PegDownProcessor;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,12 +141,13 @@ public class MyVerticle extends AbstractVerticle {
             if (routingContext.fileUploads() == null || routingContext.fileUploads().isEmpty()) {
                 jsonObject.put("code", 1).put("msg", "请上传文件").put("data", data);
                 response.end(jsonObject.encode());
+                return;
             }
 
 
             FileUpload file = (FileUpload) routingContext.fileUploads().toArray()[0];
             String fileSuffix = file.fileName().substring(file.fileName().lastIndexOf(".") + 1, file.fileName().length());
-            ;
+
             ArrayList<String> a = new ArrayList<>();
             a.add("gif");
             a.add("jpg");
@@ -149,6 +158,7 @@ public class MyVerticle extends AbstractVerticle {
             if (a.contains(fileSuffix) == false) {
                 jsonObject.put("code", 400).put("msg", "不支持的格式").put("data", data);
                 response.end(jsonObject.encode());
+                return;
             }
 
             //...生成上传凭证，然后准备上传
@@ -211,28 +221,189 @@ public class MyVerticle extends AbstractVerticle {
 
         //上传文件
         router.post("/upload_word").handler(routingContext -> {
+            HttpServerResponse response = routingContext.response();
+            response.setStatusCode(200);
+            response.putHeader("Content-Type", "application/json");
+
             JsonObject jsonObject = new JsonObject();
 
             JsonObject data = new JsonObject();
-            data.put("src", "fff");
-            data.put("title", "sadsdc");
 
 
             if (routingContext.fileUploads() == null || routingContext.fileUploads().isEmpty()) {
                 jsonObject.put("code", 1).put("msg", "请上传文件").put("data", data);
-            } else {
-
-                jsonObject.put("code", 0).put("msg", "").put("data", data);
-                FileUpload file = (FileUpload) routingContext.fileUploads().toArray()[0];
+                response.end(jsonObject.encode());
+                return;
             }
 
 
-//            jsonObject.put("success", true).put("pages", pages);
+            FileUpload file = (FileUpload) routingContext.fileUploads().toArray()[0];
+            String fileSuffix = file.fileName().substring(file.fileName().lastIndexOf(".") + 1, file.fileName().length());
 
-            HttpServerResponse response = routingContext.response();
-            response.setStatusCode(200);
-            response.putHeader("Content-Type", "application/json");
-            response.end(jsonObject.encode());
+            if (fileSuffix.equals("md")) {
+                //markdown
+                File uploadedFile = new File(file.uploadedFileName());
+                BufferedReader buf = null;
+                String line = null;
+                StringBuilder sb = new StringBuilder();
+                try {
+                    buf = new BufferedReader(new InputStreamReader(new FileInputStream(uploadedFile), "utf-8"));
+
+                    while ((line = buf.readLine()) != null) {
+//                    line = line.trim(); //去处空格
+                        System.out.println(line);
+                        sb.append(line);
+//                        sb.append("<br />");
+                        sb.append(System.getProperty("line.separator"));
+                    }
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (sb != null && StringUtil.isNullOrEmpty(sb.toString()) == false) {
+                    PegDownProcessor md = new PegDownProcessor(Extensions.ALL_WITH_OPTIONALS);
+                    String content = md.markdownToHtml(sb.toString());
+                    data.put("src", "");
+                    data.put("title", content);
+                    jsonObject.put("code", 0).put("msg", "").put("data", data);
+                    response.end(jsonObject.encode());
+                }
+            } else if (fileSuffix.equals("txt")) {
+                //文本
+//                File uploadedFile = new File(file.uploadedFileName());
+//                BufferedReader buf = null;
+//                String line = null;
+//                StringBuilder sb = new StringBuilder();
+//                try {
+//                    buf = new BufferedReader(new InputStreamReader(new FileInputStream(uploadedFile), "utf-8"));
+//
+//                    while ((line = buf.readLine()) != null) {
+////                    line = line.trim(); //去处空格
+//                        System.out.println(line);
+//                        sb.append(line);
+//                        sb.append("<br />");
+//                        sb.append(System.getProperty("line.separator"));
+//                    }
+//
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+                String charset = "utf-8";
+                File uploadedFile = new File(file.uploadedFileName());
+                long fileByteLength = uploadedFile.length();
+                byte[] content = new byte[(int)fileByteLength];
+                FileInputStream fileInputStream = null;
+                try {
+                    fileInputStream = new FileInputStream(uploadedFile);
+                    fileInputStream.read(content);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                String str = null;
+                try {
+                    str = new String(content,charset);
+                    System.out.println(str);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+
+                data.put("src", "");
+                data.put("title", str != null ? str.replace("\n","<br />") : "");
+                jsonObject.put("code", 0).put("msg", "").put("data", data);
+                response.end(jsonObject.encode());
+            }else if ( fileSuffix.equals("doc")) {
+
+
+//                InputStream is = null;
+                File uploadedFile = new File(file.uploadedFileName());
+                String buffer = "";
+                try {
+
+                    InputStream is = new FileInputStream(uploadedFile);
+                    WordExtractor ex = new WordExtractor(is);
+                    buffer = ex.getText();
+                    ex.close();
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+
+//                WordExtractor extractor = new WordExtractor(is);
+
+
+//                String content = readWord(file.uploadedFileName());
+                data.put("src", "");
+                data.put("title", buffer.replace("\n","<br />"));
+                jsonObject.put("code", 0).put("msg", "").put("data", data);
+                response.end(jsonObject.encode());
+            }else if ( fileSuffix.equals("docx")) {
+                File uploadedFile = new File(file.uploadedFileName());
+                String text = "";
+                try {
+
+//                    OPCPackage opcPackage = POIXMLDocument.openPackage(path);
+//                    POIXMLTextExtractor extractor = new XWPFWordExtractor(opcPackage);
+//                    buffer = extractor.getText();
+//                    extractor.close();
+
+                    InputStream is = new FileInputStream(uploadedFile);
+                    XWPFDocument doc = new XWPFDocument(is);
+                    XWPFWordExtractor extractor = new XWPFWordExtractor(doc);
+                    text = extractor.getText();
+                    System.out.println(text);
+                    POIXMLProperties.CoreProperties coreProps = extractor.getCoreProperties();
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+
+//                WordExtractor extractor = new WordExtractor(is);
+
+
+//                String content = readWord(file.uploadedFileName());
+                data.put("src", "");
+                data.put("title", text.replace("\n","<br />"));
+                jsonObject.put("code", 0).put("msg", "").put("data", data);
+                response.end(jsonObject.encode());
+
+            }else{
+                jsonObject.put("code", 400).put("msg", "不支持的格式，仅支持doc，docx，md，txt格式");
+                response.end(jsonObject.encode());
+            }
+
+
         });
 
         //定义thymeleaf模版引擎路由
@@ -272,4 +443,30 @@ public class MyVerticle extends AbstractVerticle {
 
         System.out.println("服务器启动成功http://127.0.0.1:8080");
     }
+
+
+//    public String readWord(String path) {
+//        String buffer = "";
+//        try {
+//            if (path.endsWith(".doc")) {
+//                InputStream is = new FileInputStream(new File(path));
+//                WordExtractor ex = new WordExtractor(is);
+//                buffer = ex.getText();
+//                ex.close();
+//            } else if (path.endsWith("docx")) {
+//                OPCPackage opcPackage = POIXMLDocument.openPackage(path);
+//                POIXMLTextExtractor extractor = new XWPFWordExtractor(opcPackage);
+//                buffer = extractor.getText();
+//                extractor.close();
+//            } else {
+//                System.out.println("此文件不是word文件！");
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return buffer;
+//    }
+
 }

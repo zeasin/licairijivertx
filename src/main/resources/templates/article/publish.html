@@ -377,7 +377,7 @@
                 <div class="layui-upload-drag" id="_uploadword" lay-data="{url: '/upload_word', accept: 'file'}">
                     <i class="layui-icon"></i>
                     <p style="font-size:16px; color:#000;">选择要导入的文档</p>
-                    <div>文档最大5MB，支持doc，docx，md格式</div>
+                    <div>文档最大5MB，支持doc，docx，md，txt格式</div>
                 </div>
             </div>
             <div class="layui_bottom"><p>若文档中存在编辑器所不支持的文本格式（例如表格），将以纯文本展示
@@ -418,6 +418,8 @@
                     // var newContent = content + "asd中暑的宫缩高故事帝国时代三国时代";
                     layedit.setContent(edithtml, res.data.title);
 
+                }else{
+                    layer.msg(res.msg);
                 }
                 console.log(res)
             }
