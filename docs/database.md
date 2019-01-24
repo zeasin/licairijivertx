@@ -1,4 +1,3 @@
-
 ```
 # ************************************************************
 # Sequel Pro SQL dump
@@ -9,7 +8,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.40)
 # Database: investment
-# Generation Time: 2019-01-23 12:22:20 +0000
+# Generation Time: 2019-01-24 10:02:29 +0000
 # ************************************************************
 
 
@@ -55,7 +54,7 @@ DROP TABLE IF EXISTS `invest`;
 CREATE TABLE `invest` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(6) NOT NULL,
-  `type` int(10) DEFAULT NULL,
+  `type` int(10) DEFAULT NULL COMMENT '交易类型1买入2卖出',
   `price_buy` decimal(6,2) DEFAULT NULL,
   `price_cost` decimal(6,2) DEFAULT NULL,
   `transaction_time` int(11) DEFAULT NULL,
@@ -72,8 +71,7 @@ LOCK TABLES `invest` WRITE;
 
 INSERT INTO `invest` (`id`, `code`, `type`, `price_buy`, `price_cost`, `transaction_time`, `sell_drop_rate`, `sell_up_rate`, `strategy`, `count`, `create_on`)
 VALUES
-	(1,'600703',1,10.48,10.53,1548124080,-10.00,30.00,'看好底部',100,1548242110),
-	(3,'002041',1,12.00,13.00,1548242764,-10.00,20.00,'',100,1548242773);
+	(1,'600703',1,10.48,10.53,1548124080,-10.00,30.00,'看好底部',100,1548242110);
 
 /*!40000 ALTER TABLE `invest` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -87,8 +85,10 @@ DROP TABLE IF EXISTS `invest_log`;
 CREATE TABLE `invest_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `invest_id` int(11) NOT NULL,
-  `type` int(10) DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `type` int(10) DEFAULT NULL COMMENT '交易类型1买入2卖出0无操作',
   `price` decimal(6,2) DEFAULT NULL,
+  `rate` decimal(4,2) DEFAULT NULL,
   `comment` varchar(200) DEFAULT NULL,
   `create_on` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -97,10 +97,11 @@ CREATE TABLE `invest_log` (
 LOCK TABLES `invest_log` WRITE;
 /*!40000 ALTER TABLE `invest_log` DISABLE KEYS */;
 
-INSERT INTO `invest_log` (`id`, `invest_id`, `type`, `price`, `comment`, `create_on`)
+INSERT INTO `invest_log` (`id`, `invest_id`, `date`, `type`, `price`, `rate`, `comment`, `create_on`)
 VALUES
-	(1,1,1,10.48,'买入',1548242110),
-	(2,3,1,12.00,'',1548242773);
+	(1,1,'2019-01-21',1,10.48,0.00,'买入',1548242110),
+	(4,1,'2019-01-22',0,10.28,-1.53,'震荡',1548295916),
+	(5,1,'2019-01-23',0,10.13,-2.00,'买二胡',1548296173);
 
 /*!40000 ALTER TABLE `invest_log` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -139,5 +140,6 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
 
 ```
