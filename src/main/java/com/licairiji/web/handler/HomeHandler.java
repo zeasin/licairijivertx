@@ -19,6 +19,6 @@ public class HomeHandler extends AbstractHandler {
     public void handleHome(RoutingContext routingContext) {
         routingContext.put("welcome", "欢迎光临");
 
-        render(routingContext, "/home");
+        render(routingContext, "/home1");
     }
 }
