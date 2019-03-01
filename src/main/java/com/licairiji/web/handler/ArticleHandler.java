@@ -39,18 +39,28 @@ public class ArticleHandler extends AbstractHandler {
             }
             SQLConnection conn = res.result();
 
-
             conn.query(sql, query -> {
                 JsonObject jsonObject = new JsonObject();
                 List<JsonObject> list = query.result().getRows();
-                jsonObject.put("code", 0).put("msg", "OK").put("data", list);
-                HttpServerResponse response = routingContext.response();
-                response.setStatusCode(200);
-                response.putHeader("Content-Type", "application/json");
-                response.end(jsonObject.encode());
-//                routingContext.put("welcome", "欢迎光临");
+                List<ArticleEntity> articles = new ArrayList<>();
+                for (JsonObject child : list) {
+                    ArticleEntity entity = new ArticleEntity();
+                    entity.setId(child.getInteger("id"));
+                    entity.setTitle(child.getString("title"));
+                    entity.setImage(child.getString("image"));
+                    entity.setContent(child.getString("content"));
+                    entity.setCreateOn(child.getInteger("create_on"));
+                    articles.add(entity);
+                }
+//                jsonObject.put("code", 0).put("msg", "OK").put("data", list);
+//                HttpServerResponse response = routingContext.response();
+//                response.setStatusCode(200);
+//                response.putHeader("Content-Type", "application/json");
+//                response.end(jsonObject.encode());
+
+                routingContext.put("articles", articles);
 //
-//                render(routingContext, "/article/publish");
+                render(routingContext, "/article/list");
             });
 
         });
