@@ -463,11 +463,19 @@
             if (title == "" || content == "") {
                 layer.msg('请输入标题和内容');
             } else {
+
+                var formdata=new FormData();
+                formdata.append('image',image);
+                formdata.append('title',title);
+                formdata.append('content',content);
+
                 $.ajax({
                     url: "/article/publish",
                     type: "POST",
-                    dataType: "JSON",
-                    data: JSON.stringify(cont),
+                    dataType: "json",
+                    processData : false,
+                    contentType : false,
+                    data: formdata,
                     success: function (res) {
                         if(res.code == 0){
                             window.location.href = "/article/list";

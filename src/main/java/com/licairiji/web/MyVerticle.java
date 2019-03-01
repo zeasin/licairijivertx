@@ -432,6 +432,7 @@ public class MyVerticle extends AbstractVerticle {
         router.get("/article/list").handler(articleHandler::handleList);
         router.get("/article/publish").handler(articleHandler::handlePublishGet);
         router.post("/article/publish").handler(articleHandler::handlePublishPost);
+        router.get("/article/detail").handler(articleHandler::handleDetailGet);
 
         //投资模块
         router.get("/invest/add").handler(investHandler::handleAddGet);

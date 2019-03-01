@@ -1,8 +1,11 @@
 package com.licairiji.web.handler;
 
+import com.licairiji.web.entity.ArticleEntity;
+import com.licairiji.web.entity.InvestLogEntity;
 import com.licairiji.web.vo.ArticlePublishVo;
 import io.netty.util.internal.StringUtil;
 import io.vertx.core.Context;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
@@ -12,6 +15,7 @@ import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,30 +75,38 @@ public class ArticleHandler extends AbstractHandler {
      * @param routingContext
      */
     public void handlePublishPost(RoutingContext routingContext) {
-        String content = routingContext.getBodyAsString();
+        HttpServerRequest request = routingContext.request();
+        String title = request.getParam("title");
+        String image = request.getParam("image");
+        String content = request.getParam("content");
+
+//        String content = routingContext.getBodyAsString();
         //返回内容
         JsonObject jsonObject = new JsonObject();
         HttpServerResponse response = routingContext.response();
         response.setStatusCode(200);
         response.putHeader("Content-Type", "application/json");
 
-        if (StringUtil.isNullOrEmpty(content)) {
-            jsonObject.put("code", 1).put("msg", "参数错误");
+        if (StringUtil.isNullOrEmpty(title)|| StringUtil.isNullOrEmpty(content)) {
+            jsonObject.put("code", 1).put("msg", "标题和内容不能为空");
             response.end(jsonObject.encode());
         }
-        ArticlePublishVo vo = null;
-        try {
-            vo = Json.decodeValue(content, ArticlePublishVo.class);
-        } catch (Exception e) {
-            vo = null;
-        }
-        if (vo == null) {
-            jsonObject.put("code", 1).put("msg", "参数错误");
-            response.end(jsonObject.encode());
-        } else if (StringUtil.isNullOrEmpty(vo.getTitle()) || StringUtil.isNullOrEmpty(vo.getContent())) {
-            jsonObject.put("code", 1).put("msg", "参数错误");
-            response.end(jsonObject.encode());
-        }
+        ArticlePublishVo vo = new ArticlePublishVo();
+//        try {
+            vo.setTitle(title);
+            vo.setContent(content);
+            vo.setImage(image);
+//            vo = Json.decodeValue(content, ArticlePublishVo.class);
+//        } catch (Exception e) {
+//            vo = null;
+//        }
+//        if (vo == null) {
+//            jsonObject.put("code", 1).put("msg", "参数错误");
+//            response.end(jsonObject.encode());
+//        } else if (StringUtil.isNullOrEmpty(vo.getTitle()) || StringUtil.isNullOrEmpty(vo.getContent())) {
+//            jsonObject.put("code", 1).put("msg", "参数错误");
+//            response.end(jsonObject.encode());
+//        }
 
         //加入数据库
 //        Future<SQLConnection> sqlConnectionFuture = Future.future();
@@ -102,15 +114,15 @@ public class ArticleHandler extends AbstractHandler {
 //        mySQLClient.getConnection(sqlConnectionFuture);
 
 
-        ArticlePublishVo finalVo = vo;
+//        ArticlePublishVo finalVo = vo;
         mySQLClient.getConnection(connection -> {
             if (connection.succeeded()) {
                 SQLConnection conn = connection.result();
                 String sql = "INSERT INTO article (title,image,content,create_on) VALUE (?,?,?,?)";
                 JsonArray params = new JsonArray();
-                params.add(finalVo.getTitle());
-                params.add(finalVo.getImage());
-                params.add(finalVo.getContent());
+                params.add(vo.getTitle());
+                params.add(vo.getImage());
+                params.add(vo.getContent());
                 params.add(System.currentTimeMillis() / 1000);
 
                 conn.updateWithParams(sql, params, r -> {
@@ -128,6 +140,49 @@ public class ArticleHandler extends AbstractHandler {
             }
         });
 //        sqlConnectionFuture.complete();
+
+
+    }
+
+
+    /**
+     * 文章详情
+     *
+     * @param routingContext
+     */
+    public void handleDetailGet(RoutingContext routingContext) {
+        HttpServerRequest request = routingContext.request();
+        String id = request.getParam("id");
+        String sql = "SELECT * FROM article WHERE id=?";
+        mySQLClient.getConnection(res -> {
+            if (res.failed()) {
+                throw new RuntimeException(res.cause());
+            }
+            SQLConnection conn = res.result();
+            JsonArray params = new JsonArray();
+            params.add(id);
+
+            conn.querySingleWithParams(sql,params, query -> {
+                JsonObject jsonObject = new JsonObject();
+                JsonArray child = query.result();
+
+                ArticleEntity entity = new ArticleEntity();
+                entity.setId(child.getInteger(0));
+                entity.setTitle(child.getString(1));
+                entity.setImage(child.getString(2));
+                entity.setContent(child.getString(3));
+                entity.setCreateOn(child.getInteger(4));
+
+
+                conn.close();
+                routingContext.put("article", entity);
+
+                render(routingContext, "/article/detail");
+            });
+
+        });
+
+//        routingContext.put("welcome", "欢迎光临");
 
 
     }
