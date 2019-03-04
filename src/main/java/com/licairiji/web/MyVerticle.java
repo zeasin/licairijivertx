@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.licairiji.web.handler.ArticleHandler;
 import com.licairiji.web.handler.HomeHandler;
 import com.licairiji.web.handler.InvestHandler;
+import com.licairiji.web.handler.StockHandler;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
@@ -63,6 +64,7 @@ public class MyVerticle extends AbstractVerticle {
     //投资Handler
     private InvestHandler investHandler;
     private HomeHandler homeHandler;
+    private StockHandler stockHandler;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -95,6 +97,7 @@ public class MyVerticle extends AbstractVerticle {
         articleHandler = new ArticleHandler(context, templateEngine, mySQLClient);
         investHandler = new InvestHandler(context, templateEngine, mySQLClient);
         homeHandler = new HomeHandler(context, templateEngine, mySQLClient);
+        stockHandler = new StockHandler(context, templateEngine, mySQLClient);
     }
 
 
@@ -440,6 +443,11 @@ public class MyVerticle extends AbstractVerticle {
         router.post("/invest/add_post").handler(investHandler::handleInvestAddPost);
         router.post("/invest/add_log_post").handler(investHandler::handleInvestLogAdd);
         router.get("/invest/log_list").handler(investHandler::handleInvestLogList);
+
+        //自选股
+        router.get("/stock/list").handler(stockHandler::handleStockList);
+        router.get("/stock/add").handler(stockHandler::handleStockAddGet);
+        router.post("/stock/add").handler(stockHandler::handleStockAddPost);
 
         //定义服务器
         HttpServer server = vertx.createHttpServer();

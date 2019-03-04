@@ -2,10 +2,16 @@
 <!DOCTYPE HTML>
 <html lang="">
 <head>
-    <meta charset="gbk">
-    <title></title>
+    <meta charset="utf-8">
+    <title>涓撳睘浜ゆ槗绯荤粺</title>
 </head>
 <body>
+<ul>
+    <li>
+        <a target="_blank" href="/stock/list">鑷�夎偂</a>
+        <a target="_blank" href="/invest/list">鎶曡祫璁板綍</a>
+    </li>
+</ul>
 <div id="price"></div>
 <script type="text/javascript">
     ;(function(w){
@@ -22,7 +28,7 @@
                     if( scripts[i].readyState ){ //ie
                         scripts[i].onreadystatechange = function(){
                             if( this.readyState == 'complete' || this.readyState == 'loaded' ){
-                                this.onreadystatechange = null; //确保事件不被处理2次
+                                this.onreadystatechange = null; //纭繚浜嬩欢涓嶈澶勭悊2娆�
                                 completed++;
                                 completed >= urls.length ? callback() : '';
                             }
@@ -76,20 +82,20 @@
         // alert("hello");
         Cme.loader.load({
             url: [
-                'http://hq.sinajs.cn/list=sh600703'
+                'http://hq.sinajs.cn/list=sh000001'
             ]
         },function(){
-            var elements=hq_str_sh600703.split(",");
-            document.getElementById("price").innerHTML = "current price:"+elements[3];
+            var elements=hq_str_sh000001.split(",");
+            document.getElementById("price").innerHTML = "涓婃定鎸囨暟:"+elements[3];
             // document.write("current price:"+elements[3]);
             // alert( hq_str_sh600703 );
         })
     }
     hello();
-    //重复执行某个方法
+    //閲嶅鎵ц鏌愪釜鏂规硶
     // var t1 = window.setInterval(hello,10000);
     var t2 = window.setInterval("hello()",3000);
-    //去掉定时器的方法
+    //鍘绘帀瀹氭椂鍣ㄧ殑鏂规硶
     // window.clearInterval(t1);
 
 </script>

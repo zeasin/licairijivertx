@@ -7,12 +7,17 @@
     <script src="/static/echarts.min.js"></script>
 </head>
 <body>
-
+<ul>
+    <li>
+        <a target="_blank" href="/stock/list">自选股</a>
+        <a target="_blank" href="/invest/list">投资记录</a>
+    </li>
+</ul>
 <script type="text/javascript" src="http://hq.sinajs.cn/list=sh600703" charset="gb2312">
 </script>
 <script type="text/javascript">
     var elements=hq_str_sh600703.split(",");
-    document.write("current price:"+elements[3]);
+    // document.write("current price:"+elements[3]);
 </script>
 
 
