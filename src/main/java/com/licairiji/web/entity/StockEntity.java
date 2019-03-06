@@ -13,8 +13,26 @@ public class StockEntity {
     private String name;
     private double joinPrice;
     private String plate;
+    private String board;
     private String createOn;
     private String comment;
+    private int count;
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 
     public String getPlate() {
         return plate;

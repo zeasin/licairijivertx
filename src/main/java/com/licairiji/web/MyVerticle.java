@@ -1,10 +1,7 @@
 package com.licairiji.web;
 
 import com.google.gson.Gson;
-import com.licairiji.web.handler.ArticleHandler;
-import com.licairiji.web.handler.HomeHandler;
-import com.licairiji.web.handler.InvestHandler;
-import com.licairiji.web.handler.StockHandler;
+import com.licairiji.web.handler.*;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
@@ -65,6 +62,7 @@ public class MyVerticle extends AbstractVerticle {
     private InvestHandler investHandler;
     private HomeHandler homeHandler;
     private StockHandler stockHandler;
+    private StockAnalyseHandler analyseHandler;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -98,6 +96,7 @@ public class MyVerticle extends AbstractVerticle {
         investHandler = new InvestHandler(context, templateEngine, mySQLClient);
         homeHandler = new HomeHandler(context, templateEngine, mySQLClient);
         stockHandler = new StockHandler(context, templateEngine, mySQLClient);
+        analyseHandler = new StockAnalyseHandler(context, templateEngine, mySQLClient);
     }
 
 
@@ -449,13 +448,17 @@ public class MyVerticle extends AbstractVerticle {
         router.get("/stock/add").handler(stockHandler::handleStockAddGet);
         router.post("/stock/add").handler(stockHandler::handleStockAddPost);
 
+        //股票分析
+        router.get("/stock/analyse").handler(analyseHandler::handleStockAnalyse);
+//        analyseHandler
+
         //定义服务器
         HttpServer server = vertx.createHttpServer();
 
         //在服务器中加入路由router
         server.requestHandler(router);
         //启动
-        server.listen(8080);
+        server.listen(80);
 
         System.out.println("服务器启动成功http://127.0.0.1:8080");
     }

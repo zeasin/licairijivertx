@@ -33,7 +33,7 @@ public class StockHandler extends AbstractHandler {
      * @param routingContext
      */
     public void handleStockList(RoutingContext routingContext) {
-        String sql = "SELECT * FROM  stock order by id desc";
+        String sql = "SELECT s.*,i.count FROM  stock s left join invest i on i.code= s.code order by i.id desc";
         mySQLClient.getConnection(res -> {
             if (res.failed()) {
                 throw new RuntimeException(res.cause());
@@ -56,6 +56,13 @@ public class StockHandler extends AbstractHandler {
                     entity.setComment(child.getString("comment"));
                     entity.setEcode(child.getString("ecode"));
                     entity.setPlate(child.getString("plate"));
+                    entity.setCount(child.getValue("count") == null ? 0 : child.getInteger("count"));
+                    if (child.getString("board").equalsIgnoreCase("ZB"))
+                        entity.setBoard("主板");
+                    else if (child.getString("board").equalsIgnoreCase("ZSB"))
+                        entity.setBoard("中小板");
+                    else if (child.getString("board").equalsIgnoreCase("CYB"))
+                        entity.setBoard("创业板");
 
                     investList.add(entity);
                 }
@@ -82,24 +89,31 @@ public class StockHandler extends AbstractHandler {
         String price = request.getParam("price");
         String plate = request.getParam("plate");
         String comment = request.getParam("comment");
+        String board = "";
         String ecode = "";
         if (code.startsWith("600") || code.startsWith("601") || code.startsWith("603")) {
             ecode = "sh" + code;
-        } else if (code.startsWith("000") || code.startsWith("002")) {
+            board = "ZB";
+        } else if (code.startsWith("000") || code.startsWith("002") || code.startsWith("300")) {
             ecode = "sz" + code;
+            if (code.startsWith("000")) board = "ZB";
+            else if (code.startsWith("002")) board = "ZXB";
+            else if (code.startsWith("300")) board = "CYB";
         }
 
         String finalEcode = ecode;
+        String finalBoard = board;
         mySQLClient.getConnection(res -> {
             if (res.failed()) {
                 throw new RuntimeException(res.cause());
             }
             SQLConnection conn = res.result();
             //没有，新增
-            String sql = "INSERT INTO stock (code,ecode,name,plate,join_price,comment,create_on) VALUE (?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO stock (code,ecode,name,board,plate,join_price,comment,create_on) VALUE (?,?,?,?,?,?,?)";
             JsonArray params = new JsonArray();
             params.add(code);
             params.add(finalEcode);
+            params.add(finalBoard);
             params.add(name);
             params.add(plate);
             params.add(price);
