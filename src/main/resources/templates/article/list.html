@@ -27,12 +27,14 @@
             <col>
             <col>
             <col>
+            <col>
         </colgroup>
         <thead>
         <tr>
             <th>编号</th>
             <th></th>
             <th>标题</th>
+            <th>Tag</th>
             <th></th>
         </tr>
         </thead>
@@ -41,6 +43,7 @@
             <td th:text="${item.id}">贤心</td>
             <td ><img th:if="${item.image != null && item.image != ''}" th:src="${item.image}" width="50px" height="50px" /></td>
             <td th:text="${item.title}">汉族</td>
+            <td th:text="${item.tags}">汉族</td>
             <td><a th:href="${'/article/detail?id='+item.id}" target="_blank">查看详情</a>&nbsp;&nbsp;&nbsp;<a href="javascript:;" th:attr="invest_id=${item.id}" id="add_log">添加记录</a></td>
         </tr>
         </tbody>

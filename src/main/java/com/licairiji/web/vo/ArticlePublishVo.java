@@ -10,7 +10,16 @@ package com.licairiji.web.vo;
 public class ArticlePublishVo {
     private String image;
     private String title;
+    private String tags;
     private String content;
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
 
     public String getImage() {
         return image;

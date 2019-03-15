@@ -16,6 +16,7 @@ import io.vertx.ext.sql.SQLClient;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -167,7 +168,17 @@ public class InvestHandler extends AbstractHandler {
      * @param routingContext
      */
     public void handleInvestList(RoutingContext routingContext) {
+
+        String code = routingContext.request().getParam("code");
         String sql = "SELECT invest.*,stock.name FROM invest left join stock on stock.code = invest.code ";
+        JsonArray params = new JsonArray();
+        if(StringUtils.isEmpty(code)==false){
+            sql += " WHERE invest.code=?";
+            params.add(code);
+        }
+
+
+        String finalSql = sql;
         mySQLClient.getConnection(res -> {
             if (res.failed()) {
                 throw new RuntimeException(res.cause());
@@ -175,7 +186,7 @@ public class InvestHandler extends AbstractHandler {
             SQLConnection conn = res.result();
 
 
-            conn.query(sql, query -> {
+            conn.queryWithParams(finalSql,params, query -> {
                 List<JsonObject> list = query.result().getRows();
 
                 List<InvestEntity> investList = new ArrayList<>();

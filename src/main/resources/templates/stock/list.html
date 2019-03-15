@@ -73,7 +73,7 @@
             <td th:text="${item.createOn}">1989-10-14</td>
             <td th:text="${item.comment}">人生似修行</td>
             <td>
-                <a href="javascript:;">查看持股</a>
+                <a th:href="${'/stock/detail/'+item.code}">查看持股</a>
                 <a th:href="${'/stock/analyse?code='+item.code}">股票分析</a>
             </td>
         </tr>

@@ -2,6 +2,7 @@ package com.licairiji.web.handler;
 
 import com.licairiji.web.DateUtil;
 import com.licairiji.web.entity.StockEntity;
+import com.licairiji.web.utils.HTMLSpirit;
 import io.vertx.core.Context;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
@@ -97,24 +98,25 @@ public class StockHandler extends AbstractHandler {
         } else if (code.startsWith("000") || code.startsWith("002") || code.startsWith("300")) {
             ecode = "sz" + code;
             if (code.startsWith("000")) board = "ZB";
-            else if (code.startsWith("002")) board = "ZXB";
+            else if (code.startsWith("002")) board = "ZSB";
             else if (code.startsWith("300")) board = "CYB";
         }
 
         String finalEcode = ecode;
         String finalBoard = board;
-        mySQLClient.getConnection(res -> {
-            if (res.failed()) {
-                throw new RuntimeException(res.cause());
+        mySQLClient.getConnection(connection -> {
+            if (connection.failed()) {
+                throw new RuntimeException(connection.cause());
             }
-            SQLConnection conn = res.result();
+            SQLConnection conn = connection.result();
             //没有，新增
-            String sql = "INSERT INTO stock (code,ecode,name,board,plate,join_price,comment,create_on) VALUE (?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO stock (code,ecode,name,board,plate,join_price,comment,create_on) VALUE (?,?,?,?,?,?,?,?)";
             JsonArray params = new JsonArray();
             params.add(code);
             params.add(finalEcode);
-            params.add(finalBoard);
             params.add(name);
+            params.add(finalBoard);
+
             params.add(plate);
             params.add(price);
             params.add(comment);
@@ -122,15 +124,34 @@ public class StockHandler extends AbstractHandler {
 
             conn.updateWithParams(sql, params, r -> {
                 if (r.succeeded()) {
+                    //加入动态
+                    String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
+
+                    JsonArray dParams = new JsonArray();
+                    dParams.add(0);
+                    dParams.add("添加[" + code + name + "]到自选股");
+                    dParams.add(code + name + "现价：￥" + price + "，所属行业：" + plate + "，备注：" + comment);
+                    dParams.add("");
+                    dParams.add("自选股");
+                    dParams.add(2);
+                    dParams.add(code);
+                    dParams.add("/stock/detail/" + code);
+                    dParams.add(System.currentTimeMillis() / 1000);
+                    conn.updateWithParams(dSql, dParams, r1 -> {
+                    });
+
+
                     HttpServerResponse response = routingContext.response();
                     response.setStatusCode(302);
-                    response.headers().add("location", "/stock/list");
+                    response.headers().add("location", "/");
                     response.end();
                 } else {
-                    HttpServerResponse response = routingContext.response();
-                    response.setStatusCode(302);
-                    response.headers().add("location", "/stock/add");
-                    response.end();
+                    connection.cause().printStackTrace();
+                    System.err.println(connection.cause().getMessage());
+//                    HttpServerResponse response = routingContext.response();
+//                    response.setStatusCode(302);
+//                    response.headers().add("location", "/stock/add");
+//                    response.end();
                 }
             });
         });
@@ -138,5 +159,14 @@ public class StockHandler extends AbstractHandler {
 
     }
 
-
+    /**
+     * 股票详情
+     *
+     * @param routingContext
+     */
+    public void handleStockDetail(RoutingContext routingContext) {
+        String code = routingContext.request().getParam("code");
+        routingContext.put("code", code);
+        render(routingContext, "/stock/detail");
+    }
 }

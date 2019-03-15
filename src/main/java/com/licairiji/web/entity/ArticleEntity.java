@@ -11,8 +11,16 @@ public class ArticleEntity {
     private String title;
     private String image;
     private String content;
+    private String tags;
     private Integer createOn;
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
 
     public Integer getCreateOn() {
         return createOn;

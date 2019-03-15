@@ -63,6 +63,7 @@ public class MyVerticle extends AbstractVerticle {
     private HomeHandler homeHandler;
     private StockHandler stockHandler;
     private StockAnalyseHandler analyseHandler;
+    private TopicHandler topicHandler;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -97,6 +98,7 @@ public class MyVerticle extends AbstractVerticle {
         homeHandler = new HomeHandler(context, templateEngine, mySQLClient);
         stockHandler = new StockHandler(context, templateEngine, mySQLClient);
         analyseHandler = new StockAnalyseHandler(context, templateEngine, mySQLClient);
+        topicHandler = new TopicHandler(context, templateEngine, mySQLClient);
     }
 
 
@@ -445,8 +447,14 @@ public class MyVerticle extends AbstractVerticle {
 
         //自选股
         router.get("/stock/list").handler(stockHandler::handleStockList);
+        router.get("/stock/detail/:code").handler(stockHandler::handleStockDetail);
         router.get("/stock/add").handler(stockHandler::handleStockAddGet);
         router.post("/stock/add").handler(stockHandler::handleStockAddPost);
+
+        //话题
+        router.get("/topic").handler(topicHandler::handleTopic);
+        router.get("/topic/:topicId").handler(topicHandler::handleTopic);
+
 
         //股票分析
         router.get("/stock/analyse").handler(analyseHandler::handleStockAnalyse);
@@ -460,7 +468,7 @@ public class MyVerticle extends AbstractVerticle {
         //启动
         server.listen(80);
 
-        System.out.println("服务器启动成功http://127.0.0.1:8080");
+        System.out.println("服务器启动成功http://127.0.0.1");
     }
 
 
