@@ -1,10 +1,309 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/bulma/0.6.1/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://static.zhihu.com/static/revved/-/css/z.3e5da9dd.css">
+    <script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="https://img.highcharts.com.cn/highstock/highstock.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    <script src="https://img.highcharts.com.cn/highcharts/modules/drag-panes.js"></script>
+    <style>
+        body {
+            background: #f8f8f8;
+        }
+        .tag.is-lightblue {
+            color: #2d84cc;
+            background: #ebf3fb;
+        }
+        .ml-10 {
+            margin-left: 1rem;
+        }
+        .lh-20 {
+            line-height: 2rem;
+        }
+        .card {
+            margin-bottom: 1rem;
+        }
+        .section {
+            padding-top: 1rem;
+        }
+        .fa-15 {
+            font-size: 1.5rem;
+        }
+        .fa.fa-fire {
+            font-size: 1.2rem;
+            color: red;
+            margin-left: 1rem;
+        }
+    </style>
+    <title th:text="${name}"></title>
 </head>
 <body>
-<h1 th:text="${code}"></h1>
+<div class="navbar has-shadow">
+    <div class="container">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="/">首页</a>
+                <a class="navbar-item" href="#">发现</a>
+                <a class="navbar-item" href="/topic">话题</a>
+                <a class="navbar-item" href="/stock/list">自选股</a>
+                <div class="navbar-item">
+                    <form action="/article/publish" method="get">
+                        <div class="field is-grouped">
+
+                            <div class="control has-icons-right">
+                                <input type="text" class="input" name="title" style="width: 20rem;" placeholder="搜索你感兴趣的内容...">
+                                <span class="icon is-right">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            </div>
+                            <div class="control">
+                                <input type="submit" class="button is-info" value="写心得">
+                            </div>
+
+                            <div class="control">
+                                <a class=" is-info" href="/stock/add" target="_blank">添加自选股</a>
+                            </div>
+                            <div class="control">
+                                <a class=" is-info" href="/stock/add" target="_blank">买入股票</a>
+                                <a class=" is-info" href="/stock/add" target="_blank">卖出股票</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="navbar-end">
+                <a href="#" class="navbar-item">
+                    <i class="fa fa-15 fa-bell"></i>
+                </a>
+                <a href="#" class="navbar-item">
+                    <i class="fa fa-15 fa-comments"></i>
+                </a>
+                <a href="#" class="navbar-item">
+                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="navbar has-shadow" style="position: relative; top: 1px;">
+    <div class="container">
+        <div class="navbar-tabs">
+            <a href="#" class="navbar-item is-tab is-active">K线图</a>
+            <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+ code}" target="_blank">基本面</a>
+            <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+code+'/field/#fieldstatus'}" target="_blank">行业地位</a>
+            <a class="navbar-item is-tab" th:href="${'/stock/analyse?code='+code}" target="_blank">股票诊断</a>
+            <a class="navbar-item is-tab" th:href="${'/invest/list?code='+code}" target="_blank">持股</a>
+            <!--<a href="#" class="navbar-item is-tab">专栏</a>-->
+            <!--<a href="#" class="navbar-item is-tab">Live</a>-->
+            <!--<a href="#" class="navbar-item is-tab">私家课</a>-->
+            <!--<a href="#" class="navbar-item is-tab">电子书</a>-->
+        </div>
+    </div>
+</div>
+<div class="section">
+    <div class="container">
+        <div class="tile">
+            <div class="tile is-vertical is-parent is-8">
+                <div class="box">
+                    <div class="media">
+                        <ul class="zm-topic-cat-main js-topic-cat-main clearfix">
+
+
+
+
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="box">
+                    <div class="media">
+                        <div class="media-content">
+                            <div class="content">
+                                <div id="container" style="min-width:400px;height:600px">图表加载中...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tile is-vertical is-parent">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">相关结果</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-64x64">
+                                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <p>
+                                    <strong>线程内上下文切换</strong>
+                                    <span class="tag is-gray">专栏</span></p>
+                                <p>
+                                    1.6K 关注 | 12 篇文章
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">知乎热搜</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="lh-20">
+                            <li><a href="#">演员的诞生第十期</a><i class="fa fa-fire"></i></li>
+                            <li><a href="#">北航陈小武</a><i class="fa fa-fire"></i></li>
+                            <li><a href="#">微信跳一跳</a><i class="fa fa-fire"></i></li>
+                            <li><a href="#">解忧杂货店</a></li>
+                            <li><a href="#">前任3</a></li>
+                            <li><a href="#">妖猫传</a></li>
+                            <li><a href="#">琅琊榜2</a></li>
+                            <li><a href="#">刘昊然</a></li>
+                            <li><a href="#">黄轩</a></li>
+                            <li><a href="#">比特币</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- container -->
+</div>
+
+
+<script>
+    /*<![CDATA[*/
+    /*]]>*/
+    $(function () {
+        Highcharts.setOptions({
+            lang: {
+                rangeSelectorZoom: ''
+            }
+        });
+        //https://data.jianshukeji.com/stock/history/000001
+        $.getJSON('/stock/kdata/[[${code}]]', function (data) {
+            if(data.code !== 1) {
+                alert('读取股票数据失败！');
+                return false;
+            }
+            data = data.data;
+            var ohlc = [],
+                volume = [],
+                dataLength = data.length,
+                // set the allowed units for data grouping
+                groupingUnits = [
+                    [
+                    'week',                         // unit name
+                    [1]                             // allowed multiples
+                ], [
+                    'month',
+                    [1, 2, 3, 4, 6]
+                ]],
+                i = 0;
+            for (i; i < dataLength; i += 1) {
+                ohlc.push([
+                    data[i][0], // the date
+                    data[i][1], // open
+                    data[i][2], // high
+                    data[i][3], // low
+                    data[i][4] // close
+                ]);
+                volume.push([
+                    data[i][0], // the date
+                    data[i][5] // the volume
+                ]);
+            }
+            // create the chart
+            var chart = Highcharts.stockChart('container', {
+                rangeSelector: {
+                    selected: 1,
+                    inputDateFormat: '%Y-%m-%d'
+                },
+                title: {
+                    text: '[[${name}]]历史股价'
+                },
+                xAxis: {
+                    dateTimeLabelFormats: {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%m-%d',
+                        week: '%m-%d',
+                        month: '%y-%m',
+                        year: '%Y'
+                    }
+                },
+                tooltip: {
+                    split: false,
+                    shared: true,
+                },
+                yAxis: [{
+                    labels: {
+                        align: 'right',
+                        x: -3
+                    },
+                    title: {
+                        text: '股价'
+                    },
+                    height: '65%',
+                    resize: {
+                        enabled: true
+                    },
+                    lineWidth: 2
+                }, {
+                    labels: {
+                        align: 'right',
+                        x: -3
+                    },
+                    title: {
+                        text: '成交量'
+                    },
+                    top: '65%',
+                    height: '35%',
+                    offset: 0,
+                    lineWidth: 2
+                }],
+                series: [{
+                    type: 'candlestick',
+                    name: '[[${name}]]',
+                    color: 'green',
+                    lineColor: 'green',
+                    upColor: 'red',
+                    upLineColor: 'red',
+                    tooltip: {
+                    },
+                    navigatorOptions: {
+                        color: Highcharts.getOptions().colors[0]
+                    },
+                    data: ohlc,
+                    dataGrouping: {
+                        units: groupingUnits
+                    },
+                    id: 'sz'
+                },{
+                    type: 'column',
+                    data: volume,
+                    yAxis: 1,
+                    dataGrouping: {
+                        units: groupingUnits
+                    }
+                }]
+            });
+        });
+    })
+
+</script>
+
 </body>
 </html>

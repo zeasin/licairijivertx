@@ -448,6 +448,7 @@ public class MyVerticle extends AbstractVerticle {
         //自选股
         router.get("/stock/list").handler(stockHandler::handleStockList);
         router.get("/stock/detail/:code").handler(stockHandler::handleStockDetail);
+        router.get("/stock/kdata/:code").handler(stockHandler::handleStockKData);
         router.get("/stock/add").handler(stockHandler::handleStockAddGet);
         router.post("/stock/add").handler(stockHandler::handleStockAddPost);
 

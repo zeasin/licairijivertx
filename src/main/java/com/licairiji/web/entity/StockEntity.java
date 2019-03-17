@@ -10,6 +10,7 @@ public class StockEntity {
     private Integer id;
     private String code;
     private String ecode;
+    private String bourse;//交易所
     private String name;
     private double joinPrice;
     private String plate;
@@ -17,6 +18,14 @@ public class StockEntity {
     private String createOn;
     private String comment;
     private int count;
+
+    public String getBourse() {
+        return bourse;
+    }
+
+    public void setBourse(String bourse) {
+        this.bourse = bourse;
+    }
 
     public String getBoard() {
         return board;

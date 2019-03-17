@@ -19,65 +19,102 @@
     <legend>添加自选股</legend>
 </fieldset>
 
-<form class="layui-form" action="/stock/add" method="post">
     <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">股票代码</label>
             <div class="layui-input-inline">
-                <input type="text" name="code" lay-verify="required|number" maxlength="6" placeholder="请输入股票代码" autocomplete="off" class="layui-input">
+                <input type="text" name="code" id="code" lay-verify="required|number" maxlength="6" placeholder="请输入股票代码" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-inline">
-            <label class="layui-form-label">股票名称</label>
-            <div class="layui-input-inline">
-                <input type="text" name="name" maxlength="10" lay-verify="required" placeholder="请输入股票名称" autocomplete="off" class="layui-input">
-            </div>
-        </div>
+        <!--<div class="layui-inline">-->
+            <!--<label class="layui-form-label">股票名称</label>-->
+            <!--<div class="layui-input-inline">-->
+                <!--<input type="text" name="name" maxlength="10" lay-verify="required" placeholder="请输入股票名称" autocomplete="off" class="layui-input">-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
 
-    <div class="layui-form-item">
-        <label class="layui-form-label">当前价格</label>
-        <div class="layui-input-inline">
-            <input type="text" name="price" lay-verify="required|number" maxlength="10" placeholder="" autocomplete="off" class="layui-input">
-        </div>
-    </div>
+    <!--<div class="layui-form-item">-->
+        <!--<label class="layui-form-label">当前价格</label>-->
+        <!--<div class="layui-input-inline">-->
+            <!--<input type="text" name="price" lay-verify="required|number" maxlength="10" placeholder="" autocomplete="off" class="layui-input">-->
+        <!--</div>-->
+    <!--</div>-->
 
     <div class="layui-form-item">
         <label class="layui-form-label">行业板块</label>
         <div class="layui-input-block">
-            <input type="text" name="plate" maxlength="50" style="width: 70%" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            <input type="text" name="plate" id="plate" maxlength="50" style="width: 70%" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
         </div>
     </div>
 
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">备注</label>
         <div class="layui-input-block">
-            <textarea placeholder="请输入内容" name="comment" maxlength="100" style="width: 70%" class="layui-textarea"></textarea>
+            <textarea placeholder="请输入内容" name="comment" id="comment" maxlength="100" style="width: 70%" class="layui-textarea"></textarea>
         </div>
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+            <button class="layui-btn" lay-submit="" id="submit" lay-filter="demo1">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
-</form>
 
 <script src="/static/layui/layui.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function(){
+    layui.use(['form', 'layedit', 'laydate','jquery'], function(){
         var form = layui.form
             ,layer = layui.layer
             ,layedit = layui.layedit
+            ,$=layui.jquery
             ,laydate = layui.laydate;
-        //监听提交
-        form.on('submit(demo1)', function(data){
-            layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
+
+
+        $(function(){
+            $("#submit").click(function () {
+
+                var code = $("#code").val();
+                var plate = $("#plate").val();
+                var comment = $("#comment").val();
+                // alert(code.length)
+                if(code==''||code.length!=6){
+                    alert("请填写正确的股票代码");
+                    return;
+                }
+
+                var formdata=new FormData();
+                formdata.append('code',code);
+                formdata.append('plate',plate);
+                formdata.append('comment',comment);
+
+
+                $.ajax({
+                    url: "/stock/add",
+                    type: "POST",
+                    dataType: "json",
+                    processData : false,
+                    contentType : false,
+                    data: formdata,
+                    success: function (res) {
+                        // if(res.code == 0){
+                        //     window.location.href = "/";
+                        // }else
+                            alert(JSON.stringify(res));
+                        //return false;
+                    }
+                });
             })
-            return true;
-        });
+        })
+
+        //监听提交
+        // form.on('submit(demo1)', function(data){
+        //     layer.alert(JSON.stringify(data.field), {
+        //         title: '最终的提交信息'
+        //     })
+        //     return true;
+        // });
 
     });
 </script>

@@ -74,6 +74,7 @@
             <td th:text="${item.comment}">人生似修行</td>
             <td>
                 <a th:href="${'/stock/detail/'+item.code}">查看持股</a>
+                <a th:href="${'http://stockpage.10jqka.com.cn/'+item.code}" target="_blank">基本面</a>
                 <a th:href="${'/stock/analyse?code='+item.code}">股票分析</a>
             </td>
         </tr>

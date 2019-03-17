@@ -90,7 +90,22 @@ public class DateUtil {
         }
         return result;
     }
+    /**
+     * 日期格式字符串转换成时间戳
+     * @param date 字符串日期
+     * @param format 如：yyyy-MM-dd HH:mm:ss
+     * @return
+     */
+    public static Long date2TimeStamp(String date_str,String format){
 
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
+            return sdf.parse(date_str).getTime();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0l;
+    }
 //
 //    public static void main(String[] args) {
 //        //System.out.println(stampToDate(String.valueOf(System.currentTimeMillis())));
