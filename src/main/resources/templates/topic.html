@@ -38,7 +38,7 @@
             margin-left: 1rem;
         }
     </style>
-    <title>Document</title>
+    <title th:text="${topicTitle}">Document</title>
 </head>
 <body>
 <div class="navbar has-shadow">
@@ -97,7 +97,7 @@
                             </figure>
                         </div>
                         <div class="media-content lh-20">
-                            <p><strong>协程</strong> <span class="tag is-lightblue">话题</span></p>
+                            <p><strong th:text="${topicTitle}">协程</strong> <span class="tag is-lightblue">话题</span></p>
                             <p>
                                 380关注 | 68 问题 | 69精华内容
                                 <button class="button is-info is-pulled-right">关注话题</button>

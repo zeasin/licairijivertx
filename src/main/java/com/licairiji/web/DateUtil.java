@@ -13,11 +13,12 @@ public class DateUtil {
      * 时间戳转换成时间
      *
      * @param s
+     * @param format "yyyy-MM-dd HH:mm:ss"
      * @return
      */
-    public static String stampToDate(long s) {
+    public static String stampToDate(long s,String format) {
         String res;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
 //        long lt = new Long(s);
         Date date = new Date(s * 1000);
         res = simpleDateFormat.format(date);

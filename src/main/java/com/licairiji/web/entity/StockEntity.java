@@ -17,7 +17,7 @@ public class StockEntity {
     private String board;
     private String createOn;
     private String comment;
-    private int count;
+    private int quantity;
 
     public String getBourse() {
         return bourse;
@@ -35,12 +35,12 @@ public class StockEntity {
         this.board = board;
     }
 
-    public int getCount() {
-        return count;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public String getPlate() {

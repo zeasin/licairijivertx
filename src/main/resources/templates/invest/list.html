@@ -1,136 +1,286 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8">
-    <title>投资交易记录</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/bulma/0.6.1/css/bulma.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
-    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+    <style>
+        body {
+            background: #f8f8f8;
+        }
+
+        .tag.is-lightblue {
+            color: #2d84cc;
+            background: #ebf3fb;
+        }
+
+        .ml-10 {
+            margin-left: 1rem;
+        }
+
+        .lh-20 {
+            line-height: 2rem;
+        }
+
+        .card {
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            padding-top: 1rem;
+        }
+
+        .fa-15 {
+            font-size: 1.5rem;
+        }
+
+        .fa.fa-fire {
+            font-size: 1.2rem;
+            color: red;
+            margin-left: 1rem;
+        }
+    </style>
+    <title>交易历史</title>
 </head>
 <body>
-<blockquote class="layui-elem-quote">
-    投资交易记录
-    <!--本页面只是演示静态表格，如果你需要的是数据表格，可前往：-->
-    <a class="layui-btn layui-btn-normal" href="/invest/add">添加交易记录</a>
-</blockquote>
+<div class="navbar has-shadow">
+    <div class="container">
+        <div class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" href="/">首页</a>
+                <a class="navbar-item" href="http://stock.eastmoney.com/a/cgszb.html" target="_blank">股市直播</a>
+                <a class="navbar-item" href="http://finance.sina.com.cn/roll/index.d.html?cid=56589&page=1"
+                   target="_blank">股市及时雨</a>
+                <a class="navbar-item" href="http://stock.hexun.com/" target="_blank">和讯股评</a>
+                <a class="navbar-item" href="/topic">话题</a>
+                <a class="navbar-item" href="/stock/list">自选股</a>
+                <a class="navbar-item" href="/invest/list">股票持仓</a>
+                <div class="navbar-item">
+                    <form action="/article/publish" method="get">
+                        <div class="field is-grouped">
 
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-    <legend>默认表格</legend>
-</fieldset>
+                            <div class="control has-icons-right">
+                                <input type="text" class="input" name="title" style="width: 20rem;"
+                                       placeholder="搜索你感兴趣的内容...">
+                                <span class="icon is-right">
+                                <i class="fa fa-search"></i>
+                            </span>
+                            </div>
+                            <div class="control">
+                                <input type="submit" class="button is-info" value="写心得">
+                            </div>
 
-<div class="layui-form">
-    <table class="layui-table">
-        <colgroup>
-            <col width="150">
-            <col width="150">
-            <col width="150">
-            <col width="150">
-            <col width="150">
-            <col width="200">
-            <col>
-
-            <col>
-        </colgroup>
-        <thead>
-        <tr>
-            <th>股票代码</th>
-            <th>股票名称</th>
-            <th>成交价</th>
-            <th>成本价</th>
-            <th>成交量</th>
-            <th>交易时间</th>
-            <th>策略说明</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item:${invest_list}">
-            <td th:text="${item.code}">贤心</td>
-            <td th:text="${item.name}">汉族</td>
-            <td th:text="${#numbers.formatDecimal(item.price_buy,0,2)}"></td>
-            <td th:text="${#numbers.formatDecimal(item.price_cost,0,2)}"></td>
-            <td th:text="${item.count}"></td>
-            <td th:text="${item.transactionTime}">1989-10-14</td>
-            <td th:text="${item.strategy}">人生似修行</td>
-            <td><a href="javascript:;" th:attr="invest_id=${item.id}" id="log_list">查看记录</a>&nbsp;&nbsp;&nbsp;<a href="javascript:;" th:attr="invest_id=${item.id}" id="add_log">添加记录</a></td>
-        </tr>
-        </tbody>
-    </table>
+                            <div class="control">
+                                <a class=" is-info" href="/stock/add" target="_blank">添加自选股</a>
+                            </div>
+                            <div class="control">
+                                <a class=" is-info" href="/invest/add" target="_blank">交易</a>
+                                <!--<a class=" is-info" href="/stock/add" target="_blank">卖出股票</a>-->
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="navbar-end">
+                <a href="#" class="navbar-item">
+                    <i class="fa fa-15 fa-bell"></i>
+                </a>
+                <a href="#" class="navbar-item">
+                    <i class="fa fa-15 fa-comments"></i>
+                </a>
+                <a href="#" class="navbar-item">
+                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="section">
+    <div class="container">
+        <div class="tile">
+            <div class="tile is-vertical is-parent is-8">
+                <div class="box">
+                    <div class="media">
+                        <div class="media-left">
+                            <figure class="image is-64x64">
+                                <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
+                            </figure>
+                        </div>
+                        <div class="media-content lh-20">
+                            <p><strong th:text="${name}">协程</strong> <span class="tag is-lightblue">话题</span></p>
+                            <p>
+                                380关注 | 68 问题 | 69精华内容
+                                <a href="/invest/add" class="button is-info is-pulled-right" target="_blank">添加新交易</a>
+                            </p>
+                            <p><a href="#">查看更多 [话题] 搜索结果</a></p>
+                        </div>
+                    </div>
+                </div>
 
-<script src="/static/layui/layui.js" charset="utf-8"></script>
-<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
-<script>
-    layui.use(['form', 'laydate'], function () {
-        var form = layui.form
-            , $ = layui.jquery
-            , layer = layui.layer
-            , laydate = layui.laydate;
-        $("#add_log").click(function () {
-            var investId = $(this).attr("invest_id");
-            //prompt层
 
-            layer.prompt({title: '输入收盘价，并确认', formType: 0}, function (price, index) {
-                // debugger;
-                // layer.msg(price);
-                if (isNaN(price)) {
-                    layer.msg("请输入收盘价");
-                } else {
-                    layer.close(index);
-                    layer.prompt({title: '记录涨跌幅，并确认', formType: 0}, function (rate, index) {
-                        if (isNaN(rate)) {
-                            layer.msg("请记录涨跌幅");
-                        } else {
-                            layer.close(index);
-                            layer.prompt({title: '记录一下今天的心得，并确认', formType: 2}, function (text, index) {
+                <div class="layui-form box">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="">
+                            <col width="">
+                            <col width="">
+                            <col width="">
+                            <col width="">
+                            <!--<col width="200">-->
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>股票</th>
+
+                            <th>成交价</th>
+                            <th>类型</th>
+                            <th>成交量</th>
+                            <th>交易时间</th>
+                            <th>策略说明</th>
+                            <!--<th></th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item:${invest_list}">
+                            <td >
+                                <span th:text="${item.code}"></span><br />
+                                <span th:text="${item.name}"></span><br />
+                            </td>
+                            <td th:text="${#numbers.formatDecimal(item.price,0,2)}"></td>
+                            <td th:text="${item.type==1}?'买入':'卖出'"></td>
+                            <td th:text="${item.count}"></td>
+                            <td th:text="${item.transactionTime}">1989-10-14</td>
+                            <td th:text="${item.strategy+item.comment}">人生似修行</td>
+                            <!--<td><a href="javascript:;" th:attr="invest_id=${item.id}" id="log_list">查看记录</a>&nbsp;&nbsp;&nbsp;<a-->
+                                    <!--href="javascript:;" th:attr="invest_id=${item.id}" id="add_log">添加记录</a></td>-->
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tile is-vertical is-parent">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">相关结果</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-64x64">
+                                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <p>
+                                    <strong>线程内上下文切换</strong>
+                                    <span class="tag is-gray">专栏</span></p>
+                                <p>
+                                    1.6K 关注 | 12 篇文章
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">知乎热搜</p>
+                    </div>
+                    <div class="card-content">
+                        <ul class="lh-20">
+                            <li><a href="#">演员的诞生第十期</a><i class="fa fa-fire"></i></li>
+                            <li><a href="#">北航陈小武</a><i class="fa fa-fire"></i></li>
+                            <li><a href="#">微信跳一跳</a><i class="fa fa-fire"></i></li>
+                            <li><a href="#">解忧杂货店</a></li>
+                            <li><a href="#">前任3</a></li>
+                            <li><a href="#">妖猫传</a></li>
+                            <li><a href="#">琅琊榜2</a></li>
+                            <li><a href="#">刘昊然</a></li>
+                            <li><a href="#">黄轩</a></li>
+                            <li><a href="#">比特币</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/static/layui/layui.js" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+    <script>
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form
+                , $ = layui.jquery
+                , layer = layui.layer
+                , laydate = layui.laydate;
+            $("#add_log").click(function () {
+                var investId = $(this).attr("invest_id");
+                //prompt层
+
+                layer.prompt({title: '输入收盘价，并确认', formType: 0}, function (price, index) {
+                    // debugger;
+                    // layer.msg(price);
+                    if (isNaN(price)) {
+                        layer.msg("请输入收盘价");
+                    } else {
+                        layer.close(index);
+                        layer.prompt({title: '记录涨跌幅，并确认', formType: 0}, function (rate, index) {
+                            if (isNaN(rate)) {
+                                layer.msg("请记录涨跌幅");
+                            } else {
                                 layer.close(index);
-                                var data = {
-                                    investId:investId,
-                                    price:price,
-                                    rate:rate,
-                                    comment:text
-                                };
-                                // layer.msg(JSON.stringify(data));
-                                $.ajax({
-                                    url: "/invest/add_log_post",
-                                    type: "POST",
-                                    dataType: "JSON",
-                                    data: JSON.stringify(data),
-                                    success: function (res) {
-                                        if (res.code == 0) {
-                                            layer.msg("添加成功");
-                                        } else {
-                                            layer.msg(res.msg);
+                                layer.prompt({title: '记录一下今天的心得，并确认', formType: 2}, function (text, index) {
+                                    layer.close(index);
+                                    var data = {
+                                        investId: investId,
+                                        price: price,
+                                        rate: rate,
+                                        comment: text
+                                    };
+                                    // layer.msg(JSON.stringify(data));
+                                    $.ajax({
+                                        url: "/invest/add_log_post",
+                                        type: "POST",
+                                        dataType: "JSON",
+                                        data: JSON.stringify(data),
+                                        success: function (res) {
+                                            if (res.code == 0) {
+                                                layer.msg("添加成功");
+                                            } else {
+                                                layer.msg(res.msg);
+                                            }
                                         }
-                                    }
+                                    });
+                                    //AJAX保存
+                                    // layer.msg('演示完毕！收盘价：' + price + '<br>涨跌幅度：' + rate + '<br>您最后写下了：' + text);
                                 });
-                                //AJAX保存
-                                // layer.msg('演示完毕！收盘价：' + price + '<br>涨跌幅度：' + rate + '<br>您最后写下了：' + text);
-                            });
-                        }
-                    })
-                }
+                            }
+                        })
+                    }
 
-            });
+                });
 
+            })
+
+            $("#log_list").click(function () {
+                var investId = $(this).attr("invest_id");
+                layer.open({
+                    type: 2,
+                    title: '查看记录',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['600px', '600px'],
+                    content: '/invest/log_list?id=' + investId
+                });
+            })
         })
-
-        $("#log_list").click(function(){
-            var investId = $(this).attr("invest_id");
-            layer.open({
-                type: 2,
-                title: '查看记录',
-                shadeClose: true,
-                shade: false,
-                maxmin: false, //开启最大化最小化按钮
-                area: ['600px', '600px'],
-                content: '/invest/log_list?id='+investId
-            });
-        })
-    })
-</script>
+    </script>
 
 </body>
 </html>

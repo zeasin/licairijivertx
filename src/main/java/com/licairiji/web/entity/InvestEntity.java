@@ -14,12 +14,13 @@ public class InvestEntity {
     private String code;
     private String name;
     private int type;
-    private double price_buy;
-    private double price_cost;
+    private double price;
+//    private double price_cost;
     private int transaction_time;
-    private double sell_drop_rate;
-    private double sell_up_rate;
+//    private double sell_drop_rate;
+//    private double sell_up_rate;
     private String strategy;
+    private String comment;
     private int count;
     private int create_on;
 
@@ -65,21 +66,36 @@ public class InvestEntity {
         this.type = type;
     }
 
-    public double getPrice_buy() {
-        return price_buy;
+    public double getPrice() {
+        return price;
     }
 
-    public void setPrice_buy(double price_buy) {
-        this.price_buy = price_buy;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public double getPrice_cost() {
-        return price_cost;
+    public String getComment() {
+        return comment;
     }
 
-    public void setPrice_cost(double price_cost) {
-        this.price_cost = price_cost;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
+    //    public double getPrice_buy() {
+//        return price_buy;
+//    }
+//
+//    public void setPrice_buy(double price_buy) {
+//        this.price_buy = price_buy;
+//    }
+//
+//    public double getPrice_cost() {
+//        return price_cost;
+//    }
+//
+//    public void setPrice_cost(double price_cost) {
+//        this.price_cost = price_cost;
+//    }
 
     public int getTransaction_time() {
         return transaction_time;
@@ -89,21 +105,21 @@ public class InvestEntity {
         this.transaction_time = transaction_time;
     }
 
-    public double getSell_drop_rate() {
-        return sell_drop_rate;
-    }
-
-    public void setSell_drop_rate(double sell_drop_rate) {
-        this.sell_drop_rate = sell_drop_rate;
-    }
-
-    public double getSell_up_rate() {
-        return sell_up_rate;
-    }
-
-    public void setSell_up_rate(double sell_up_rate) {
-        this.sell_up_rate = sell_up_rate;
-    }
+//    public double getSell_drop_rate() {
+//        return sell_drop_rate;
+//    }
+//
+//    public void setSell_drop_rate(double sell_drop_rate) {
+//        this.sell_drop_rate = sell_drop_rate;
+//    }
+//
+//    public double getSell_up_rate() {
+//        return sell_up_rate;
+//    }
+//
+//    public void setSell_up_rate(double sell_up_rate) {
+//        this.sell_up_rate = sell_up_rate;
+//    }
 
     public String getStrategy() {
         return strategy;

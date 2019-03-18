@@ -2,6 +2,7 @@ package com.licairiji.web.handler;
 
 import com.licairiji.web.entity.ArticleEntity;
 import com.licairiji.web.entity.InvestLogEntity;
+import com.licairiji.web.entity.TopicEntity;
 import com.licairiji.web.utils.HTMLSpirit;
 import com.licairiji.web.vo.ArticlePublishVo;
 import io.netty.util.internal.StringUtil;
@@ -78,9 +79,32 @@ public class ArticleHandler extends AbstractHandler {
         HttpServerRequest request = routingContext.request();
         String title = request.getParam("title");
 
-        routingContext.put("title", title);
+        mySQLClient.getConnection(connection -> {
+            if (connection.succeeded()) {
+                SQLConnection conn = connection.result();
 
-        render(routingContext, "/article/publish");
+                conn.query("SELECT * FROM tag", query1 -> {
+                    List<JsonObject> list2 = query1.result().getRows();
+                    List<TopicEntity> topics = new ArrayList<>();
+                    for (JsonObject child : list2) {
+                        TopicEntity entity2 = new TopicEntity();
+                        entity2.setId(child.getInteger("id"));
+                        entity2.setTitle(child.getString("title"));
+                        entity2.setContent(child.getString("content"));
+                        topics.add(entity2);
+                    }
+
+
+                    routingContext.put("title", title);
+                    routingContext.put("tags", topics);
+
+                    render(routingContext, "/article/publish");
+
+                });
+
+            }
+        });
+
     }
 
     /**
@@ -161,7 +185,7 @@ public class ArticleHandler extends AbstractHandler {
                         dParams.add(vo.getTags());
                         dParams.add(1);
                         dParams.add(articleId);
-                        dParams.add("/article/detail?id="+articleId);
+                        dParams.add("/article/detail?id=" + articleId);
                         dParams.add(System.currentTimeMillis() / 1000);
                         conn.updateWithParams(dSql, dParams, r1 -> {
                         });

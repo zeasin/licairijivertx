@@ -107,7 +107,7 @@ public class InvestHandler extends AbstractHandler {
         if (vo == null) {
             jsonObject.put("code", 1).put("msg", "参数错误");
             response.end(jsonObject.encode());
-        } else if (StringUtil.isNullOrEmpty(vo.getCode()) || vo.getPrice_buy() <= 0 || vo.getPrice_cost() <= 0 || vo.getCount() <= 0 || StringUtil.isNullOrEmpty(vo.getTransaction_date())) {
+        } else if (StringUtil.isNullOrEmpty(vo.getCode()) || vo.getPrice() <= 0 || vo.getCount() <= 0 || StringUtil.isNullOrEmpty(vo.getTransaction_date())) {
             jsonObject.put("code", 1).put("msg", "参数错误");
             response.end(jsonObject.encode());
         }
@@ -116,41 +116,58 @@ public class InvestHandler extends AbstractHandler {
         mySQLClient.getConnection(connection -> {
             if (connection.succeeded()) {
                 SQLConnection conn = connection.result();
-                String sql = "INSERT INTO invest (code,type,price_buy,price_cost,transaction_time,sell_drop_rate,sell_up_rate,strategy,count,create_on) VALUE (?,?,?,?,?,?,?,?,?,?)";
+                String sql = "INSERT INTO stock_trade (code,type,price,transaction_time,strategy,comment,count,create_on) VALUE (?,?,?,?,?,?,?,?)";
                 JsonArray params = new JsonArray();
                 params.add(finalVo.getCode());
                 params.add(finalVo.getTransaction_type());
-                params.add(finalVo.getPrice_buy());
-                params.add(finalVo.getPrice_cost());
+                params.add(finalVo.getPrice());
                 params.add(DateUtil.dateToStamp(finalVo.getTransaction_date()));
-                params.add(finalVo.getSell_drop_rate());
-                params.add(finalVo.getSell_up_rate());
                 params.add(finalVo.getStrategy());
+                params.add(finalVo.getComment());
                 params.add(finalVo.getCount());
                 params.add(System.currentTimeMillis() / 1000);
-
-
+                int count = finalVo.getCount();
+                if (finalVo.getTransaction_type() == 2) {
+                    //卖出
+                    count = -finalVo.getCount();
+                }
+                int finalCount = count;
                 conn.updateWithParams(sql, params, r -> {
                     if (r.succeeded()) {
-                        Integer investId = r.result().getKeys().getInteger(0);
-                        String logSQL = "INSERT INTO invest_log (invest_id,date,type,price,comment,create_on) VALUE (?,?,?,?,?)";
-                        JsonArray logParams = new JsonArray();
-                        logParams.add(investId);
-                        logParams.add(new Date());
-                        logParams.add(finalVo.getTransaction_type());
-                        logParams.add(finalVo.getPrice_buy());
-                        if (finalVo.getTransaction_type() == 1)
-                            logParams.add("买入");
-                        else
-                            logParams.add("卖出");
-                        logParams.add(System.currentTimeMillis() / 1000);
-                        conn.updateWithParams(logSQL, logParams, r1 -> {
-                            if (r1.succeeded()) {
-                                conn.close();
-                            }
+                        //更新stock 自选股持股数量
+                        JsonArray upParams = new JsonArray();
+                        upParams.add(finalCount);
+                        upParams.add(System.currentTimeMillis() / 1000);
+                        upParams.add(finalVo.getCode());
+                        conn.updateWithParams("UPDATE stock SET quantity=quantity+?,last_trade_time=? WHERE code=?", upParams, r1 -> {
                         });
 
-                        jsonObject.put("code", 0).put("msg", "");
+                        //添加用户动态
+                        String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
+
+                        JsonArray dParams = new JsonArray();
+                        dParams.add(0);
+                        if (finalVo.getTransaction_type() == 1) {
+                            dParams.add("买入股票【" + finalVo.getCode() + "】");
+                            dParams.add("买入股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，设定策略：" + finalVo.getStrategy() + "  " + finalVo.getComment());
+                        } else {
+                            dParams.add("卖出股票【" + finalVo.getCode() + "】");
+                            dParams.add("卖出股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，备注：" + finalVo.getComment());
+                        }
+                        dParams.add("");
+                        dParams.add("交易");
+                        dParams.add(2);
+                        dParams.add(finalVo.getCode());
+                        dParams.add("/stock/detail/" + finalVo.getCode());
+                        dParams.add(System.currentTimeMillis() / 1000);
+                        conn.updateWithParams(dSql, dParams, r1 -> {
+//                                if (r1.succeeded()) {
+//                                    jsonObject.put("code", 0).put("msg", "SUCCESS");
+//                                    response.end(jsonObject.encode());
+//                                }
+                        });
+
+                        jsonObject.put("code", 0).put("msg", "SUCCESS");
 
                         response.end(jsonObject.encode());
                     }
@@ -170,12 +187,13 @@ public class InvestHandler extends AbstractHandler {
     public void handleInvestList(RoutingContext routingContext) {
 
         String code = routingContext.request().getParam("code");
-        String sql = "SELECT invest.*,stock.name FROM invest left join stock on stock.code = invest.code ";
+        String sql = "SELECT tr.*,stock.name FROM stock_trade tr left join stock on stock.code = tr.code ";
         JsonArray params = new JsonArray();
-        if(StringUtils.isEmpty(code)==false){
-            sql += " WHERE invest.code=?";
+        if (StringUtils.isEmpty(code) == false) {
+            sql += " WHERE tr.code=?";
             params.add(code);
         }
+        sql += " order by tr.id desc";
 
 
         String finalSql = sql;
@@ -186,31 +204,35 @@ public class InvestHandler extends AbstractHandler {
             SQLConnection conn = res.result();
 
 
-            conn.queryWithParams(finalSql,params, query -> {
-                List<JsonObject> list = query.result().getRows();
+            conn.queryWithParams(finalSql, params, query -> {
+                if (query.succeeded()) {
+                    List<JsonObject> list = query.result().getRows();
 
-                List<InvestEntity> investList = new ArrayList<>();
+                    List<InvestEntity> investList = new ArrayList<>();
 
-                for (JsonObject child : list) {
-                    InvestEntity entity = new InvestEntity();
-                    entity.setCode(child.getString("code"));
-                    entity.setName(child.getString("name"));
-                    entity.setId(child.getInteger("id"));
-                    entity.setCount(child.getInteger("count"));
-                    entity.setCreate_on(child.getInteger("create_on"));
-                    entity.setPrice_buy(child.getDouble("price_buy"));
-                    entity.setPrice_cost(child.getDouble("price_cost"));
-                    entity.setSell_drop_rate(child.getDouble("sell_drop_rate"));
-                    entity.setSell_up_rate(child.getDouble("sell_up_rate"));
-                    entity.setStrategy(child.getString("strategy"));
-                    entity.setTransaction_time(child.getInteger("transaction_time"));
-                    entity.setType(child.getInteger("type"));
-                    entity.setTransactionTime(DateUtil.stampToDate(child.getLong("transaction_time")));
+                    for (JsonObject child : list) {
+                        InvestEntity entity = new InvestEntity();
+                        entity.setCode(child.getString("code"));
+                        entity.setName(child.getString("name"));
+                        entity.setId(child.getInteger("id"));
+                        entity.setCount(child.getInteger("count"));
+                        entity.setCreate_on(child.getInteger("create_on"));
+                        entity.setPrice(child.getDouble("price"));
+//                    entity.setPrice_cost(child.getDouble("price_cost"));
+//                    entity.setSell_drop_rate(child.getDouble("sell_drop_rate"));
+//                    entity.setSell_up_rate(child.getDouble("sell_up_rate"));
+                        entity.setStrategy(child.getString("strategy"));
+                        entity.setComment(child.getString("comment"));
+                        entity.setTransaction_time(child.getInteger("transaction_time"));
+                        entity.setType(child.getInteger("type"));
+                        entity.setTransactionTime(DateUtil.stampToDate(child.getInteger("transaction_time"), "yyyy-MM-dd HH:mm:ss"));
 
-                    investList.add(entity);
+                        investList.add(entity);
+                    }
+                    conn.close();
+                    routingContext.put("name", investList.get(0).getName());
+                    routingContext.put("invest_list", investList);
                 }
-                conn.close();
-                routingContext.put("invest_list", investList);
 
                 render(routingContext, "/invest/list");
             });
@@ -333,7 +355,7 @@ public class InvestHandler extends AbstractHandler {
             } catch (Exception e) {
             }
         }
-        String sql = "SELECT * FROM invest_log WHERE invest_id =  " + investId+ " ORDER BY id DESC";
+        String sql = "SELECT * FROM invest_log WHERE invest_id =  " + investId + " ORDER BY id DESC";
         mySQLClient.getConnection(res -> {
             if (res.failed()) {
                 throw new RuntimeException(res.cause());

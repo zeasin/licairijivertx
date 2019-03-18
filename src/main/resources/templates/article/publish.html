@@ -32,6 +32,18 @@
             outline: 0;
             resize: none
         }
+        .select {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: inherit;
+            background: 0 0;
+            border: 1px solid #f0f0f0;
+            outline: 0;
+            resize: none
+        }
 
         .Input-wrapper--multiline .Input {
             overflow: auto
@@ -361,11 +373,9 @@
 
         <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
             <!--<textarea rows="1" class="Input" id="tags" placeholder="标签（多标签以逗号隔开）" style="height: 62px;"></textarea>-->
-            <select id="tags">
-                <option value="随记">随记</option>
-                <option value="策略">交易策略</option>
-                <option value="市场">市场动向</option>
-                <option value="预测">市场判断</option>
+            <select id="tags" class="select">
+                <option th:each="item:${tags}"  th:value="${item.title}" th:text="${item.content}">随记</option>
+
             </select>
         </div>
 
