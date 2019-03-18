@@ -494,7 +494,7 @@ public class StockHandler extends AbstractHandler {
                 try {
                     OkHttpClient client = new OkHttpClient();
 //                    String urlBaidu = "http://finance.sina.com.cn/realstock/company/sz300059/qianfuquan.js?d=";
-                    String url163 = "http://img1.money.126.net/data/hs/kline/day/history/2018/";//1300059.json
+                    String url163 = "http://img1.money.126.net/data/hs/kline/day/history/2019/";//1300059.json
                     if (entity.getBourse().equalsIgnoreCase("SH")) {
                         url163 += "0" + entity.getCode() + ".json";
                     } else if (entity.getBourse().equalsIgnoreCase("SZ")) {

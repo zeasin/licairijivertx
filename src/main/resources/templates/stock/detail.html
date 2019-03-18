@@ -1,395 +1,302 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.bootcss.com/bulma/0.6.1/css/bulma.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://static.zhihu.com/static/revved/-/css/z.3e5da9dd.css">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_header(~{::title})">
+    <title>我的自选股-投资日记</title>
+</head>
+<body th:replace="layout :: common_body(~{::div.contain_content})">
+
+
+<div class="contain_content">
     <script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
     <script src="https://img.highcharts.com.cn/highstock/highstock.js"></script>
     <script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
     <script src="https://img.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
     <script src="https://img.highcharts.com.cn/highcharts/modules/drag-panes.js"></script>
-    <style>
-        body {
-            background: #f8f8f8;
-        }
-        .tag.is-lightblue {
-            color: #2d84cc;
-            background: #ebf3fb;
-        }
-        .ml-10 {
-            margin-left: 1rem;
-        }
-        .lh-20 {
-            line-height: 2rem;
-        }
-        .card {
-            margin-bottom: 1rem;
-        }
-        .section {
-            padding-top: 1rem;
-        }
-        .fa-15 {
-            font-size: 1.5rem;
-        }
-        .fa.fa-fire {
-            font-size: 1.2rem;
-            color: red;
-            margin-left: 1rem;
-        }
-    </style>
-    <title th:text="${name}"></title>
-</head>
-<body>
-<div class="navbar has-shadow">
-    <div class="container">
-        <div class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" href="/">首页</a>
-                <a class="navbar-item" href="#">发现</a>
-                <a class="navbar-item" href="/topic">话题</a>
-                <a class="navbar-item" href="/stock/list">自选股</a>
-                <div class="navbar-item">
-                    <form action="/article/publish" method="get">
-                        <div class="field is-grouped">
+    <link href="http://img1.cache.netease.com/f2e/finance/gegu/s.1064000.css" rel="stylesheet" type="text/css"
+          charset="utf-8">
 
-                            <div class="control has-icons-right">
-                                <input type="text" class="input" name="title" style="width: 20rem;" placeholder="搜索你感兴趣的内容...">
-                                <span class="icon is-right">
-                                <i class="fa fa-search"></i>
-                            </span>
-                            </div>
-                            <div class="control">
-                                <input type="submit" class="button is-info" value="写心得">
-                            </div>
 
-                            <div class="control">
-                                <a class=" is-info" href="/stock/add" target="_blank">添加自选股</a>
-                            </div>
-                            <div class="control">
-                                <a class=" is-info" href="/stock/add" target="_blank">买入股票</a>
-                                <a class=" is-info" href="/stock/add" target="_blank">卖出股票</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="navbar-end">
-                <a href="#" class="navbar-item">
-                    <i class="fa fa-15 fa-bell"></i>
-                </a>
-                <a href="#" class="navbar-item">
-                    <i class="fa fa-15 fa-comments"></i>
-                </a>
-                <a href="#" class="navbar-item">
-                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
-                </a>
+    <div class="navbar has-shadow" style="position: relative; top: 1px;">
+        <div class="container">
+            <div class="navbar-tabs">
+                <a href="#" class="navbar-item is-tab is-active">K线图</a>
+                <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+ code}"
+                   target="_blank">基本面</a>
+                <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+code+'/field/#fieldstatus'}"
+                   target="_blank">行业地位</a>
+                <a class="navbar-item is-tab" th:href="${'/stock/analyse?code='+code}" target="_blank">股票诊断</a>
+                <a class="navbar-item is-tab" th:href="${'/invest/list?code='+code}" target="_blank">持股</a>
+                <!--<a href="#" class="navbar-item is-tab">专栏</a>-->
+                <!--<a href="#" class="navbar-item is-tab">Live</a>-->
+                <!--<a href="#" class="navbar-item is-tab">私家课</a>-->
+                <!--<a href="#" class="navbar-item is-tab">电子书</a>-->
             </div>
         </div>
     </div>
-</div>
-<div class="navbar has-shadow" style="position: relative; top: 1px;">
-    <div class="container">
-        <div class="navbar-tabs">
-            <a href="#" class="navbar-item is-tab is-active">K线图</a>
-            <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+ code}" target="_blank">基本面</a>
-            <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+code+'/field/#fieldstatus'}" target="_blank">行业地位</a>
-            <a class="navbar-item is-tab" th:href="${'/stock/analyse?code='+code}" target="_blank">股票诊断</a>
-            <a class="navbar-item is-tab" th:href="${'/invest/list?code='+code}" target="_blank">持股</a>
-            <!--<a href="#" class="navbar-item is-tab">专栏</a>-->
-            <!--<a href="#" class="navbar-item is-tab">Live</a>-->
-            <!--<a href="#" class="navbar-item is-tab">私家课</a>-->
-            <!--<a href="#" class="navbar-item is-tab">电子书</a>-->
-        </div>
-    </div>
-</div>
-<div class="section">
-    <div class="container">
-        <div class="tile">
-            <div class="tile is-vertical is-parent is-8">
-                <div class="box">
-                    <div class="media">
+    <div class="section">
+        <div class="container">
+            <div class="tile">
+                <div class="tile is-vertical is-parent is-8">
+                    <div class="">
 
-
-
-                            <div id="in_squote"><script src="http://dup.baidustatic.com/js/ds.js"></script>
-                                <div class="m_header">
-
-                                    <h1 class="m_logo fl">
-
-                                        <a href="http://stockpage.10jqka.com.cn/300059/"> <strong>东方财富</strong>
-
-                                            300059 </a>
-
-                                        <a taid="d_00001" class="self_select fr zxg_1" href="javascript:void(0);">加入自选股</a>
-
-                                    </h1>
-
-
-                                    <div class="new_detail fl">
-                                        <iframe src="http://stockpage.10jqka.com.cn/realHead_v2.html#hs_300059" name="ifm" width="800px" height="100%" marginheight="0" marginwidth="0" frameborder="0" scrolling="no"></iframe>
-                                    </div>
-
-
-                                    <ul class="adplace ad3">
-                                        <li>
-                                            <script>
-                                                (function() {
-                                                    var s = "_" + Math.random().toString(36).slice(2);
-                                                    document.write('<div id="' + s + '"></div>');
-                                                    (window.slotbydup=window.slotbydup || []).push({
-                                                        id: '950906',
-                                                        container: s,
-                                                        size: '130,22',
-                                                        display: 'inlay-fix'
-                                                    });
-                                                })();
-
-                                            </script><div id="_xvy93t9u9cd"></div>
-                                        </li>
-                                        <li>
-                                            <script>
-                                                (function() {
-                                                    var s = "_" + Math.random().toString(36).slice(2);
-                                                    document.write('<div id="' + s + '"></div>');
-                                                    (window.slotbydup=window.slotbydup || []).push({
-                                                        id: '950907',
-                                                        container: s,
-                                                        size: '130,22',
-                                                        display: 'inlay-fix'
-                                                    });
-                                                })();
-
-                                            </script><div id="_b3kkt8ysp8w"></div>
-                                        </li>
-                                        <li>
-                                            <script>
-                                                (function() {
-                                                    var s = "_" + Math.random().toString(36).slice(2);
-                                                    document.write('<div id="' + s + '"></div>');
-                                                    (window.slotbydup=window.slotbydup || []).push({
-                                                        id: '1096141',
-                                                        container: s,
-                                                        size: '130,22',
-                                                        display: 'inlay-fix'
-                                                    });
-                                                })();
-
-                                            </script><div id="_30uiftr8xqq"></div>
-                                        </li>
-                                        <li>
-                                            <script>
-                                                (function() {
-                                                    var s = "_" + Math.random().toString(36).slice(2);
-                                                    document.write('<div id="' + s + '"></div>');
-                                                    (window.slotbydup=window.slotbydup || []).push({
-                                                        id: '1096142',
-                                                        container: s,
-                                                        size: '130,22',
-                                                        display: 'inlay-fix'
-                                                    });
-                                                })();
-
-                                            </script><div id="_cmflgk7vh0q"></div>
-                                        </li>
-                                    </ul>
-
-                                </div></div>
-
-                    </div>
-
-                </div>
-                <div class="box">
-                    <div class="media">
-                        <div class="media-content">
-                            <div class="content">
-                                <div id="container" style="min-width:400px;height:600px">图表加载中...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <div class="tile is-vertical is-parent">
-                <div class="card">
-                    <div class="card-header">
-                        <p class="card-header-title">相关结果</p>
-                    </div>
-                    <div class="card-content">
                         <div class="media">
-                            <!--<div class="media-left">-->
+                            <script type="text/javascript" th:src="${'http://hq.sinajs.cn/list='+stock.ecode}"
+                                    charset="gb2312">
+                            </script>
+                            <div class="stock_info">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td class="col_1">
+                                            <h1 class="name">
+                                                <a href="/1300059.html">[[${name}]]</a>
+                                                <span>(<a href="/1300059.html">[[${code}]]</a>)</span>
+                                            </h1>
+                                        </td>
+                                        <td class="col_2">
+                                            <div class="stock_detail">
+                                                <table style="width:825px">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="price"><span
+                                                                _ntesquote_="code:1300059;fmt:pic_updown;"
+                                                                class="price_arrow up"><strong
+                                                                _ntesquote_="code:1300059;attr:price;fixed:2;color:updown"
+                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[3])</script></strong></span><em
+                                                                _ntesquote_="code:1300059;attr:updown;fixed:2;color:updown"
+                                                                class=" cRed">0.72</em><br><em
+                                                                _ntesquote_="code:1300059;attr:percent;percent:2;color:updown"
+                                                                class=" cRed">3.74%</em>
+                                                        </td>
+                                                        <td>今开：<strong
+                                                                _ntesquote_="code:1300059;attr:open;fixed:2;color:updown"
+                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[1])</script></strong><br>昨收：<strong
+                                                                _ntesquote_="code:1300059;attr:yestclose;fixed:2;color:updown"
+                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[2])</script></strong></td>
+                                                        <td>最高：<strong
+                                                                _ntesquote_="code:1300059;attr:high;fixed:2;color:updown"
+                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[4])</script></strong><br>最低：<strong
+                                                                _ntesquote_="code:1300059;attr:low;fixed:2;color:updown"
+                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[5])</script></strong></td>
+                                                        <td>成交量：<strong
+                                                                _ntesquote_="code:1300059;attr:volume;fmt:volume-cut">288.78万手</strong><br>成交额：<strong
+                                                                _ntesquote_="code:1300059;attr:turnover;fmt:turnover-cut">56.08亿</strong>
+                                                        </td>
+                                                        <td>量比：<strong>0.93</strong><br>换手：<strong
+                                                                _ntesquote_="code:1300059;fmt:huanshou;SCSTC27:516828.5026">5.59%</strong>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr class="stock_bref">
+                                                        <td><span _ntesquote_="code:1300059;attr:time"
+                                                                  class="refresh_time">2019/03/18 15:59:36</span></td>
+                                                        <td>流通市值：<span
+                                                                _ntesquote_="code:1300059;fmt:stockmcap;SCSTC27:516828.5026">1,032亿</span>
+                                                        </td>
+                                                        <td title="市盈率=最新股价/最近四个季度每股收益之和">市盈率：<span
+                                                                _ntesquote_="code:1300059;fmt:pe;MFSUM:0.1858">107.48</span>
+                                                        </td>
+                                                        <td>52周最高：<span class="cRed">22.88</span></td>
+                                                        <td>52周最低：<span class="cGreen">10.03</span></td>
+
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <div id="container" style="min-width:400px;height:600px">图表加载中...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="tile is-vertical is-parent">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">相关结果</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <!--<div class="media-left">-->
                                 <!--<figure class="image is-64x64">-->
-                                    <!--<img src="https://bulma.io/images/placeholders/128x128.png" alt="">-->
+                                <!--<img src="https://bulma.io/images/placeholders/128x128.png" alt="">-->
                                 <!--</figure>-->
-                            <!--</div>-->
-                            <div class="media-content">
-                                <p>
-                                    <strong>持股数量：[[${stock.quantity}]]</strong>
-                                    <span class="tag is-gray">专栏</span></p>
-                                <p>
-                                    1.6K 关注 | 12 篇文章
-                                </p>
-                            </div>
+                                <!--</div>-->
+                                <div class="media-content">
+                                    <p>
+                                        <strong>持股数量：[[${stock.quantity}]]</strong>
+                                        <span class="tag is-gray">专栏</span></p>
+                                    <p>
+                                        1.6K 关注 | 12 篇文章
+                                    </p>
+                                </div>
 
-                            <div class="media-content">
-                                <a target="_blank" class="button is-info" href="/invest/add">交易</a>
-                            </div>
+                                <div class="media-content">
+                                    <a target="_blank" class="button is-info" href="/invest/add">交易</a>
+                                </div>
 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">知乎热搜</p>
+                        </div>
+                        <div class="card-content">
+                            <ul class="lh-20">
+                                <li><a href="#">演员的诞生第十期</a><i class="fa fa-fire"></i></li>
+                                <li><a href="#">北航陈小武</a><i class="fa fa-fire"></i></li>
+                                <li><a href="#">微信跳一跳</a><i class="fa fa-fire"></i></li>
+                                <li><a href="#">解忧杂货店</a></li>
+                                <li><a href="#">前任3</a></li>
+                                <li><a href="#">妖猫传</a></li>
+                                <li><a href="#">琅琊榜2</a></li>
+                                <li><a href="#">刘昊然</a></li>
+                                <li><a href="#">黄轩</a></li>
+                                <li><a href="#">比特币</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header">
-                        <p class="card-header-title">知乎热搜</p>
-                    </div>
-                    <div class="card-content">
-                        <ul class="lh-20">
-                            <li><a href="#">演员的诞生第十期</a><i class="fa fa-fire"></i></li>
-                            <li><a href="#">北航陈小武</a><i class="fa fa-fire"></i></li>
-                            <li><a href="#">微信跳一跳</a><i class="fa fa-fire"></i></li>
-                            <li><a href="#">解忧杂货店</a></li>
-                            <li><a href="#">前任3</a></li>
-                            <li><a href="#">妖猫传</a></li>
-                            <li><a href="#">琅琊榜2</a></li>
-                            <li><a href="#">刘昊然</a></li>
-                            <li><a href="#">黄轩</a></li>
-                            <li><a href="#">比特币</a></li>
-                        </ul>
-                    </div>
-                </div>
             </div>
-        </div>
-    </div><!-- container -->
-</div>
+        </div><!-- container -->
+    </div>
 
 
-<script>
-    /*<![CDATA[*/
-    /*]]>*/
-    $(function () {
-        Highcharts.setOptions({
-            lang: {
-                rangeSelectorZoom: ''
-            }
-        });
-        //https://data.jianshukeji.com/stock/history/000001
-        $.getJSON('/stock/kdata2/[[${code}]]', function (data) {
-            if(data.code !== 1) {
-                alert('读取股票数据失败！');
-                return false;
-            }
-            data = data.data;
-            var ohlc = [],
-                volume = [],
-                dataLength = data.length,
-                // set the allowed units for data grouping
-                groupingUnits = [
-                    [
-                    'week',                         // unit name
-                    [1]                             // allowed multiples
-                ], [
-                    'month',
-                    [1, 2, 3, 4, 6]
-                ]],
-                i = 0;
-            for (i; i < dataLength; i += 1) {
-                ohlc.push([
-                    data[i][0], // the date
-                    data[i][1], // open
-                    data[i][2], // high
-                    data[i][3], // low
-                    data[i][4] // close
-                ]);
-                volume.push([
-                    data[i][0], // the date
-                    data[i][5] // the volume
-                ]);
-            }
-            // create the chart
-            var chart = Highcharts.stockChart('container', {
-                rangeSelector: {
-                    selected: 1,
-                    inputDateFormat: '%Y-%m-%d'
-                },
-                title: {
-                    text: '[[${name}]]历史股价'
-                },
-                xAxis: {
-                    dateTimeLabelFormats: {
-                        millisecond: '%H:%M:%S.%L',
-                        second: '%H:%M:%S',
-                        minute: '%H:%M',
-                        hour: '%H:%M',
-                        day: '%m-%d',
-                        week: '%m-%d',
-                        month: '%y-%m',
-                        year: '%Y'
-                    }
-                },
-                tooltip: {
-                    split: false,
-                    shared: true,
-                },
-                yAxis: [{
-                    labels: {
-                        align: 'right',
-                        x: -3
-                    },
-                    title: {
-                        text: '股价'
-                    },
-                    height: '65%',
-                    resize: {
-                        enabled: true
-                    },
-                    lineWidth: 2
-                }, {
-                    labels: {
-                        align: 'right',
-                        x: -3
-                    },
-                    title: {
-                        text: '成交量'
-                    },
-                    top: '65%',
-                    height: '35%',
-                    offset: 0,
-                    lineWidth: 2
-                }],
-                series: [{
-                    type: 'candlestick',
-                    name: '[[${name}]]',
-                    color: 'green',
-                    lineColor: 'green',
-                    upColor: 'red',
-                    upLineColor: 'red',
-                    tooltip: {
-                    },
-                    navigatorOptions: {
-                        color: Highcharts.getOptions().colors[0]
-                    },
-                    data: ohlc,
-                    dataGrouping: {
-                        units: groupingUnits
-                    },
-                    id: 'sz'
-                },{
-                    type: 'column',
-                    data: volume,
-                    yAxis: 1,
-                    dataGrouping: {
-                        units: groupingUnits
-                    }
-                }]
+    <script>
+        /*<![CDATA[*/
+        /*]]>*/
+        $(function () {
+            Highcharts.setOptions({
+                lang: {
+                    rangeSelectorZoom: ''
+                }
             });
-        });
-    })
+            //https://data.jianshukeji.com/stock/history/000001
+            $.getJSON('/stock/kdata/[[${code}]]', function (data) {
+                if (data.code !== 1) {
+                    alert('读取股票数据失败！');
+                    return false;
+                }
+                data = data.data;
+                var ohlc = [],
+                    volume = [],
+                    dataLength = data.length,
+                    // set the allowed units for data grouping
+                    groupingUnits = [
+                        [
+                            'week',                         // unit name
+                            [1]                             // allowed multiples
+                        ], [
+                            'month',
+                            [1, 2, 3, 4, 6]
+                        ]],
+                    i = 0;
+                for (i; i < dataLength; i += 1) {
+                    ohlc.push([
+                        data[i][0], // the date
+                        data[i][1], // open
+                        data[i][2], // high
+                        data[i][3], // low
+                        data[i][4] // close
+                    ]);
+                    volume.push([
+                        data[i][0], // the date
+                        data[i][5] // the volume
+                    ]);
+                }
+                // create the chart
+                var chart = Highcharts.stockChart('container', {
+                    rangeSelector: {
+                        selected: 1,
+                        inputDateFormat: '%Y-%m-%d'
+                    },
+                    title: {
+                        text: '[[${name}]]历史股价'
+                    },
+                    xAxis: {
+                        dateTimeLabelFormats: {
+                            millisecond: '%H:%M:%S.%L',
+                            second: '%H:%M:%S',
+                            minute: '%H:%M',
+                            hour: '%H:%M',
+                            day: '%m-%d',
+                            week: '%m-%d',
+                            month: '%y-%m',
+                            year: '%Y'
+                        }
+                    },
+                    tooltip: {
+                        split: false,
+                        shared: true,
+                    },
+                    yAxis: [{
+                        labels: {
+                            align: 'right',
+                            x: -3
+                        },
+                        title: {
+                            text: '股价'
+                        },
+                        height: '65%',
+                        resize: {
+                            enabled: true
+                        },
+                        lineWidth: 2
+                    }, {
+                        labels: {
+                            align: 'right',
+                            x: -3
+                        },
+                        title: {
+                            text: '成交量'
+                        },
+                        top: '65%',
+                        height: '35%',
+                        offset: 0,
+                        lineWidth: 2
+                    }],
+                    series: [{
+                        type: 'candlestick',
+                        name: '[[${name}]]',
+                        color: 'green',
+                        lineColor: 'green',
+                        upColor: 'red',
+                        upLineColor: 'red',
+                        tooltip: {},
+                        navigatorOptions: {
+                            color: Highcharts.getOptions().colors[0]
+                        },
+                        data: ohlc,
+                        dataGrouping: {
+                            units: groupingUnits
+                        },
+                        id: 'sz'
+                    }, {
+                        type: 'column',
+                        data: volume,
+                        yAxis: 1,
+                        dataGrouping: {
+                            units: groupingUnits
+                        }
+                    }]
+                });
+            });
+        })
 
-</script>
+    </script>
 
+</div>
 </body>
 </html>
