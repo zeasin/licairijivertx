@@ -71,7 +71,7 @@ public class StockHandler extends AbstractHandler {
                     entity.setCode(child.getString("code"));
                     entity.setName(child.getString("name"));
                     entity.setId(child.getInteger("id"));
-                    entity.setCreateOn(DateUtil.stampToDate(child.getLong("create_on"),"yyyy-MM-dd"));
+                    entity.setCreateOn(DateUtil.stampToDate(child.getLong("create_on"), "yyyy-MM-dd"));
                     entity.setJoinPrice(child.getDouble("join_price"));
                     entity.setComment(child.getString("comment"));
                     entity.setEcode(child.getString("ecode"));
@@ -449,6 +449,11 @@ public class StockHandler extends AbstractHandler {
 //                }
                 routingContext.put("stock", entity);
                 routingContext.put("code", code);
+                if (entity.getBourse().equals("sh")) {
+                    routingContext.put("ecode", "0" + code);
+                }else{
+                    routingContext.put("ecode", "1" + code);
+                }
                 routingContext.put("name", entity.getName());
                 render(routingContext, "/stock/detail");
             });
@@ -459,6 +464,7 @@ public class StockHandler extends AbstractHandler {
 
     /**
      * 股票K线（网易接口，今年）
+     *
      * @param routingContext
      */
     public void handleStockKData(RoutingContext routingContext) {
@@ -560,6 +566,7 @@ public class StockHandler extends AbstractHandler {
 
     /**
      * 股票K线（自有数据）
+     *
      * @param routingContext
      */
     public void handleStockKData2(RoutingContext routingContext) {

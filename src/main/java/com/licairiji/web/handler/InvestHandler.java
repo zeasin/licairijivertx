@@ -230,7 +230,7 @@ public class InvestHandler extends AbstractHandler {
                         investList.add(entity);
                     }
                     conn.close();
-                    routingContext.put("name", investList.get(0).getName());
+//                    routingContext.put("name", investList.get(0).getName());
                     routingContext.put("invest_list", investList);
                 }
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: common_header(~{::title})">
-    <title>我的自选股-投资日记</title>
+    <title th:text="${name}">我的自选股-投资日记</title>
 </head>
 <body th:replace="layout :: common_body(~{::div.contain_content})">
 
@@ -40,9 +40,11 @@
                     <div class="">
 
                         <div class="media">
-                            <script type="text/javascript" th:src="${'http://hq.sinajs.cn/list='+stock.ecode}"
-                                    charset="gb2312">
-                            </script>
+                            <!--<script type="text/javascript" th:src="${'http://hq.sinajs.cn/list='+stock.ecode}"-->
+                                    <!--charset="gb2312">-->
+                            <!--</script>-->
+
+
                             <div class="stock_info">
                                 <table>
                                     <tbody>
@@ -58,46 +60,36 @@
                                                 <table style="width:825px">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="price"><span
-                                                                _ntesquote_="code:1300059;fmt:pic_updown;"
-                                                                class="price_arrow up"><strong
-                                                                _ntesquote_="code:1300059;attr:price;fixed:2;color:updown"
-                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[3])</script></strong></span><em
-                                                                _ntesquote_="code:1300059;attr:updown;fixed:2;color:updown"
-                                                                class=" cRed">0.72</em><br><em
-                                                                _ntesquote_="code:1300059;attr:percent;percent:2;color:updown"
-                                                                class=" cRed">3.74%</em>
+                                                        <td class="price">
+                                                            <span class="price_arrow "><strong class=" " id="price">--</strong></span>
+                                                            <em class=" " id="updown">0.00</em><br>
+                                                            <em class=" " id="percent">0.00%</em>
                                                         </td>
-                                                        <td>今开：<strong
-                                                                _ntesquote_="code:1300059;attr:open;fixed:2;color:updown"
-                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[1])</script></strong><br>昨收：<strong
-                                                                _ntesquote_="code:1300059;attr:yestclose;fixed:2;color:updown"
-                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[2])</script></strong></td>
-                                                        <td>最高：<strong
-                                                                _ntesquote_="code:1300059;attr:high;fixed:2;color:updown"
-                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[4])</script></strong><br>最低：<strong
-                                                                _ntesquote_="code:1300059;attr:low;fixed:2;color:updown"
-                                                                class=" cRed"><script>document.write(hq_str_[[${stock.ecode}]].split(",")[5])</script></strong></td>
-                                                        <td>成交量：<strong
-                                                                _ntesquote_="code:1300059;attr:volume;fmt:volume-cut">288.78万手</strong><br>成交额：<strong
-                                                                _ntesquote_="code:1300059;attr:turnover;fmt:turnover-cut">56.08亿</strong>
+                                                        <td>今开：<strong class=" " id="open">--</strong><br>
+                                                            昨收：<strong class=" " id="yestclose">--</strong>
                                                         </td>
-                                                        <td>量比：<strong>0.93</strong><br>换手：<strong
-                                                                _ntesquote_="code:1300059;fmt:huanshou;SCSTC27:516828.5026">5.59%</strong>
+                                                        <td>最高：<strong id="high" class=" ">--</strong><br>
+                                                            最低：<strong id="low" class=" ">--</strong></td>
+                                                        <td>成交量：<strong id="volume">0万手</strong><br>
+                                                            成交额：<strong id="turnover">0亿</strong>
+                                                        </td>
+                                                        <td>量比：<strong id="liangbi">0</strong><br>换手：<strong id="huanshou">0%</strong>
                                                         </td>
 
                                                     </tr>
                                                     <tr class="stock_bref">
                                                         <td><span _ntesquote_="code:1300059;attr:time"
                                                                   class="refresh_time">2019/03/18 15:59:36</span></td>
-                                                        <td>流通市值：<span
-                                                                _ntesquote_="code:1300059;fmt:stockmcap;SCSTC27:516828.5026">1,032亿</span>
+                                                        <td>流通市值：<span id="ltsz">1,032亿</span><br />
+                                                            总市值：<span id="zsz">1,032亿</span><br />
                                                         </td>
-                                                        <td title="市盈率=最新股价/最近四个季度每股收益之和">市盈率：<span
-                                                                _ntesquote_="code:1300059;fmt:pe;MFSUM:0.1858">107.48</span>
+                                                        <td title="市盈率=最新股价/最近四个季度每股收益之和">市盈率：<span id="syl">107.48</span><br />
+                                                            市净率：<span id="sjl">107.48</span>
                                                         </td>
-                                                        <td>52周最高：<span class="cRed">22.88</span></td>
-                                                        <td>52周最低：<span class="cGreen">10.03</span></td>
+                                                        <td>振 幅：<span class="cRed" id="zhenfu">22.88</span></td>
+                                                        <td>
+                                                            <!--52周最低：<span class="cGreen">10.03</span>-->
+                                                        </td>
 
                                                     </tr>
                                                     </tbody>
@@ -151,21 +143,72 @@
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <p class="card-header-title">知乎热搜</p>
+                            <p class="card-header-title">五档盘口</p>
                         </div>
                         <div class="card-content">
-                            <ul class="lh-20">
-                                <li><a href="#">演员的诞生第十期</a><i class="fa fa-fire"></i></li>
-                                <li><a href="#">北航陈小武</a><i class="fa fa-fire"></i></li>
-                                <li><a href="#">微信跳一跳</a><i class="fa fa-fire"></i></li>
-                                <li><a href="#">解忧杂货店</a></li>
-                                <li><a href="#">前任3</a></li>
-                                <li><a href="#">妖猫传</a></li>
-                                <li><a href="#">琅琊榜2</a></li>
-                                <li><a href="#">刘昊然</a></li>
-                                <li><a href="#">黄轩</a></li>
-                                <li><a href="#">比特币</a></li>
-                            </ul>
+                            <div class="compare_cont border_box">
+                                <div class="title_02">
+                                    <!-- TODO 需要处理处理！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
+                                    <div class="bottom_line wbwc_title"><span>委比：<em id="buysell_wb">41.95%</em></span><span>委差：<em id="buysell_wc">21,986</em></span></div>
+                                </div>
+                                <table>
+                                    <tbody><tr>
+                                        <td>卖五</td>
+                                        <td _ntesquote_="code:1300059;attr:ask5;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">20.02</td>
+                                        <td _ntesquote_="code:1300059;attr:askvol5;/:100;fixed:0">1920</td>
+                                    </tr>
+                                    <tr>
+                                        <td>卖四</td>
+                                        <td _ntesquote_="code:1300059;attr:ask4;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">20.01</td>
+                                        <td _ntesquote_="code:1300059;attr:askvol4;/:100;fixed:0">1445</td>
+                                    </tr>
+                                    <tr>
+                                        <td>卖三</td>
+                                        <td _ntesquote_="code:1300059;attr:ask3;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">20.00</td>
+                                        <td _ntesquote_="code:1300059;attr:askvol3;/:100;fixed:0">6523</td>
+                                    </tr>
+                                    <tr>
+                                        <td>卖二</td>
+                                        <td _ntesquote_="code:1300059;attr:ask2;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.99</td>
+                                        <td _ntesquote_="code:1300059;attr:askvol2;/:100;fixed:0">2695</td>
+                                    </tr><tr>
+                                        <td>卖一</td>
+                                        <td _ntesquote_="code:1300059;attr:ask1;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.98</td>
+                                        <td _ntesquote_="code:1300059;attr:askvol1;/:100;fixed:0">2627</td>
+                                    </tr>
+                                    </tbody></table>
+                                <div class="title_02">
+                                    <div class="bottom_line  wbwc_title"><span>当前价(元)：<em><span _ntesquote_="code:1300059;attr:price;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.97</span></em></span></div>
+                                </div>
+                                <table>
+                                    <tbody><tr>
+                                        <td>买一</td>
+                                        <td _ntesquote_="code:1300059;attr:bid1;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.97</td>
+                                        <td _ntesquote_="code:1300059;attr:bidvol1;/:100;fixed:0">3819</td>
+                                    </tr>
+                                    <tr>
+                                        <td>买二</td>
+                                        <td _ntesquote_="code:1300059;attr:bid2;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.96</td>
+                                        <td _ntesquote_="code:1300059;attr:bidvol2;/:100;fixed:0">17244</td>
+                                    </tr>
+                                    <tr>
+                                        <td>买三</td>
+                                        <td _ntesquote_="code:1300059;attr:bid3;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.95</td>
+                                        <td _ntesquote_="code:1300059;attr:bidvol3;/:100;fixed:0">11881</td>
+                                    </tr>
+                                    <tr>
+                                        <td>买四</td>
+                                        <td _ntesquote_="code:1300059;attr:bid4;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.94</td>
+                                        <td _ntesquote_="code:1300059;attr:bidvol4;/:100;fixed:0">3517</td>
+                                    </tr>
+                                    <tr>
+                                        <td>买五</td>
+                                        <td _ntesquote_="code:1300059;attr:bid5;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.93</td>
+                                        <td _ntesquote_="code:1300059;attr:bidvol5;/:100;fixed:0">736</td>
+                                    </tr>
+                                    </tbody></table>
+                                <div class="title_02  wbwc_title" style="border-bottom:none;"><span>外盘：<em class="cRed">1570670手</em></span><span>内盘：<em class="cGreen">1317094手</em></span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,16 +216,256 @@
         </div><!-- container -->
     </div>
 
+<script>
 
+</script>
+    <script type="text/javascript" th:src="${'http://qt.gtimg.cn/q='+stock.ecode}"></script>
     <script>
-        /*<![CDATA[*/
-        /*]]>*/
+        var code = '[[${ecode}]]';
+        //网易股票数据处理
+        function _ntes_quote_callback65642556(result){
+            // alert(JSON.stringify(result));
+            // alert(JSON.stringify(result['1300059']));
+            var data = result[code];
+
+            //涨跌幅
+            var percent = data['percent'] * 100;
+            if(percent>0) {
+                $("#percent").addClass("cRed");
+                $("#percent").removeClass("cGreen");
+                $("#percent").text(percent.toFixed(2) + "%");
+            }else{
+                $("#percent").addClass("cGreen");
+                $("#percent").removeClass("cRed");
+                $("#percent").text(percent.toFixed(2) + "%");
+            }
+            //当前价格
+            var price = data['price'];
+            if(percent>0) {
+                $("#price").addClass("cRed");
+                $("#price").removeClass("cGreen");
+                $("#price").text(price.toFixed(2));
+                $("#price").parent().removeClass("down");
+                $("#price").parent().addClass("up");
+            }else{
+                $("#price").addClass("cGreen");
+                $("#price").removeClass("cRed");
+                $("#price").text(price.toFixed(2));
+                $("#price").parent().removeClass("up");
+                $("#price").parent().addClass("down");
+            }
+
+            //涨跌金额
+            var updown=data['updown'];
+            if(updown>0) {
+                $("#updown").addClass("cRed");
+                $("#updown").removeClass("cGreen");
+                $("#updown").text(updown);
+            }else{
+                $("#updown").addClass("cGreen");
+                $("#updown").removeClass("cRed");
+                $("#updown").text(updown);
+            }
+
+            //今开
+            var open = data['open'];
+            if(percent>0) {
+                $("#open").addClass("cRed");
+                $("#open").removeClass("cGreen");
+                $("#open").text(open);
+            }else{
+                $("#open").addClass("cGreen");
+                $("#open").removeClass("cRed");
+                $("#open").text(open);
+            }
+            //昨收
+            var yestclose = data['yestclose'];
+            if(percent>0) {
+                $("#yestclose").addClass("cRed");
+                $("#yestclose").removeClass("cGreen");
+                $("#yestclose").text(yestclose);
+            }else{
+                $("#yestclose").addClass("cGreen");
+                $("#yestclose").removeClass("cRed");
+                $("#yestclose").text(yestclose);
+            }
+
+            //最高
+            var high = data['high'];
+            if(percent>0) {
+                $("#high").addClass("cRed");
+                $("#high").removeClass("cGreen");
+                $("#high").text(high);
+            }else{
+                $("#high").addClass("cGreen");
+                $("#high").removeClass("cRed");
+                $("#high").text(open);
+            }
+            //最低
+            var low = data['low'];
+            if(percent>0) {
+                $("#low").addClass("cRed");
+                $("#low").removeClass("cGreen");
+                $("#low").text(low);
+            }else{
+                $("#low").addClass("cGreen");
+                $("#low").removeClass("cRed");
+                $("#low").text(low);
+            }
+
+            //成交量
+            var volume = data['volume'];
+            $("#volume").text((volume / 1000000).toFixed(2)+"万手")
+
+            //成交额
+            var turnover = data['turnover'];
+            $("#turnover").text((turnover / 100000000).toFixed(2)+"亿");
+
+            // alert(percent);
+        }
+
+        //腾讯股票数据处理
+        function gtimg(result){
+            var data = v_[[${stock.ecode}]].split('~');
+            //涨跌幅
+            var percent = parseFloat(data[32]);
+            if(percent>0) {
+                $("#percent").addClass("cRed");
+                $("#percent").removeClass("cGreen");
+                $("#percent").text(percent.toFixed(2) + "%");
+            }else{
+                $("#percent").addClass("cGreen");
+                $("#percent").removeClass("cRed");
+                $("#percent").text(percent.toFixed(2) + "%");
+            }
+            //当前价格
+            var price = parseFloat(data[3]);
+            if(percent>0) {
+                $("#price").addClass("cRed");
+                $("#price").removeClass("cGreen");
+                $("#price").text(price.toFixed(2));
+                $("#price").parent().removeClass("down");
+                $("#price").parent().addClass("up");
+            }else{
+                $("#price").addClass("cGreen");
+                $("#price").removeClass("cRed");
+                $("#price").text(price.toFixed(2));
+                $("#price").parent().removeClass("up");
+                $("#price").parent().addClass("down");
+            }
+
+            //涨跌金额
+            var updown=data[31];
+            if(updown>0) {
+                $("#updown").addClass("cRed");
+                $("#updown").removeClass("cGreen");
+                $("#updown").text(updown);
+            }else{
+                $("#updown").addClass("cGreen");
+                $("#updown").removeClass("cRed");
+                $("#updown").text(updown);
+            }
+
+            //今开
+            var open = data[5];
+            if(percent>0) {
+                $("#open").addClass("cRed");
+                $("#open").removeClass("cGreen");
+                $("#open").text(open);
+            }else{
+                $("#open").addClass("cGreen");
+                $("#open").removeClass("cRed");
+                $("#open").text(open);
+            }
+            //昨收
+            var yestclose = data[4];
+            if(percent>0) {
+                $("#yestclose").addClass("cRed");
+                $("#yestclose").removeClass("cGreen");
+                $("#yestclose").text(yestclose);
+            }else{
+                $("#yestclose").addClass("cGreen");
+                $("#yestclose").removeClass("cRed");
+                $("#yestclose").text(yestclose);
+            }
+
+            //最高
+            var high = data[33];
+            if(percent>0) {
+                $("#high").addClass("cRed");
+                $("#high").removeClass("cGreen");
+                $("#high").text(high);
+            }else{
+                $("#high").addClass("cGreen");
+                $("#high").removeClass("cRed");
+                $("#high").text(open);
+            }
+            //最低
+            var low = data[34];
+            if(percent>0) {
+                $("#low").addClass("cRed");
+                $("#low").removeClass("cGreen");
+                $("#low").text(low);
+            }else{
+                $("#low").addClass("cGreen");
+                $("#low").removeClass("cRed");
+                $("#low").text(low);
+            }
+
+            //成交量
+            var volume = parseFloat(data[36]);
+            $("#volume").text((volume / 10000).toFixed(2)+"万手")
+
+            //成交额
+            var turnover = parseFloat(data[37]);
+            // alert(data[37])
+            $("#turnover").text((turnover / 10000).toFixed(2)+"亿");
+
+            //换手率
+            var huanshou = data[38];
+            // alert(huanshou);
+            $("#huanshou").text(huanshou+"%");
+            //量比
+            var liangbi = data[49];
+            $("#liangbi").text(liangbi);
+            // alert(liangbi);
+
+            //流通市值、总市值
+            var ltsz= data[44];
+            // alert(ltsz);
+            $("#ltsz").text(ltsz+"亿")
+            var zsz = data[45];
+            // alert(zsz);
+            $("#zsz").text(zsz+"亿");
+            //市净率
+            var sjl = data[46];
+            // alert(sjl);
+            $("#sjl").text(sjl);
+            //市盈率
+            var syl = data[39];
+            // alert(syl)
+            $("#syl").text(syl);
+            //振幅zhenfu
+            var zhenfu = data[43];
+            $("#zhenfu").text(zhenfu+"%");
+
+            // alert(vArr[46]);
+            // alert(vArr[31]);
+            // alert(vArr[32]);
+        }
         $(function () {
             Highcharts.setOptions({
                 lang: {
                     rangeSelectorZoom: ''
                 }
             });
+
+            //腾讯股票接口数据处理
+            gtimg();
+
+            //网易股票接口
+            // $("head").append("<script src='http://api.money.126.net/data/feed/"+code+",money.api?callback=_ntes_quote_callback65642556'><\/script>");
+
             //https://data.jianshukeji.com/stock/history/000001
             $.getJSON('/stock/kdata/[[${code}]]', function (data) {
                 if (data.code !== 1) {
