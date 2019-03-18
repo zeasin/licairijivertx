@@ -1,96 +1,11 @@
-
-<!doctype html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.bootcss.com/bulma/0.6.1/css/bulma.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://static.zhihu.com/static/revved/-/css/z.3e5da9dd.css">
-    <style>
-        body {
-            background: #f8f8f8;
-        }
-        .tag.is-lightblue {
-            color: #2d84cc;
-            background: #ebf3fb;
-        }
-        .ml-10 {
-            margin-left: 1rem;
-        }
-        .lh-20 {
-            line-height: 2rem;
-        }
-        .card {
-            margin-bottom: 1rem;
-        }
-        .section {
-            padding-top: 1rem;
-        }
-        .fa-15 {
-            font-size: 1.5rem;
-        }
-        .fa.fa-fire {
-            font-size: 1.2rem;
-            color: red;
-            margin-left: 1rem;
-        }
-    </style>
-    <title>投资日记</title>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_header(~{::title})">
+    <title>首页-投资日记</title>
 </head>
-<body>
-<div class="navbar has-shadow">
-    <div class="container">
-        <div class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" href="/">首页</a>
-                <a class="navbar-item" href="http://stock.eastmoney.com/a/cgszb.html" target="_blank">股市直播</a>
-                <a class="navbar-item" href="http://finance.sina.com.cn/roll/index.d.html?cid=56589&page=1" target="_blank">股市及时雨</a>
-                <a class="navbar-item" href="http://stock.hexun.com/" target="_blank">和讯股评</a>
-                <a class="navbar-item" href="/topic">话题</a>
-                <a class="navbar-item" href="/stock/list">自选股</a>
-                <a class="navbar-item" href="/invest/list">股票持仓</a>
-                <div class="navbar-item">
-                    <form action="/article/publish" method="get" target="_blank">
-                    <div class="field is-grouped">
-
-                        <div class="control has-icons-right">
-                            <input type="text" class="input" name="title" style="width: 20rem;" placeholder="搜索你感兴趣的内容...">
-                            <span class="icon is-right">
-                                <i class="fa fa-search"></i>
-                            </span>
-                        </div>
-                        <div class="control">
-                            <input type="submit" class="button is-info" value="写心得">
-                        </div>
-
-                        <div class="control">
-                            <a class=" is-info" href="/stock/add" target="_blank">添加自选股</a>
-                        </div>
-                        <div class="control">
-                            <a class=" is-info" href="/invest/add" target="_blank">交易</a>
-                            <!--<a class=" is-info" href="/stock/add" target="_blank">卖出股票</a>-->
-                        </div>
-                    </div>
-                    </form>
-                </div>
-            </div>
-            <div class="navbar-end">
-                <a href="#" class="navbar-item">
-                    <i class="fa fa-15 fa-bell"></i>
-                </a>
-                <a href="#" class="navbar-item">
-                    <i class="fa fa-15 fa-comments"></i>
-                </a>
-                <a href="#" class="navbar-item">
-                    <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+<body th:replace="layout :: common_body(~{::div.layui-body})">
+<div class="layui-body">
+    <link rel="stylesheet" href="https://static.zhihu.com/static/revved/-/css/z.3e5da9dd.css">
 <div class="navbar has-shadow" style="position: relative; top: 1px;">
     <div class="container">
         <div class="navbar-tabs">
@@ -189,6 +104,8 @@
             </div>
         </div>
     </div><!-- container -->
+</div>
+
 </div>
 </body>
 </html>

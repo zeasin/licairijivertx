@@ -73,7 +73,7 @@ public class MyVerticle extends AbstractVerticle {
         // 定时模板解析器,表示从类加载路径下找模板
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         // 设置模板的前缀，我们设置的是templates目录
-        templateResolver.setPrefix("templates");
+        templateResolver.setPrefix("templates/");
         // 设置后缀为.html文件
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML");

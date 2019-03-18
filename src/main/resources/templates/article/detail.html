@@ -1,12 +1,72 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${article.title}">Title</title>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_header(~{::title})">
+    <title th:text="${article.title}">-投资日记</title>
 </head>
-<body>
-<div th:utext="${article.content}">
+<body th:replace="layout :: common_body(~{::div.layui-body})">
+<div class="layui-body">
+    <div class="section">
+        <div class="container">
+            <div class="tile">
+                <div class="tile is-vertical is-parent is-8">
+                    <div class="box">
+                        <div class="media">
+                            <blockquote class="layui-elem-quote layui-text" th:text="${article.title}">
+                            </blockquote>
+                        </div>
 
+                    </div>
+                    <div class="box" th:utext="${article.content}">
+
+
+                    </div>
+                </div>
+                <div class="tile is-vertical is-parent">
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">相关结果</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-left">
+                                    <figure class="image is-64x64">
+                                        <img src="https://bulma.io/images/placeholders/128x128.png" alt="">
+                                    </figure>
+                                </div>
+                                <div class="media-content">
+                                    <p>
+                                        <strong>线程内上下文切换</strong>
+                                        <span class="tag is-gray">专栏</span></p>
+                                    <p>
+                                        1.6K 关注 | 12 篇文章
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <p class="card-header-title">知乎热搜</p>
+                        </div>
+                        <div class="card-content">
+                            <ul class="lh-20">
+                                <li><a href="#">演员的诞生第十期</a><i class="fa fa-fire"></i></li>
+                                <li><a href="#">北航陈小武</a><i class="fa fa-fire"></i></li>
+                                <li><a href="#">微信跳一跳</a><i class="fa fa-fire"></i></li>
+                                <li><a href="#">解忧杂货店</a></li>
+                                <li><a href="#">前任3</a></li>
+                                <li><a href="#">妖猫传</a></li>
+                                <li><a href="#">琅琊榜2</a></li>
+                                <li><a href="#">刘昊然</a></li>
+                                <li><a href="#">黄轩</a></li>
+                                <li><a href="#">比特币</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
 </div>
 </body>
 </html>

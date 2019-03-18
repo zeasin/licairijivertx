@@ -36,9 +36,9 @@ public class TopicHandler extends AbstractHandler {
         if(StringUtils.isEmpty(tag)==false){
             sql = "SELECT * FROM user_dynamic WHERE tags = ? order by id desc limit 0,20";
             params.add(tag);
-            routingContext.put("topicTitle", tag);
+            routingContext.put("topicTitle", tag+"-话题列表"+"-投资日记");
         }else{
-            routingContext.put("topicTitle", "全部文章");
+            routingContext.put("topicTitle", "全部话题-投资日记");
         }
 
 
