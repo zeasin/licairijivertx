@@ -1,585 +1,736 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout :: common_header(~{::title})">
-    <title th:text="${name}">我的自选股-投资日记</title>
+<html data-n-head-ssr data-n-head="" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta data-n-head="true" name="referrer" content="always"/>
+    <meta data-n-head="true" name="renderer" content="webkit"/>
+    <meta data-n-head="true" name="force-rendering" content="webkit"/>
+    <meta data-n-head="true" name="baidu-site-verification" content="GFgkG2X61Y"/>
+    <meta data-n-head="true" http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta data-n-head="true" charset="utf-8"/>
+    <meta data-n-head="true" name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta data-n-head="true" data-hid="description" name="description"
+          content="选股宝，一款主打“主题投资”的A股资讯神器，每日根据用户个性化关注主题，推送最新、最快、最狠的消息，帮助第一时间抓住机会。"/>
+    <meta data-n-head="true" data-hid="keywords" name="keywords"
+          content="选股宝,xuangubao.cn,主题投资,资讯,股票,板块,题材,产业链,主题库,今日机会,中长线机会,近期风口,提前埋伏"/>
+    <title data-n-head="true">东方财富 300059.SZ | 选题材抓龙头，就用选股宝 xuangubao.cn</title>
+    <link data-n-head="true" rel="icon" type="image/x-icon" href="https://image.xuangubao.cn/pc/images/logo.png"/>
+    <link data-n-head="true" rel="stylesheet" type="text/css" href="//at.alicdn.com/t/font_117096_nbjebjkmw7p.css"/>
+    <link data-n-head="true" rel="stylesheet" type="text/css" href="https://xuangubao.cn/css/minireset.min.css"/>
+    <link data-n-head="true" rel="stylesheet" type="text/css" href="/static/css/xgb.css"/>
+    <!--<script data-n-head="true" src="/js/qrcode.js"></script>-->
+    <!--<script data-n-head="true" src="/js/polyfill.js"></script>-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/manifest.0c3dea71f6657938845b.js" as="script">-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/vendor.0bc6b2086969cbe3314f.js" as="script">-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/app.d81165cd82c341503a1c.js" as="script">-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/app.953744a52d039e9bf62435f4edb462c9.css"-->
+          <!--as="style">-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/app.953744a52d039e9bf62435f4edb462c9.css"-->
+          <!--as="style">-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/layouts/default.4bb18cc3d84b27f0e03a.js"-->
+          <!--as="script">-->
+    <!--<link rel="preload" href="https://static-alpha.wallstreetcn.com/clay/pages/stock/_symbol.d75a2b48b42b738b4a10.js"-->
+          <!--as="script">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/article/_id.da05e749ffc7e9c2e376.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/lugutong/index.10b26be253fdd6507de9.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/dingpan/_id.8d376d5a844270d30fdd.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/index.9aba3fb72b543d224868.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/theme/_id.416d3193b2b7a8d2315e.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/zhangjiazaozhidao.a29072c9c97600140053.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/zaozhidao.49cb25beae3d22e979d7.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/tuoshuiyanbao.969e03c6769c893c43a4.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/tuoshuidiaoyan.9b20929ac245472d4461.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/shandiankuaiping.95c72a46c8fa8ec25d42.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/panzhongtufa.b10f8e7d36c130aeebd1.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/kechuangzaozhidao.54d9b1d04874565e3afe.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/search/_text.44f389956d87b56fa17a.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/premium-article/_id.a3292f39d5fc70040079.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/dingpan/redian.988a4fce8936f2ed686c.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/vip.aaed7aeabe31dbacad90.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/zhutiku.42604319addaa28c8a15.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/download/desktop.c39f8c30b69fd19e9d8e.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/lugutong2/index.ddba57a35bc1a3999e82.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/purchased-message.10f2c0ba8a410200b4ab.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/subject/bkj/_id.25aa707f09ad630a19c9.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/yuanchuang.39fb134ec286782626f1.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/subject/_id.6843d14f576a8f144376.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/report/_id.074ecf863a3ff734eac7.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/announcement/_id.efb744fc85b1cb669d8d.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/chart.b454de0efa7176f94fb9.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/lottery/fifa/homepage/index.bb7bcabc156d34b5a86f.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/agreement.16da421d0e8b1f356d22.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/confirm-logout.ec8d415209d1385ddc1f.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/layouts/empty.72f3dfb06d436d13cbcf.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/zhuti/_id.ff5fcac6c54c93bd2b67.js">-->
+    <!--<link rel="prefetch"-->
+          <!--href="https://static-alpha.wallstreetcn.com/clay/pages/lottery/double11/homepage.6ec836d88f5ab96c2880.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/ban/index.cdaafce5db21f887d758.js">-->
+    <!--<link rel="prefetch" href="https://static-alpha.wallstreetcn.com/clay/pages/ban/_id.2b28cf8baff09f631619.js">-->
+    <!--<link rel="stylesheet" href="https://static-alpha.wallstreetcn.com/clay/app.953744a52d039e9bf62435f4edb462c9.css">-->
+    <link rel="stylesheet" href="https://static-alpha.wallstreetcn.com/clay/app.953744a52d039e9bf62435f4edb462c9.css">
+    <!--<link data-n-head="true" rel="stylesheet" type="text/css" href="/static/css/xgbmain.css"/>-->
+    <style data-vue-ssr-id="8bd87e80:0">.nav[data-v-789bdac6]{min-width:1200px;height:56px;line-height:56px;-webkit-box-shadow:0 2px 3px hsla(0,0%,4%,.1);box-shadow:0 2px 3px hsla(0,0%,4%,.1);background-color:#30333f;color:#fff}.nav .container[data-v-789bdac6]{width:1300px;margin:0 auto}.nav .nav-left[data-v-789bdac6]{float:left;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center}.nav .nav-right[data-v-789bdac6]{float:right}.nav .nav-right .nav-item[data-v-789bdac6]{color:#fff}.nav .nav-right .go-login[data-v-789bdac6]{cursor:pointer}.nav .nav-right .go-login[data-v-789bdac6]:last-of-type{margin:0}.nav .nav-right .log-out[data-v-789bdac6]{cursor:pointer}.nav .nav-right .search-input[data-v-789bdac6]{line-height:32px;height:32px;margin-right:20px;display:inline-block;position:relative;overflow:visible}.nav .nav-right .search-input #search[data-v-789bdac6]{border-radius:16px;font-size:14px;padding:0 16px;display:inline-block;height:32px;outline:none;border:none}.nav .nav-right .search-input .iconfont[data-v-789bdac6]{position:absolute;right:8px;cursor:pointer;width:24px;font-size:24px;color:#e6394d}.nav .nav-right .search-input .search-result[data-v-789bdac6]{width:248px;-webkit-box-shadow:0 2px 4px 0 rgba(51,51,51,.3);box-shadow:0 2px 4px 0 rgba(51,51,51,.3);background:#fff;position:absolute;left:0;z-index:9999;top:42px;font-size:12px;color:#666}.nav .nav-item[data-v-789bdac6]{position:relative;color:#d8d8d8;height:56px;line-height:56px;margin-right:40px;-webkit-transition:.3s;transition:.3s}.nav .nav-item[data-v-789bdac6]:hover{color:#fff}.nav .nav-item.is-active-route[data-v-789bdac6]{border-bottom:3px solid #e6394d;pointer-events:none;color:#fff}.nav .nav-item .is-hot[data-v-789bdac6]{width:25px}.nav .nav-item.log-out[data-v-789bdac6]{margin-right:10px}.nav .logo[data-v-789bdac6]{margin-right:81px}.nav .logo img[data-v-789bdac6]{width:120px;margin-top:13px}.nav .slogan[data-v-789bdac6]{display:inline-block;text-indent:-9999px;width:0}@media screen and (max-width:1366px){.nav .container[data-v-789bdac6]{width:1200px}}</style><style data-vue-ssr-id="66472e30:0">.nav-item[data-v-0a76a5aa]{cursor:pointer;margin:0 0 0 -13px!important;padding:0 40px 0 13px}.nav-item img[data-v-0a76a5aa]{vertical-align:middle;margin-top:-5px;margin-left:2px;width:25px;height:14px}.nav-dropdown[data-v-0a76a5aa]{display:none;position:absolute;top:56px;left:0;background-color:#fff;-webkit-box-shadow:0 0 12px 0 rgba(0,0,0,.3);box-shadow:0 0 12px 0 rgba(0,0,0,.3);z-index:1000}.nav-dropdown.is-active[data-v-0a76a5aa]{display:block}.nav-dropdown[data-v-0a76a5aa]:before{content:"";position:absolute;top:-10px;left:20px;border:5px solid #fff;border-color:transparent;border-bottom-color:#fff}.nav-dropdown li[data-v-0a76a5aa]{width:160px;height:48px;line-height:48px}.nav-dropdown li a[data-v-0a76a5aa]{display:block;padding-left:16px;color:#666}.nav-dropdown li:hover a[data-v-0a76a5aa]{color:#333;background-color:#f5f5f5}</style><style data-vue-ssr-id="156c5858:0">.stock[data-v-3e1e2b27]{background:#f6f7fb}.stock-info[data-v-3e1e2b27]{display:-webkit-box;display:-ms-flexbox;display:flex;background:#fff;width:1200px;margin:40px auto 0;padding:40px 32px 10px}.stock-info-main[data-v-3e1e2b27]{width:30%}.stock-info-bkj[data-v-3e1e2b27]{width:70%}.stock-info-top[data-v-3e1e2b27]{height:24px;display:-webkit-box;display:-ms-flexbox;display:flex;vertical-align:middle}.stock-info-top .stock-info-title[data-v-3e1e2b27]{font-size:24px;color:#333;line-height:24px;height:24px;display:inline-block}.stock-info-top .stock-info-symbol[data-v-3e1e2b27]{font-size:14px;color:#666;line-height:24px;height:24px;display:inline-block;margin-left:8px}.stock-info-top .stock-info-type[data-v-3e1e2b27]{height:18px;width:48px;background:#f6f7fb;border-radius:2px;font-size:12px;color:#7a8399;letter-spacing:0;text-align:center;line-height:18px;margin-top:3px;margin-left:15px}.stock-info-middle[data-v-3e1e2b27]{display:-webkit-box;display:-ms-flexbox;display:flex;margin-top:8px;height:36px;-webkit-box-align:baseline;-ms-flex-align:baseline;align-items:baseline}.stock-info-middle .stock-info-price[data-v-3e1e2b27]{font-size:36px;letter-spacing:0;text-align:left;line-height:36px}.stock-info-middle .stock-info-price.-market-color--decline[data-v-3e1e2b27]{color:#1cbf7b}.stock-info-middle .stock-info-price.-market-color--rise[data-v-3e1e2b27]{color:#f2564e}.stock-info-middle .stock-info-pxchange[data-v-3e1e2b27]{font-size:18px;letter-spacing:0;text-align:left;line-height:24px;display:block;height:24px;margin-left:8px}.stock-info-middle .stock-info-pxchange.-market-color--decline[data-v-3e1e2b27]{color:#1cbf7b}.stock-info-middle .stock-info-pxchange.-market-color--rise[data-v-3e1e2b27]{color:#f2564e}.stock-info-middle .stock-info-changerate[data-v-3e1e2b27]{font-size:20px;display:block;letter-spacing:0;text-align:left;line-height:24px;height:24px;position:relative;top:5px;margin-left:9px}.stock-info-middle .stock-info-changerate.-market-color--decline[data-v-3e1e2b27]{color:#1cbf7b}.stock-info-middle .stock-info-changerate.-market-color--rise[data-v-3e1e2b27]{color:#f2564e}.stock-info-bottom[data-v-3e1e2b27]{font-size:12px;color:#999;letter-spacing:0;text-align:left;margin-top:4px;line-height:14px}.stock-main[data-v-3e1e2b27]{display:-webkit-box;display:-ms-flexbox;display:flex;width:1200px;margin:0 auto;background:#fff;padding:0;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}.stock-main-body[data-v-3e1e2b27]{width:832px}.stock-main-body-iframe[data-v-3e1e2b27]{display:block;padding:16px 10px;margin-bottom:26px;width:832px;height:512px;background:#fff}.stock-main-body-iframe>iframe[data-v-3e1e2b27]{width:822px;height:480px}.stock-main-slidebar[data-v-3e1e2b27]{width:344px}.stock-main-slidebar .stock-zhibiao-title[data-v-3e1e2b27]{display:block;position:relative;font-size:16px;color:#333;letter-spacing:0;text-align:left;height:24px}.stock-main-slidebar .stock-zhibiao-title[data-v-3e1e2b27]:before{content:"";position:absolute;top:5px;left:-12px;width:4px;height:14px;background:#ec4652}.stock-main-slidebar .stock-zhibiao[data-v-3e1e2b27]{display:-webkit-box;display:-ms-flexbox;display:flex}.stock-main-slidebar .stock-zhibiao-item[data-v-3e1e2b27]{width:50%}</style><style data-vue-ssr-id="ceba9324:0">.stock-zhibiao[data-v-37760ce0]{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap}.stock-zhibiao .zhibiao-item[data-v-37760ce0]{width:50%;padding:12px 24px 12px 0;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}.stock-zhibiao .zhibiao-item-label[data-v-37760ce0]{display:block;font-size:14px;color:#666;letter-spacing:0;text-align:left;line-height:14px}.stock-zhibiao .zhibiao-item-text[data-v-37760ce0]{display:block;font-size:14px;color:#333;letter-spacing:0;font-weight:700;text-align:right;line-height:14px}.stock-zhibiao .zhibiao-item-text.-market-color--rise[data-v-37760ce0]{color:#e52222}.stock-zhibiao .zhibiao-item-text.-market-color--decline[data-v-37760ce0]{color:#18a66b}</style><style data-vue-ssr-id="7d541f7a:0">.stock-detail[data-v-46d72079]{display:-webkit-box;display:-ms-flexbox;display:flex;width:1200px;margin:0 auto;padding:0;background:#fff;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}.stock-detail-main[data-v-46d72079]{width:832px}.stock-detail-tab[data-v-46d72079]{height:42px;width:100%;border-bottom:1px solid #ebe6e6}.stock-detail-tab-item[data-v-46d72079]{font-size:16px;color:#333;letter-spacing:0;text-align:left;line-height:42px;display:inline-block;height:42px;width:32px;cursor:pointer;margin-left:24px;margin-right:32px}.stock-detail-tab-item.checked[data-v-46d72079],.stock-detail-tab-item[data-v-46d72079]:hover{border-bottom:2px solid #ec4652}.stock-detail .stock-gonggao[data-v-46d72079],.stock-detail .stock-news[data-v-46d72079]{width:832px}.stock-detail .stock-news-item[data-v-46d72079]{padding:20px 0;display:block;margin:0 24px;border-bottom:1px solid #ebe6e6}.stock-detail .stock-news-title[data-v-46d72079]{font-size:18px;color:#333;letter-spacing:0;text-align:left;line-height:24px}.stock-detail .stock-news-summary[data-v-46d72079]{margin-top:16px;font-size:14px;color:#666;letter-spacing:0;text-align:left;line-height:24px}.stock-detail .stock-news-time[data-v-46d72079]{font-size:12px;color:#9c9899;letter-spacing:0;text-align:left;margin-top:10px;line-height:12px}.stock-detail .stock-news-time .iconfont[data-v-46d72079]{font-size:12px}.stock-detail .stock-news-time-org[data-v-46d72079]{color:#666;margin-left:16px}.stock-detail .stock-news-nomore[data-v-46d72079]{text-align:center;padding:16px}.stock-detail .stock-hugutong[data-v-46d72079]{width:344px}.stock-detail[data-v-46d72079] .stock-news-prime{margin:0 24px;display:block;padding:20px 0;border-bottom:1px solid #efefef}</style><style data-vue-ssr-id="192f2ddd:0">.xgb-tools[data-v-c9b800e2]{position:fixed;right:52px;bottom:80px;cursor:pointer;-webkit-transition:.3s;transition:.3s}.tools-box[data-v-c9b800e2]{position:relative;width:28px;height:28px;line-height:28px;margin:0 auto 12px;text-align:center;border-radius:2px;background-color:#353a47;opacity:.8;-webkit-transition:.3s;transition:.3s}.tools-box[data-v-c9b800e2]:hover{opacity:1}.tools-box i[data-v-c9b800e2]{font-size:18px;color:#fff}.online-agent[data-v-c9b800e2]{position:fixed;bottom:72px;right:0;font-size:0;cursor:pointer}.online-agent img[data-v-c9b800e2]{width:32px;height:32px;border-top-left-radius:6px}.online-agent div[data-v-c9b800e2]{width:32px;height:84px;padding:4px 5px;text-align:center;font-size:14px;line-height:18px;color:#fff;background:-webkit-gradient(linear,left top,left bottom,from(#ffdfb1),to(#f43));background:linear-gradient(180deg,#ffdfb1,#f43);border-bottom-left-radius:6px}.tools-appQrcode[data-v-c9b800e2]{position:fixed;bottom:200px;right:0;width:80px;padding:4px;padding-top:3px;opacity:1!important;height:94px;font-size:0;color:#fff;background-color:#f2564e;pointer-events:none}.tools-appQrcode p[data-v-c9b800e2]{font-size:12px;line-height:14px;margin-bottom:1px}.tools-wechatQrcode-image[data-v-c9b800e2]{visibility:hidden;position:fixed;bottom:128px;right:84px;width:72px;height:72px}.tools-box:hover .hint-text[data-v-c9b800e2],.tools-box:hover .tools-wechatQrcode-image[data-v-c9b800e2]{visibility:visible}.hint-text[data-v-c9b800e2]{position:absolute;top:0;right:-30px;width:28px;height:28px;font-size:14px;line-height:1.1;visibility:hidden;text-align:left}@media screen and (max-width:1360px){.tools-box[data-v-c9b800e2]{opacity:.5}}</style><style data-vue-ssr-id="3375e78a:0">.footer{position:relative;min-width:1200px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;height:80px;margin-top:60px;background:#353a47;font-size:10px;text-align:center;z-index:1}.footer,.footer .beian{color:#fff}.footer .gongan{width:14px;margin-right:3px}.footer .work-time{margin-left:15px}.footer .friend-link-container{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;font-size:12px;color:#7a8399;letter-spacing:0;line-height:20px}.footer .friend-link-container .friend-link,.footer .friend-link-container a{margin-left:3px;font-size:12px;color:#7a8399;letter-spacing:0;line-height:20px}.footer .line-divider{display:block;height:9px;width:1px;background-color:#7a8399;margin-left:6px;margin-right:6px;margin-bottom:1px}</style><style data-vue-ssr-id="afd4f322:0">.go-login[data-v-10973acc],.log-out[data-v-10973acc]{color:#fff;cursor:pointer}.nickname[data-v-10973acc]{color:#fff}.login-modal[data-v-10973acc],.reset-modal[data-v-10973acc],.success-modal[data-v-10973acc]{z-index:200}.modal-background[data-v-10973acc]{background-color:hsla(0,0%,4%,.4)}.success-modal .modal-content[data-v-10973acc]{width:440px;margin:0 20px;overflow:hidden}.success-modal .modal-content .success-close[data-v-10973acc]{position:absolute;z-index:100;top:10px;right:10px}.success-modal .modal-content .success-close[data-v-10973acc]:before{background:#d8d8d8;width:80%}.success-modal .modal-content .success-close[data-v-10973acc]:after{background:#d8d8d8;height:80%}.success-modal .modal-content .success-close[data-v-10973acc]:focus,.success-modal .modal-content .success-close[data-v-10973acc]:hover{background-color:#fff}.success-modal .modal-content .success-close[data-v-10973acc]:focus:before,.success-modal .modal-content .success-close[data-v-10973acc]:hover:before{background:#e6394d;width:80%}.success-modal .modal-content .success-close[data-v-10973acc]:focus:after,.success-modal .modal-content .success-close[data-v-10973acc]:hover:after{background:#e6394d;height:80%}.alert-modal .modal-card-head[data-v-10973acc]{text-align:center;padding:15px 20px}.alert-modal .modal-card-head .modal-card-title[data-v-10973acc]{font-size:16px;position:relative;left:8px}.alert-modal .alert-modal-info[data-v-10973acc]{text-align:center;font-size:20px}.alert-modal .modal-card[data-v-10973acc]{width:300px}.register[data-v-10973acc]{display:block;width:440px;position:relative;left:0;height:608px;background:#fff}.register-title[data-v-10973acc]{display:block;height:168px;position:relative;background:#353a47 url("https://image.xuangubao.cn/pc/images/pclogo.png") no-repeat 50%}.register-title-tab[data-v-10973acc]{display:-webkit-box;display:-ms-flexbox;display:flex;height:34px;width:440px;position:absolute;left:0;bottom:0}.register-title-tab label[data-v-10973acc]{height:34px;width:50%;display:block;color:#d8d8d8;cursor:pointer;text-align:center;font-size:18px;letter-spacing:.82px;line-height:18px}.register-title-tab label>span[data-v-10973acc]{display:inline-block;height:100%;border:none}.register-title-tab label.selecetd[data-v-10973acc]{height:34px;width:50%;cursor:pointer;color:#fff;text-align:center}.register-title-tab label.selecetd>span[data-v-10973acc]{display:inline-block;height:100%;border-bottom:3px solid #e6394d}.register-body[data-v-10973acc]{width:880px;display:-webkit-box;display:-ms-flexbox;display:flex}.register-body .register-body-log[data-v-10973acc],.register-body .register-body-reg[data-v-10973acc]{display:inline-block;width:440px;padding-top:40px;height:440px}.register-body .register-phone-input-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.register-body .register-phone-input-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.register-body .register-phone-input-err.show[data-v-10973acc]{opacity:1}.register-body .register-vcode-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d;width:1px}.register-body .register-vcode-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.register-body .register-vcode-err.show[data-v-10973acc]{opacity:1;width:auto}.register-body .register-pwd-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.register-body .register-pwd-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.register-body .register-pwd-err.show[data-v-10973acc]{opacity:1}.register-body .register-item[data-v-10973acc]{display:block;padding-left:40px;position:relative}.register-body .register-item .iconfont[data-v-10973acc]{font-size:24px;position:relative;top:4px;left:-5px}.register-body .register-item .iconfont.icon-pass[data-v-10973acc]{color:green;display:none}.register-body .register-item>input[data-v-10973acc]{font-size:16px;line-height:24px;border:none;outline:none;border-bottom:1px solid #efefef;width:328px;position:relative}.register-body .register-item>input[data-v-10973acc]:focus{border-bottom:1px solid #333}.register-body .register-item.on-error>input[data-v-10973acc]{border-bottom:1px solid #e6394d}.register-body .register-item.validate-pass .icon-pass[data-v-10973acc]{display:inline-block}.register-body .register-item.register-vcode[data-v-10973acc]{margin-top:20px;z-index:2}.register-body .register-item.register-vcode .register-vcode-input[data-v-10973acc]{padding-right:100px}.register-body .register-item.register-vcode .register-setpwd-input[data-v-10973acc]{padding-right:50px}.register-body .register-item.register-vcode .register-vcode-get[data-v-10973acc]{display:block;position:absolute;right:50px;top:8px;font-size:14px;line-height:18px;padding-left:10px;border-left:1px solid #efefef;cursor:pointer}.register-body .register-item.register-vcode .register-vcode-get[disabled=true][data-v-10973acc]{color:#666}.register-body .register-item.register-vcode .register-vcode-image[data-v-10973acc]{display:block;margin:5px 0 5px 160px;border:1px solid #d8d8d8;padding:8px 100px 10px 10px;position:absolute;bottom:-55px;left:0;-webkit-transition:all .3s;transition:all .3s}.register-body .register-item.register-vcode .register-vcode-image>img[data-v-10973acc]{display:block;width:96px;position:absolute;right:0;top:0;cursor:pointer}.register-body .register-item.register-vcode .register-vcode-image[data-v-10973acc]:before{content:"";position:absolute;top:-5px;right:10%;display:block;width:8px;height:8px;border-width:1px 1px 0 0;border-color:#999 #999 transparent transparent;border-style:solid;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);background:#fff;z-index:1}.register-body .register-item.register-vcode .register-vcode-image-input[data-v-10973acc]{font-size:16px;line-height:24px;border:none;border:1px solid #d8d8d8;outline:none;width:120px;position:relative;padding-right:0}.register-body .register-item.register-vcode .register-vcode-image-input[data-v-10973acc]:focus{border:1px solid #353a47}.register-body .register-item.register-vcode .register-vcode-image-input.warning[data-v-10973acc]{border:1px solid #e6394d}.register-body .register-item.register-vcode .register-vcode-image-confirm[data-v-10973acc]{display:inline-block;position:absolute;height:26px;border-radius:10px;text-align:center;font-size:14px;line-height:26px;width:60px;top:8px;color:#fff;right:10px;cursor:pointer;background:gray}.register-body .register-item.register-vcode .register-vcode-image-confirm .active[data-v-10973acc]{background:#e6394d}.register-body .register-item.register-setpwd[data-v-10973acc]{margin-top:20px}.register-body .register-item.register-setpwd .register-setpwd-forget[data-v-10973acc]{display:block;position:absolute;right:50px;top:8px;font-size:14px;line-height:18px;padding-left:10px;cursor:pointer}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch[data-v-10973acc]{display:none}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch:empty~label[data-v-10973acc]{display:inline-block;position:relative}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch:empty~label>i[data-v-10973acc]{opacity:0;cursor:pointer}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch:empty~label[data-v-10973acc]:before{content:"\E60D";font-size:24px;font-family:iconfont;position:absolute;left:0;top:0;display:block}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch:checked~label[data-v-10973acc]{display:inline-block;position:relative}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch:checked~label>i[data-v-10973acc]{opacity:0;cursor:pointer}.register-body .register-item.register-setpwd .register-setpwd-forget .register-pwd-switch:checked~label[data-v-10973acc]:before{content:"\E60C";font-family:iconfont;font-size:24px;position:absolute;left:0;top:0;display:block}.register-body .login-phone-input-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.register-body .login-phone-input-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.register-body .login-phone-input-err.show[data-v-10973acc]{opacity:1}.register-body .login-pwd-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.register-body .login-pwd-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.register-body .login-pwd-err.show[data-v-10973acc]{opacity:1}.register-body .login-item[data-v-10973acc]{display:block;padding-left:40px;position:relative}.register-body .login-item .login-setpwd-input[data-v-10973acc]{padding-right:120px}.register-body .login-item .iconfont[data-v-10973acc]{font-size:24px;position:relative;top:4px;left:-5px}.register-body .login-item .iconfont.icon-pass[data-v-10973acc]{color:green;display:none}.register-body .login-item>input[data-v-10973acc]{font-size:16px;line-height:24px;border:none;outline:none;border-bottom:1px solid #efefef;width:328px;position:relative}.register-body .login-item>input[data-v-10973acc]:focus{border-bottom:1px solid #333}.register-body .login-item.on-error>input[data-v-10973acc]{border-bottom:1px solid #e6394d}.register-body .login-item.validate-pass .icon-pass[data-v-10973acc]{display:inline-block}.register-body .login-item.login-setpwd[data-v-10973acc]{margin-top:20px}.register-body .login-item.login-setpwd .login-setpwd-forget[data-v-10973acc]{display:block;position:absolute;right:50px;top:8px;font-size:14px;line-height:18px;padding-left:10px;cursor:pointer}.register-body .login-item.login-setpwd .login-setpwd-forget .login-pwd-switch[data-v-10973acc]{display:none}.register-body .login-item.login-setpwd .login-setpwd-forget .login-pwd-switch~label[data-v-10973acc]{display:inline-block;position:relative;line-height:24px}.register-body .login-item.login-setpwd .login-setpwd-forget .login-pwd-switch~label>i[data-v-10973acc]{opacity:0;cursor:pointer;margin-right:10px;vertical-align:top}.register-body .login-item.login-setpwd .login-setpwd-forget .login-pwd-switch~label>span[data-v-10973acc]{position:relative}.register-body .login-item.login-setpwd .login-setpwd-forget .login-pwd-switch:empty~label[data-v-10973acc]:before{content:"\E60D";font-family:iconfont;font-size:24px;position:absolute;left:0;top:0;display:block}.register-body .login-item.login-setpwd .login-setpwd-forget .login-pwd-switch:checked~label[data-v-10973acc]:before{content:"\E60C";font-family:iconfont;font-size:24px;position:absolute;left:0;top:0;display:block}.register-body .login-rememberme[data-v-10973acc]{margin-top:30px;padding-left:40px;font-size:12px}.register-body .login-btn[data-v-10973acc]{margin:20px 40px;width:360px;height:48px;background-color:#e6394d;cursor:pointer;text-align:center;color:#fff;line-height:48px;font-size:16px;letter-spacing:12px}.register-body .login-to-register[data-v-10973acc]{text-align:center;color:#666;font-size:14px}.register-body .login-to-register>span[data-v-10973acc]{color:#e6394d;cursor:pointer}.register-body .register-user-rule[data-v-10973acc]{margin-top:30px;padding-left:40px;font-size:12px}.register-body .register-btn[data-v-10973acc]{margin:20px 40px;width:360px;height:48px;background-color:#e6394d;cursor:pointer;text-align:center;color:#fff;line-height:48px;font-size:16px;letter-spacing:12px}.register-body .register-to-login[data-v-10973acc]{text-align:center;color:#666;font-size:14px}.register-body .register-to-login>span[data-v-10973acc]{color:#e6394d;cursor:pointer}.reset[data-v-10973acc]{display:block;width:440px;position:relative;left:0;height:608px;background:#fff}.reset-title[data-v-10973acc]{display:block;height:168px;position:relative;background:url("/img/reset-bg.png");background-size:cover}.reset-title .reset-back[data-v-10973acc]{height:30px;width:30px;position:relative;top:5px;left:5px;cursor:pointer}.reset-title .reset-back>i[data-v-10973acc]{font-size:24px;color:#fff;line-height:30px}.reset-body[data-v-10973acc]{width:440px;display:block;padding-top:40px}.reset-body .reset-phone-input-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.reset-body .reset-phone-input-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.reset-body .reset-phone-input-err.show[data-v-10973acc]{opacity:1}.reset-body .reset-vcode-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.reset-body .reset-vcode-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.reset-body .reset-vcode-err.show[data-v-10973acc]{opacity:1}.reset-body .reset-pwd-err[data-v-10973acc]{display:block;padding-left:70px;height:30px;line-height:30px;font-size:12px;position:relative;color:#e6394d}.reset-body .reset-pwd-err>.iconfont[data-v-10973acc]{margin-right:4px;position:relative;top:2px}.reset-body .reset-pwd-err.show[data-v-10973acc]{opacity:1}.reset-body .reset-item[data-v-10973acc]{display:block;padding-left:40px;position:relative}.reset-body .reset-item .iconfont[data-v-10973acc]{font-size:24px;position:relative;top:4px;left:-5px}.reset-body .reset-item .iconfont.icon-pass[data-v-10973acc]{color:green;display:none}.reset-body .reset-item>input[data-v-10973acc]{font-size:16px;line-height:24px;border:none;outline:none;border-bottom:1px solid #efefef;width:328px;position:relative}.reset-body .reset-item>input[data-v-10973acc]:focus{border-bottom:1px solid #333}.reset-body .reset-item.on-error>input[data-v-10973acc]{border-bottom:1px solid #e6394d}.reset-body .reset-item.validate-pass .icon-pass[data-v-10973acc]{display:inline-block}.reset-body .reset-item.reset-vcode[data-v-10973acc]{margin-top:20px;z-index:2}.reset-body .reset-item.reset-vcode .reset-vcode-input[data-v-10973acc]{padding-right:100px}.reset-body .reset-item.reset-vcode .reset-setpwd-input[data-v-10973acc]{padding-right:50px}.reset-body .reset-item.reset-vcode .reset-vcode-get[data-v-10973acc]{display:block;position:absolute;right:50px;top:8px;font-size:14px;line-height:18px;padding-left:10px;border-left:1px solid #efefef;cursor:pointer}.reset-body .reset-item.reset-vcode .reset-vcode-image[data-v-10973acc]{display:block;margin:5px 0 5px 160px;border:1px solid #d8d8d8;padding:8px 100px 10px 10px;position:absolute;bottom:-55px;left:0;-webkit-transition:all .3s;transition:all .3s}.reset-body .reset-item.reset-vcode .reset-vcode-image>img[data-v-10973acc]{display:block;width:96px;position:absolute;right:0;top:0;cursor:pointer}.reset-body .reset-item.reset-vcode .reset-vcode-image[data-v-10973acc]:before{content:"";position:absolute;top:-5px;right:10%;display:block;width:8px;height:8px;border-width:1px 1px 0 0;border-color:#999 #999 transparent transparent;border-style:solid;-webkit-transform:rotate(-45deg);transform:rotate(-45deg);background:#fff;z-index:1}.reset-body .reset-item.reset-vcode .reset-vcode-image-input[data-v-10973acc]{font-size:16px;line-height:24px;border:none;border:1px solid #d8d8d8;outline:none;width:120px;position:relative;padding-right:0}.reset-body .reset-item.reset-vcode .reset-vcode-image-input[data-v-10973acc]:focus{border:1px solid #353a47}.reset-body .reset-item.reset-vcode .reset-vcode-image-input.warning[data-v-10973acc]{border:1px solid #e6394d}.reset-body .reset-item.reset-vcode .reset-vcode-image-confirm[data-v-10973acc]{display:inline-block;position:absolute;height:26px;border-radius:10px;text-align:center;font-size:14px;line-height:26px;width:60px;top:8px;color:#fff;right:10px;cursor:pointer;background:gray}.reset-body .reset-item.reset-vcode .reset-vcode-image-confirm .active[data-v-10973acc]{background:#e6394d}.reset-body .reset-item.reset-setpwd[data-v-10973acc]{margin-top:20px}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget[data-v-10973acc]{display:block;position:absolute;right:50px;top:8px;font-size:14px;line-height:18px;padding-left:10px;cursor:pointer}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch[data-v-10973acc]{display:none}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch:empty~label[data-v-10973acc]{display:inline-block;position:relative}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch:empty~label>i[data-v-10973acc]{opacity:0;cursor:pointer}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch:empty~label[data-v-10973acc]:before{content:"\E60D";font-size:24px;font-family:iconfont;position:absolute;left:0;top:0;display:block}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch:checked~label[data-v-10973acc]{display:inline-block;position:relative}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch:checked~label>i[data-v-10973acc]{opacity:0;cursor:pointer}.reset-body .reset-item.reset-setpwd .reset-setpwd-forget .reset-pwd-switch:checked~label[data-v-10973acc]:before{content:"\E60C";font-family:iconfont;font-size:24px;position:absolute;left:0;top:0;display:block}.reset-body .reset-btn[data-v-10973acc]{margin:20px 40px;width:360px;height:48px;background-color:#e6394d;cursor:pointer;text-align:center;color:#fff;line-height:48px;font-size:16px;letter-spacing:12px}.success[data-v-10973acc]{width:440px;left:0}.success-body[data-v-10973acc],.success[data-v-10973acc]{display:block;position:relative;height:608px;background:#fff}.success-body[data-v-10973acc]{background-size:cover}.success-body .success-login[data-v-10973acc],.success-body .success-register[data-v-10973acc],.success-body .success-reset[data-v-10973acc]{padding-top:180px}.success-body .success-login .iconfont[data-v-10973acc],.success-body .success-register .iconfont[data-v-10973acc],.success-body .success-reset .iconfont[data-v-10973acc]{font-size:80px;color:#e6394d;text-align:center;display:block}.success-body .success-login .success-text[data-v-10973acc],.success-body .success-register .success-text[data-v-10973acc],.success-body .success-reset .success-text[data-v-10973acc]{color:#e6394d;font-size:18px;text-align:center}.success-body .success-login .success-timer[data-v-10973acc],.success-body .success-register .success-timer[data-v-10973acc],.success-body .success-reset .success-timer[data-v-10973acc]{color:#999;font-size:14px;text-align:center}.success-body .success-reset-go-login[data-v-10973acc]{margin:20px 40px;margin-top:100px;width:360px;height:48px;background-color:#e6394d;cursor:pointer;text-align:center;color:#fff;line-height:48px;font-size:16px;letter-spacing:12px}</style><style data-vue-ssr-id="f28234d4:0">.modal[data-v-0f33f7e0]{z-index:200}.login-modal .modal-content[data-v-0f33f7e0]{overflow:hidden;width:440px;margin:0 20px}.login-modal .modal-content .modal-close[data-v-0f33f7e0]{position:absolute;z-index:100;top:10px;right:10px}.login-modal .modal-content .modal-close[data-v-0f33f7e0]:after,.login-modal .modal-content .modal-close[data-v-0f33f7e0]:before{background-color:#999}</style>
+    <!--[if lt IE 10]>
+    <script>
+        document.write(
+                '<style>body {margin: 0} .ie-alert {height: 60px;line-height: 60px; background: #ffdd57; margin: 0; text-align: center}.ie-alert a {font-weight: bold}</style><div class="ie-alert">你的浏览器实在<strong>太旧了</strong>，以致于我们的网页都不能正常显示了，切换其他浏览器或者升级浏览器再来访问吧！<a target="_blank" href="http://browsehappy.osfipin.com">立即升级</a></div>'
+        )
+    </script>
+    <![endif]-->
+    <script>
+        function getLocalTime(nS) {
+            return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/,' ');
+        }
+    </script>
 </head>
-<body th:replace="layout :: common_body(~{::div.contain_content})">
+<body data-n-head="">
+<div data-server-rendered="true" id="__nuxt">
+    <div class="nuxt-progress" style="width:0%;height:2px;background-color:#3B8070;opacity:0;"></div>
+    <div id="__layout">
+        <div>
+            <nav class="nav has-shadow" data-v-789bdac6>
+                <div class="container" data-v-789bdac6>
+                    <div class="nav-left" data-v-789bdac6><a href="/" class="nav-item logo" data-v-789bdac6><h1
+                            class="slogan" data-v-789bdac6>选题材抓龙头，就用选股宝 xuangubao.cn |
+                        选股宝，一款主打“主题投资”的A股资讯神器，每日根据用户个性化关注主题，推送最新、最快、最狠的消息，帮助第一时间抓住机会。</h1><img
+                            src="https://image.xuangubao.cn/pc/images/pclogo.png" alt="选股宝 logo" data-v-789bdac6></a><a
+                            href="/" class="nav-item" data-v-789bdac6>
+                        7 x 24
+                    </a><a href="/zhutiku" target="_blank" class="nav-item" data-v-789bdac6>
+                        主题库
+                    </a><a href="/dingpan" target="_blank" class="nav-item" data-v-789bdac6>
+                        智能盯盘
+                        <img src="/img/HOT.png" class="is-hot" data-v-789bdac6></a><a href="/yuanchuang" target="_blank"
+                                                                                      class="nav-item" data-v-789bdac6>
+                        原创
+                    </a>
+                        <div target="_blank" class="nav-item" data-v-0a76a5aa data-v-789bdac6><span
+                                data-v-0a76a5aa>精选<img src="/img/new.png" class="is-hot" data-v-0a76a5aa></span>
+                            <ul class="nav-dropdown false" data-v-0a76a5aa>
+                                <li data-v-0a76a5aa><a href="/kechuangzaozhidao" target="_blank"
+                                                       data-v-0a76a5aa>科创板早知道</a></li>
+                                <li data-v-0a76a5aa><a href="/tuoshuiyanbao" target="_blank" data-v-0a76a5aa>脱水研报</a>
+                                </li>
+                                <li data-v-0a76a5aa><a href="/tuoshuidiaoyan" target="_blank" data-v-0a76a5aa>脱水调研</a>
+                                </li>
+                                <li data-v-0a76a5aa><a href="/zaozhidao" target="_blank" data-v-0a76a5aa>选股宝早知道</a></li>
+                                <li data-v-0a76a5aa><a href="/panzhongtufa" target="_blank" data-v-0a76a5aa>选股宝盘中突发</a>
+                                </li>
+                                <li data-v-0a76a5aa><a href="/zhangjiazaozhidao" target="_blank" data-v-0a76a5aa>选股宝涨价早知道</a>
+                                </li>
+                                <li data-v-0a76a5aa><a href="/shandiankuaiping" target="_blank" data-v-0a76a5aa>闪电快评</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="nav-right" data-v-789bdac6><span class="search-input" data-v-789bdac6><form
+                            autocomplete="off" action data-v-789bdac6><input type="password" name="passworddd"
+                                                                             autocomplete="off"
+                                                                             style="position:absolute;display:none"
+                                                                             data-v-789bdac6><input type="text"
+                                                                                                    name="fakeusernameremembered"
+                                                                                                    style="display:none"
+                                                                                                    data-v-789bdac6><input
+                            id="search" name="fidddel1dd" autocomplete="nope" placeholder="搜主题/个股/文章" value=""
+                            class="choose-input choosepop" data-v-789bdac6><i class="iconfont icon-sousuo"
+                                                                              data-v-789bdac6></i>
+                        <!----></form></span><span data-type="login" class="go-login nav-item" data-v-789bdac6>登录</span><span
+                            data-type="register" class="go-login nav-item" data-v-789bdac6>注册</span></div>
+                </div>
+            </nav>
+            <div id="nuxt-layout-container">
+                <div class="stock" data-v-3e1e2b27>
+                    <div class="stock-info" data-v-3e1e2b27>
+                        <div class="stock-info-main" data-v-3e1e2b27>
+                            <div class="stock-info-top" data-v-3e1e2b27><span class="stock-info-title" data-v-3e1e2b27>[[${stock.name}]]</span><span
+                                    class="stock-info-symbol" data-v-3e1e2b27>[[${stock.code}]].[[${stock.bourse}]]</span></div>
+                            <div class="stock-info-middle" data-v-3e1e2b27><span
+                                    class="stock-info-price stock-info-price-change-value -market-color--decline"
+                                    data-v-3e1e2b27>19.64</span><span
+                                    class="stock-info-pxchange stock-info-price-change-value -market-color--decline"
+                                    data-v-3e1e2b27>-1.65%</span></div>
+                            <div class="stock-info-bottom" data-v-3e1e2b27>2019/03/19 13:57交易中</div>
+                        </div>
+                        <div class="stock-info-bkj" data-v-3e1e2b27="">
+                            <div data-v-3e1e2b27="" class="related-subject">
+                                <div class="swiper-container swiper-container-horizontal">
+                                    <div class="swiper-wrapper">
+                                        <div class="swiper-slide swiper-slide-active" style="width: 100%;" id="stock_plate">
+                                            <a target="_blank" href="/theme/16827022" class="related-subject-item -market-color--rise">
+                                                <div class="related-subject-item-name">彩票</div>
+                                                <div class="related-subject-item-rate">+1.59%</div>
+                                            </a>
+                                            <a target="_blank" href="/theme/17006066"
+                                               class="related-subject-item -market-color--decline">
+                                            <div class="related-subject-item-name">券商</div>
+                                            <div class="related-subject-item-rate">-0.29%</div>
+                                        </a><a target="_blank" href="/theme/17189249"
+                                               class="related-subject-item -market-color--rise">
+                                            <div class="related-subject-item-name">创业板人气股</div>
+                                            <div class="related-subject-item-rate">+0.05%</div>
+                                        </a><a target="_blank" href="/theme/17347449"
+                                               class="related-subject-item -market-color--rise">
+                                            <div class="related-subject-item-name">互联网金融</div>
+                                            <div class="related-subject-item-rate">+0.74%</div>
+                                        </a><a target="_blank" href="/theme/17980978"
+                                               class="related-subject-item -market-color--rise">
+                                            <div class="related-subject-item-name">移动支付</div>
+                                            <div class="related-subject-item-rate">+1.15%</div>
+                                        </a>
+                                        <a target="_blank"
+                                                                                           href="/theme/20922194"
+                                                                                           class="related-subject-item -market-color--rise">
+                                            <div class="related-subject-item-name">大数据</div>
+                                            <div class="related-subject-item-rate">+1.22%</div>
+                                        </a><a target="_blank" href="/theme/30923713"
+                                               class="related-subject-item -market-color--decline">
+                                            <div class="related-subject-item-name">金改</div>
+                                            <div class="related-subject-item-rate">-0.07%</div>
+                                        </a>
+                                            <a target="_blank" href="/theme/32264745" class="related-subject-item -market-color--decline">
+                                            <div class="related-subject-item-name">MSCI</div>
+                                            <div class="related-subject-item-rate">-0.19%</div>
+                                        </a>
+
+                                        </div>
+                                    </div>
+                                    <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stock-main" data-v-3e1e2b27>
+                        <div class="stock-main-body" data-v-3e1e2b27>
+                            <div class="stock-main-body-iframe" data-v-3e1e2b27>
+                                <iframe src="https://wallstreetcn.com/markets/widget/ashares/300059.SZ"
+                                        data-v-3e1e2b27></iframe>
+                            </div>
+                        </div>
+                        <div class="stock-main-slidebar" data-v-3e1e2b27>
+                            <div class="stock-zhibiao-title" data-v-3e1e2b27>主要指标</div>
+                            <div class="stock-zhibiao" data-v-37760ce0 data-v-3e1e2b27>
+                                <div class="zhibiao-item" data-v-37760ce0>
+                                    <span class="zhibiao-item-label" data-v-37760ce0>最新</span>
+                                    <span class="zhibiao-item-text -market-color--decline" data-v-37760ce0>19.64</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0>
+                                    <span class="zhibiao-item-label" data-v-37760ce0>开盘价</span>
+                                    <span class="zhibiao-item-text -market-color--decline" data-v-37760ce0>19.79</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>涨跌</span><span
+                                        class="zhibiao-item-text -market-color--decline" data-v-37760ce0>-0.33</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>最高价</span><span
+                                        class="zhibiao-item-text -market-color--rise" data-v-37760ce0>19.99</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>涨幅</span><span
+                                        class="zhibiao-item-text -market-color--decline" data-v-37760ce0>-1.65%</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>最低价</span><span
+                                        class="zhibiao-item-text -market-color--decline" data-v-37760ce0>19.63</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>换手</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>3.43%</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>成交量</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>142.5万手</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>量比</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>0.62</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>成交额</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>28.2亿</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>流通股本</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>41.5亿</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>总股本</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>51.7亿</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>流通市值</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>815.8亿</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0><span class="zhibiao-item-label"
+                                                                                data-v-37760ce0>总市值</span><span
+                                        class="zhibiao-item-text" data-v-37760ce0>1015.1亿</span></div>
+                                <div class="zhibiao-item" data-v-37760ce0>
+                                    <span class="zhibiao-item-label" data-v-37760ce0>市盈率TTM</span>
+                                    <span class="zhibiao-item-text" data-v-37760ce0>105.88</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0>
+                                    <span class="zhibiao-item-label" data-v-37760ce0>市净率</span>
+                                    <span class="zhibiao-item-text" data-v-37760ce0>105.88</span>
+                                </div>
+                                <div class="zhibiao-item" data-v-37760ce0>
+                                    <span class="zhibiao-item-label" data-v-37760ce0>每股净资产</span>
+                                    <span class="zhibiao-item-text" data-v-37760ce0>105.88</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stock-detail" data-v-46d72079 data-v-3e1e2b27>
+                        <div class="stock-detail-main" data-v-46d72079>
+                            <div class="stock-detail-tab" data-v-46d72079><span class="stock-detail-tab-item checked"
+                                                                                data-v-46d72079>新闻</span><span
+                                    class="stock-detail-tab-item" data-v-46d72079>公告</span><span
+                                    class="stock-detail-tab-item" data-v-46d72079>研报</span>
+                            </div><!----><!----><!---->
+                            <div data-v-46d72079="" class="stock-news" id="stock-news">
 
 
-<div class="contain_content">
-    <script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
-    <script src="https://img.highcharts.com.cn/highstock/highstock.js"></script>
-    <script src="https://img.highcharts.com.cn/highcharts/modules/exporting.js"></script>
-    <script src="https://img.highcharts.com.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
-    <script src="https://img.highcharts.com.cn/highcharts/modules/drag-panes.js"></script>
-    <link href="http://img1.cache.netease.com/f2e/finance/gegu/s.1064000.css" rel="stylesheet" type="text/css"
-          charset="utf-8">
+                                <a th:each="item:${news}" data-v-3adf8bdc="" data-v-46d72079="" target="_blank" th:href="${item.Url}" class="stock-news-item">
+                                    <p data-v-3adf8bdc="" class="stock-news-title" th:text="${item.Title}">对比国外龙头，谁是中国的工业大麻产业领导者？</p>
+                                    <p data-v-3adf8bdc="" class="stock-news-time"><i data-v-3adf8bdc="" class="iconfont icon-shijianicon"></i>
+                                        <span >
+                                            <script> document.write(getLocalTime([[${item.CreatedAt}]]))</script>
+
+                                        </span>
+                                    </p>
+                                </a>
 
 
-    <div class="navbar has-shadow" style="position: relative; top: 1px;">
-        <div class="container">
-            <div class="navbar-tabs">
-                <a href="#" class="navbar-item is-tab is-active">K线图</a>
-                <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+ code}"
-                   target="_blank">基本面</a>
-                <a class="navbar-item is-tab" th:href="${'http://stockpage.10jqka.com.cn/'+code+'/field/#fieldstatus'}"
-                   target="_blank">行业地位</a>
-                <a class="navbar-item is-tab" th:href="${'/stock/analyse?code='+code}" target="_blank">股票诊断</a>
-                <a class="navbar-item is-tab" th:href="${'/invest/list?code='+code}" target="_blank">持股</a>
-                <!--<a href="#" class="navbar-item is-tab">专栏</a>-->
-                <!--<a href="#" class="navbar-item is-tab">Live</a>-->
-                <!--<a href="#" class="navbar-item is-tab">私家课</a>-->
-                <!--<a href="#" class="navbar-item is-tab">电子书</a>-->
+                                </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <footer class="footer"><p><a
+                    href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010102003447" target="_blank"
+                    class="beian"><img src="/img/beian.png" alt="沪公网安备 31010102003447号" class="gongan">沪公网安备
+                31010102003447号
+            </a></p>
+                <p>© 2016 - 2019 选股宝-上海阿牛信息科技有限公司 xuangubao.cn
+                    <a href="http://www.miitbeian.gov.cn" target="_blank" class="beian">沪ICP备13019121号-4</a></p>
+                <p>
+                    联系微信：xuangumei666
+                    <span class="work-time">工作时间：周一至周五 9:30-18:30</span><span
+                        class="work-time">中国（上海）自由贸易试验区张杨路707号二层西区</span><span class="work-time">风险提示：市场有风险，投资需谨慎</span>
+                </p>
+                <p class="friend-link-container">
+                    友情链接:
+                    <a target="_blank" rel="noreferrer noopener" href="https://www.wallstreetcn.com/?from=xuangubao"
+                       class="friend-link">华尔街见闻</a><span class="line-divider"></span><a target="_blank"
+                                                                                         rel="noreferrer noopener"
+                                                                                         href="http://www.tubiaojia.com"
+                                                                                         class="friend-link">图表家</a><span
+                        class="line-divider"></span><a target="_blank" rel="noreferrer noopener"
+                                                       href="https://www.ipo3.com" class="friend-link">犀牛之星</a><span
+                        class="line-divider"></span><a target="_blank" rel="noreferrer noopener"
+                                                       href="https://www.caishiv.com" class="friend-link">财视中国</a><span
+                        class="line-divider"></span><a target="_blank" rel="noreferrer noopener"
+                                                       href="http://www.123.com.cn" class="friend-link">云掌财经</a><span
+                        class="line-divider"></span><a target="_blank" rel="noreferrer noopener"
+                                                       href="https://www.longau.com" class="friend-link">龙讯财经</a><span
+                        class="line-divider"></span><a target="_blank" rel="noreferrer noopener"
+                                                       href="http://www.315i.com" class="friend-link">金联创</a><span
+                        class="line-divider"></span><a href="http://sj.zol.com.cn/">ZOL手机应用</a><span
+                        class="line-divider"></span><a target="_blank" rel="noreferrer noopener"
+                                                       href="http://www.bkill.com" class="friend-link">比克尔下载</a></p>
+            </footer>
+
         </div>
     </div>
-    <div class="section">
-        <div class="container">
-            <div class="tile">
-                <div class="tile is-vertical is-parent is-8">
-                    <div class="">
-
-                        <div class="media">
-                            <!--<script type="text/javascript" th:src="${'http://hq.sinajs.cn/list='+stock.ecode}"-->
-                                    <!--charset="gb2312">-->
-                            <!--</script>-->
-
-
-                            <div class="stock_info">
-                                <table>
-                                    <tbody>
-                                    <tr>
-                                        <td class="col_1">
-                                            <h1 class="name">
-                                                <a href="/1300059.html">[[${name}]]</a>
-                                                <span>(<a href="/1300059.html">[[${code}]]</a>)</span>
-                                            </h1>
-                                        </td>
-                                        <td class="col_2">
-                                            <div class="stock_detail">
-                                                <table style="width:825px">
-                                                    <tbody>
-                                                    <tr>
-                                                        <td class="price">
-                                                            <span class="price_arrow "><strong class=" " id="price">--</strong></span>
-                                                            <em class=" " id="updown">0.00</em><br>
-                                                            <em class=" " id="percent">0.00%</em>
-                                                        </td>
-                                                        <td>今开：<strong class=" " id="open">--</strong><br>
-                                                            昨收：<strong class=" " id="yestclose">--</strong>
-                                                        </td>
-                                                        <td>最高：<strong id="high" class=" ">--</strong><br>
-                                                            最低：<strong id="low" class=" ">--</strong></td>
-                                                        <td>成交量：<strong id="volume">0万手</strong><br>
-                                                            成交额：<strong id="turnover">0亿</strong>
-                                                        </td>
-                                                        <td>量比：<strong id="liangbi">0</strong><br>换手：<strong id="huanshou">0%</strong>
-                                                        </td>
-
-                                                    </tr>
-                                                    <tr class="stock_bref">
-                                                        <td><span _ntesquote_="code:1300059;attr:time"
-                                                                  class="refresh_time">2019/03/18 15:59:36</span></td>
-                                                        <td>流通市值：<span id="ltsz">1,032亿</span><br />
-                                                            总市值：<span id="zsz">1,032亿</span><br />
-                                                        </td>
-                                                        <td title="市盈率=最新股价/最近四个季度每股收益之和">市盈率：<span id="syl">107.48</span><br />
-                                                            市净率：<span id="sjl">107.48</span>
-                                                        </td>
-                                                        <td>振 幅：<span class="cRed" id="zhenfu">22.88</span></td>
-                                                        <td>
-                                                            <!--52周最低：<span class="cGreen">10.03</span>-->
-                                                        </td>
-
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="box">
-                        <div class="media">
-                            <div class="media-content">
-                                <div class="content">
-                                    <div id="container" style="min-width:400px;height:600px">图表加载中...</div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="tile is-vertical is-parent">
-                    <div class="card">
-                        <div class="card-header">
-                            <p class="card-header-title">相关结果</p>
-                        </div>
-                        <div class="card-content">
-                            <div class="media">
-                                <!--<div class="media-left">-->
-                                <!--<figure class="image is-64x64">-->
-                                <!--<img src="https://bulma.io/images/placeholders/128x128.png" alt="">-->
-                                <!--</figure>-->
-                                <!--</div>-->
-                                <div class="media-content">
-                                    <p>
-                                        <strong>持股数量：[[${stock.quantity}]]</strong>
-                                        <span class="tag is-gray">专栏</span></p>
-                                    <p>
-                                        1.6K 关注 | 12 篇文章
-                                    </p>
-                                </div>
-
-                                <div class="media-content">
-                                    <a target="_blank" class="button is-info" href="/invest/add">交易</a>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <p class="card-header-title">五档盘口</p>
-                        </div>
-                        <div class="card-content">
-                            <div class="compare_cont border_box">
-                                <div class="title_02">
-                                    <!-- TODO 需要处理处理！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！-->
-                                    <div class="bottom_line wbwc_title"><span>委比：<em id="buysell_wb">41.95%</em></span><span>委差：<em id="buysell_wc">21,986</em></span></div>
-                                </div>
-                                <table>
-                                    <tbody><tr>
-                                        <td>卖五</td>
-                                        <td _ntesquote_="code:1300059;attr:ask5;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">20.02</td>
-                                        <td _ntesquote_="code:1300059;attr:askvol5;/:100;fixed:0">1920</td>
-                                    </tr>
-                                    <tr>
-                                        <td>卖四</td>
-                                        <td _ntesquote_="code:1300059;attr:ask4;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">20.01</td>
-                                        <td _ntesquote_="code:1300059;attr:askvol4;/:100;fixed:0">1445</td>
-                                    </tr>
-                                    <tr>
-                                        <td>卖三</td>
-                                        <td _ntesquote_="code:1300059;attr:ask3;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">20.00</td>
-                                        <td _ntesquote_="code:1300059;attr:askvol3;/:100;fixed:0">6523</td>
-                                    </tr>
-                                    <tr>
-                                        <td>卖二</td>
-                                        <td _ntesquote_="code:1300059;attr:ask2;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.99</td>
-                                        <td _ntesquote_="code:1300059;attr:askvol2;/:100;fixed:0">2695</td>
-                                    </tr><tr>
-                                        <td>卖一</td>
-                                        <td _ntesquote_="code:1300059;attr:ask1;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.98</td>
-                                        <td _ntesquote_="code:1300059;attr:askvol1;/:100;fixed:0">2627</td>
-                                    </tr>
-                                    </tbody></table>
-                                <div class="title_02">
-                                    <div class="bottom_line  wbwc_title"><span>当前价(元)：<em><span _ntesquote_="code:1300059;attr:price;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.97</span></em></span></div>
-                                </div>
-                                <table>
-                                    <tbody><tr>
-                                        <td>买一</td>
-                                        <td _ntesquote_="code:1300059;attr:bid1;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.97</td>
-                                        <td _ntesquote_="code:1300059;attr:bidvol1;/:100;fixed:0">3819</td>
-                                    </tr>
-                                    <tr>
-                                        <td>买二</td>
-                                        <td _ntesquote_="code:1300059;attr:bid2;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.96</td>
-                                        <td _ntesquote_="code:1300059;attr:bidvol2;/:100;fixed:0">17244</td>
-                                    </tr>
-                                    <tr>
-                                        <td>买三</td>
-                                        <td _ntesquote_="code:1300059;attr:bid3;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.95</td>
-                                        <td _ntesquote_="code:1300059;attr:bidvol3;/:100;fixed:0">11881</td>
-                                    </tr>
-                                    <tr>
-                                        <td>买四</td>
-                                        <td _ntesquote_="code:1300059;attr:bid4;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.94</td>
-                                        <td _ntesquote_="code:1300059;attr:bidvol4;/:100;fixed:0">3517</td>
-                                    </tr>
-                                    <tr>
-                                        <td>买五</td>
-                                        <td _ntesquote_="code:1300059;attr:bid5;fixed:2;color:updown" class="                                                                                                                                                                                                                                                                                                             cRed">19.93</td>
-                                        <td _ntesquote_="code:1300059;attr:bidvol5;/:100;fixed:0">736</td>
-                                    </tr>
-                                    </tbody></table>
-                                <div class="title_02  wbwc_title" style="border-bottom:none;"><span>外盘：<em class="cRed">1570670手</em></span><span>内盘：<em class="cGreen">1317094手</em></span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div><!-- container -->
-    </div>
-
+</div>
+<script src="https://img.highcharts.com.cn/jquery/jquery-1.8.3.min.js"></script>
 <script>
 
-</script>
-    <script type="text/javascript" th:src="${'http://qt.gtimg.cn/q='+stock.ecode}"></script>
-    <script>
-        var code = '[[${ecode}]]';
-        //网易股票数据处理
-        function _ntes_quote_callback65642556(result){
-            // alert(JSON.stringify(result));
-            // alert(JSON.stringify(result['1300059']));
-            var data = result[code];
+    $(function () {
+        //加载股票交易信息
+        var url = 'https://api-ddc.wallstreetcn.com/market/real?fields=prod_name,last_px,px_change,px_change_rate,high_px,low_px,open_px,preclose_px,amplitude,turnover_ratio,pe_rate,dyn_pe,dyn_pb_rate,market_value,circulation_value,turnover_volume,turnover_value,hq_type_code,securities_type,volume_ratio,circulation_shares,total_shares,bps,trade_status,update_time&prod_code=[[${stock.code}]].[[${stock.bourse}]]';
 
-            //涨跌幅
-            var percent = data['percent'] * 100;
-            if(percent>0) {
-                $("#percent").addClass("cRed");
-                $("#percent").removeClass("cGreen");
-                $("#percent").text(percent.toFixed(2) + "%");
-            }else{
-                $("#percent").addClass("cGreen");
-                $("#percent").removeClass("cRed");
-                $("#percent").text(percent.toFixed(2) + "%");
-            }
-            //当前价格
-            var price = data['price'];
-            if(percent>0) {
-                $("#price").addClass("cRed");
-                $("#price").removeClass("cGreen");
-                $("#price").text(price.toFixed(2));
-                $("#price").parent().removeClass("down");
-                $("#price").parent().addClass("up");
-            }else{
-                $("#price").addClass("cGreen");
-                $("#price").removeClass("cRed");
-                $("#price").text(price.toFixed(2));
-                $("#price").parent().removeClass("up");
-                $("#price").parent().addClass("down");
-            }
-
-            //涨跌金额
-            var updown=data['updown'];
-            if(updown>0) {
-                $("#updown").addClass("cRed");
-                $("#updown").removeClass("cGreen");
-                $("#updown").text(updown);
-            }else{
-                $("#updown").addClass("cGreen");
-                $("#updown").removeClass("cRed");
-                $("#updown").text(updown);
-            }
-
-            //今开
-            var open = data['open'];
-            if(percent>0) {
-                $("#open").addClass("cRed");
-                $("#open").removeClass("cGreen");
-                $("#open").text(open);
-            }else{
-                $("#open").addClass("cGreen");
-                $("#open").removeClass("cRed");
-                $("#open").text(open);
-            }
-            //昨收
-            var yestclose = data['yestclose'];
-            if(percent>0) {
-                $("#yestclose").addClass("cRed");
-                $("#yestclose").removeClass("cGreen");
-                $("#yestclose").text(yestclose);
-            }else{
-                $("#yestclose").addClass("cGreen");
-                $("#yestclose").removeClass("cRed");
-                $("#yestclose").text(yestclose);
-            }
-
-            //最高
-            var high = data['high'];
-            if(percent>0) {
-                $("#high").addClass("cRed");
-                $("#high").removeClass("cGreen");
-                $("#high").text(high);
-            }else{
-                $("#high").addClass("cGreen");
-                $("#high").removeClass("cRed");
-                $("#high").text(open);
-            }
-            //最低
-            var low = data['low'];
-            if(percent>0) {
-                $("#low").addClass("cRed");
-                $("#low").removeClass("cGreen");
-                $("#low").text(low);
-            }else{
-                $("#low").addClass("cGreen");
-                $("#low").removeClass("cRed");
-                $("#low").text(low);
-            }
-
-            //成交量
-            var volume = data['volume'];
-            $("#volume").text((volume / 1000000).toFixed(2)+"万手")
-
-            //成交额
-            var turnover = data['turnover'];
-            $("#turnover").text((turnover / 100000000).toFixed(2)+"亿");
-
-            // alert(percent);
-        }
-
-        //腾讯股票数据处理
-        function gtimg(result){
-            var data = v_[[${stock.ecode}]].split('~');
-            //涨跌幅
-            var percent = parseFloat(data[32]);
-            if(percent>0) {
-                $("#percent").addClass("cRed");
-                $("#percent").removeClass("cGreen");
-                $("#percent").text(percent.toFixed(2) + "%");
-            }else{
-                $("#percent").addClass("cGreen");
-                $("#percent").removeClass("cRed");
-                $("#percent").text(percent.toFixed(2) + "%");
-            }
-            //当前价格
-            var price = parseFloat(data[3]);
-            if(percent>0) {
-                $("#price").addClass("cRed");
-                $("#price").removeClass("cGreen");
-                $("#price").text(price.toFixed(2));
-                $("#price").parent().removeClass("down");
-                $("#price").parent().addClass("up");
-            }else{
-                $("#price").addClass("cGreen");
-                $("#price").removeClass("cRed");
-                $("#price").text(price.toFixed(2));
-                $("#price").parent().removeClass("up");
-                $("#price").parent().addClass("down");
-            }
-
-            //涨跌金额
-            var updown=data[31];
-            if(updown>0) {
-                $("#updown").addClass("cRed");
-                $("#updown").removeClass("cGreen");
-                $("#updown").text(updown);
-            }else{
-                $("#updown").addClass("cGreen");
-                $("#updown").removeClass("cRed");
-                $("#updown").text(updown);
-            }
-
-            //今开
-            var open = data[5];
-            if(percent>0) {
-                $("#open").addClass("cRed");
-                $("#open").removeClass("cGreen");
-                $("#open").text(open);
-            }else{
-                $("#open").addClass("cGreen");
-                $("#open").removeClass("cRed");
-                $("#open").text(open);
-            }
-            //昨收
-            var yestclose = data[4];
-            if(percent>0) {
-                $("#yestclose").addClass("cRed");
-                $("#yestclose").removeClass("cGreen");
-                $("#yestclose").text(yestclose);
-            }else{
-                $("#yestclose").addClass("cGreen");
-                $("#yestclose").removeClass("cRed");
-                $("#yestclose").text(yestclose);
-            }
-
-            //最高
-            var high = data[33];
-            if(percent>0) {
-                $("#high").addClass("cRed");
-                $("#high").removeClass("cGreen");
-                $("#high").text(high);
-            }else{
-                $("#high").addClass("cGreen");
-                $("#high").removeClass("cRed");
-                $("#high").text(open);
-            }
-            //最低
-            var low = data[34];
-            if(percent>0) {
-                $("#low").addClass("cRed");
-                $("#low").removeClass("cGreen");
-                $("#low").text(low);
-            }else{
-                $("#low").addClass("cGreen");
-                $("#low").removeClass("cRed");
-                $("#low").text(low);
-            }
-
-            //成交量
-            var volume = parseFloat(data[36]);
-            $("#volume").text((volume / 10000).toFixed(2)+"万手")
-
-            //成交额
-            var turnover = parseFloat(data[37]);
-            // alert(data[37])
-            $("#turnover").text((turnover / 10000).toFixed(2)+"亿");
-
-            //换手率
-            var huanshou = data[38];
-            // alert(huanshou);
-            $("#huanshou").text(huanshou+"%");
-            //量比
-            var liangbi = data[49];
-            $("#liangbi").text(liangbi);
-            // alert(liangbi);
-
-            //流通市值、总市值
-            var ltsz= data[44];
-            // alert(ltsz);
-            $("#ltsz").text(ltsz+"亿")
-            var zsz = data[45];
-            // alert(zsz);
-            $("#zsz").text(zsz+"亿");
-            //市净率
-            var sjl = data[46];
-            // alert(sjl);
-            $("#sjl").text(sjl);
-            //市盈率
-            var syl = data[39];
-            // alert(syl)
-            $("#syl").text(syl);
-            //振幅zhenfu
-            var zhenfu = data[43];
-            $("#zhenfu").text(zhenfu+"%");
-
-            // alert(vArr[46]);
-            // alert(vArr[31]);
-            // alert(vArr[32]);
-        }
-        $(function () {
-            Highcharts.setOptions({
-                lang: {
-                    rangeSelectorZoom: ''
+        $.get(url,function (res) {
+            if(res.code==20000){
+               var rdata = res.data.snapshot['[[${stock.code}]].[[${stock.bourse}]]'];
+               var px_change = rdata[2];
+               if(px_change>=0){
+                   $(".stock-info-price").removeClass("-market-color--decline");
+                   $(".stock-info-price").addClass("-market-color--rise");
+                   $(".stock-info-pxchange").removeClass("-market-color--decline");
+                   $(".stock-info-pxchange").addClass("-market-color--rise");
+               }
+                $(".stock-info-price").text(rdata[1].toFixed(2));
+                $(".stock-info-pxchange").text(rdata[3].toFixed(2)+"%");
+                var uptime = getLocalTime(rdata[24]);
+                var status = "交易中";
+                if(rdata[23]=='BREAK'){
+                    //休市中
+                    status="休市中";
                 }
-            });
-
-            //腾讯股票接口数据处理
-            gtimg();
-
-            //网易股票接口
-            // $("head").append("<script src='http://api.money.126.net/data/feed/"+code+",money.api?callback=_ntes_quote_callback65642556'><\/script>");
-
-            //https://data.jianshukeji.com/stock/history/000001
-            $.getJSON('/stock/kdata/[[${code}]]', function (data) {
-                if (data.code !== 1) {
-                    alert('读取股票数据失败！');
-                    return false;
+                $(".stock-info-bottom").text(uptime+status);
+                var zhibiao = $(".zhibiao-item-text");
+                // debugger
+                //主要指标
+                if(px_change>=0){
+                    //最新
+                    $(zhibiao[0]).removeClass("-market-color--decline");
+                    $(zhibiao[0]).addClass("-market-color--rise");
+                    //开盘
+                    $(zhibiao[1]).removeClass("-market-color--decline");
+                    $(zhibiao[1]).addClass("-market-color--rise");
+                    //涨跌
+                    $(zhibiao[2]).removeClass("-market-color--decline");
+                    $(zhibiao[2]).addClass("-market-color--rise");
+                    //涨幅
+                    $(zhibiao[4]).removeClass("-market-color--decline");
+                    $(zhibiao[4]).addClass("-market-color--rise");
+                    //最低价
+                    $(zhibiao[5]).removeClass("-market-color--decline");
+                    $(zhibiao[5]).addClass("-market-color--rise");
+                }else{
+                    //最新
+                    $(zhibiao[0]).removeClass("-market-color--rise");
+                    $(zhibiao[0]).addClass("-market-color--decline");
+                    //开盘
+                    $(zhibiao[1]).removeClass("-market-color--rise");
+                    $(zhibiao[1]).addClass("-market-color--decline");
+                    //涨跌
+                    $(zhibiao[2]).removeClass("-market-color--rise");
+                    $(zhibiao[2]).addClass("-market-color--decline");
+                    //涨幅
+                    $(zhibiao[4]).removeClass("-market-color--rise");
+                    $(zhibiao[4]).addClass("-market-color--decline");
+                    //最低价
+                    $(zhibiao[5]).removeClass("-market-color--rise");
+                    $(zhibiao[5]).addClass("-market-color--decline");
                 }
-                data = data.data;
-                var ohlc = [],
-                    volume = [],
-                    dataLength = data.length,
-                    // set the allowed units for data grouping
-                    groupingUnits = [
-                        [
-                            'week',                         // unit name
-                            [1]                             // allowed multiples
-                        ], [
-                            'month',
-                            [1, 2, 3, 4, 6]
-                        ]],
-                    i = 0;
-                for (i; i < dataLength; i += 1) {
-                    ohlc.push([
-                        data[i][0], // the date
-                        data[i][1], // open
-                        data[i][2], // high
-                        data[i][3], // low
-                        data[i][4] // close
-                    ]);
-                    volume.push([
-                        data[i][0], // the date
-                        data[i][5] // the volume
-                    ]);
-                }
-                // create the chart
-                var chart = Highcharts.stockChart('container', {
-                    rangeSelector: {
-                        selected: 1,
-                        inputDateFormat: '%Y-%m-%d'
-                    },
-                    title: {
-                        text: '[[${name}]]历史股价'
-                    },
-                    xAxis: {
-                        dateTimeLabelFormats: {
-                            millisecond: '%H:%M:%S.%L',
-                            second: '%H:%M:%S',
-                            minute: '%H:%M',
-                            hour: '%H:%M',
-                            day: '%m-%d',
-                            week: '%m-%d',
-                            month: '%y-%m',
-                            year: '%Y'
-                        }
-                    },
-                    tooltip: {
-                        split: false,
-                        shared: true,
-                    },
-                    yAxis: [{
-                        labels: {
-                            align: 'right',
-                            x: -3
-                        },
-                        title: {
-                            text: '股价'
-                        },
-                        height: '65%',
-                        resize: {
-                            enabled: true
-                        },
-                        lineWidth: 2
-                    }, {
-                        labels: {
-                            align: 'right',
-                            x: -3
-                        },
-                        title: {
-                            text: '成交量'
-                        },
-                        top: '65%',
-                        height: '35%',
-                        offset: 0,
-                        lineWidth: 2
-                    }],
-                    series: [{
-                        type: 'candlestick',
-                        name: '[[${name}]]',
-                        color: 'green',
-                        lineColor: 'green',
-                        upColor: 'red',
-                        upLineColor: 'red',
-                        tooltip: {},
-                        navigatorOptions: {
-                            color: Highcharts.getOptions().colors[0]
-                        },
-                        data: ohlc,
-                        dataGrouping: {
-                            units: groupingUnits
-                        },
-                        id: 'sz'
-                    }, {
-                        type: 'column',
-                        data: volume,
-                        yAxis: 1,
-                        dataGrouping: {
-                            units: groupingUnits
-                        }
-                    }]
-                });
-            });
+                //最新
+                $(zhibiao[0]).text(rdata[1].toFixed(2))
+                //开盘
+                $(zhibiao[1]).text(rdata[6].toFixed(2))
+                //涨跌
+                $(zhibiao[2]).text(rdata[2].toFixed(2))
+                //最高
+                $(zhibiao[3]).text(rdata[4].toFixed(2))
+                //涨幅
+                $(zhibiao[4]).text(rdata[3].toFixed(2)+"%")
+                //最低价
+                $(zhibiao[5]).text(rdata[5].toFixed(2))
+                //换手
+                $(zhibiao[6]).text(rdata[11].toFixed(2)+"%")
+                //成交量
+                $(zhibiao[7]).text((rdata[8]/1000000).toFixed(1)+"万手")
+                //量比
+                $(zhibiao[8]).text(rdata[19].toFixed(2));
+                //成交额
+                $(zhibiao[9]).text((rdata[16]/100000000).toFixed(1)+"亿")
+                //流通股本
+                $(zhibiao[10]).text((rdata[20]/100000000).toFixed(1)+"亿")
+                //总股本
+                $(zhibiao[11]).text((rdata[21]/100000000).toFixed(1)+"亿")
+                //流通市值
+                $(zhibiao[12]).text((rdata[14]/100000000).toFixed(1)+"亿")
+                //总市值
+                $(zhibiao[13]).text((rdata[13]/100000000).toFixed(1)+"亿")
+                //市盈率TTM
+                $(zhibiao[14]).text(rdata[11].toFixed(2))
+                //市净率
+                $(zhibiao[15]).text(rdata[12].toFixed(2))
+                //每股净资产rdata[22].toFixed(2)
+                $(zhibiao[16]).text(rdata[22].toFixed(2))
+                // alert(JSON.stringify(rdata));
+            }
+            // alert(JSON.stringify(res));
         })
 
-    </script>
+        //加载股票资讯
+        // $("head").append("https://api.xuangubao.cn/api/stocks/messages?Symbol=[[${stock.code}]].[[${stock.bourse}]]&Limit=20");
+        // $("head").append("Access-Control-Allow-Origin：*");
+        // $("head").append("Access-Control-Allow-Origin：https://api.xuangubao.cn/");
+        // $.get('https://api.xuangubao.cn/api/stocks/messages?Symbol=[[${stock.code}]].[[${stock.bourse}]]&Limit=20',function(res){
+        //     var html = '<a data-v-3adf8bdc="" data-v-46d72079="" target="_blank" href="https://bao.wallstreetcn.com/web/3rdparty/439248" class="stock-news-item">\n' +
+        //         '                                    <p data-v-3adf8bdc="" class="stock-news-title">\n' +
+        //         '                                    对比国外龙头，谁是中国的工业大麻产业领导者？\n' +
+        //         '                                    </p>\n' +
+        //         '                                    <p data-v-3adf8bdc="" class="stock-news-time"><i data-v-3adf8bdc="" class="iconfont icon-shijianicon"></i>\n' +
+        //         '                                    2019/03/15 23:43\n' +
+        //         '                                    </p>\n' +
+        //         '                                </a>';
+        //
+        //     // var news = res.Messages
+        //     $(res.Messages).each(function(i,r){
+        //         alert(r.Id);
+        //     })
+        // })
 
-</div>
+        var url3 = 'https://api.xuangubao.cn/api/stocks/messages?Symbol=[[${stock.code}]].[[${stock.bourse}]]&Limit=20';
+
+        // $.ajax({
+        //     type: "get",
+        //     url: url3,
+        //     cache :false,
+        //     // jsonp: "callback",
+        //     jsonpCallback:"callback",  //callback要与后台对应
+        //     dataType: 'JSONP',  // 处理Ajax跨域问题
+        //     success: function(data) { //【成功回调】
+        //         console.log(data);
+        //     },
+        //     error: function(xhr, type) { //【失败回调】
+        //     }
+        // });
+
+
+
+
+        var url2 = 'https://flash-api.xuangubao.cn/api/stage2/plates_by_stock?symbol=[[${stock.code}]].[[${stock.bourse}]]&fields=core_avg_pcp,plate_name';
+        $.get(url2,function (res) {
+            if(res.code == 20000){
+                $("#stock_plate").html('');
+                // debugger
+                $.each(res.data, function(i) {
+                    var html = '';
+                    if(res.data[i].core_avg_pcp>0) {
+                        html = '<a target="_blank" href="https://xuangubao.cn/theme/' + i + '" class="related-subject-item -market-color--rise">\n' +
+                            '     <div class="related-subject-item-name">' + res.data[i].plate_name + '</div>\n' +
+                            '     <div class="related-subject-item-rate">+' + (res.data[i].core_avg_pcp * 100).toFixed(2) + '%</div>\n' +
+                            '    </a>';
+                    }else{
+                        html = '<a target="_blank" href="https://xuangubao.cn/theme/' + i + '" class="related-subject-item -market-color--decline">\n' +
+                            '     <div class="related-subject-item-name">' + res.data[i].plate_name + '</div>\n' +
+                            '     <div class="related-subject-item-rate">-' + (res.data[i].core_avg_pcp * 100).toFixed(2) + '%</div>\n' +
+                            '    </a>';
+                    }
+                    console.log(i); //获取键值
+                    console.log(res.data[i]); //获取对应的value
+                    $("#stock_plate").append(html);
+                });
+                // alert(res.data.len());
+                // alert(res.data[0]['plate_name']);
+            }
+           // alert(JSON.stringify(res));
+        });
+    })
+</script>
+<!--<script type="text/javascript">window.__NUXT__ = {-->
+    <!--"layout": "default",-->
+    <!--"data": [{-->
+        <!--"symbol": "300059.SZ",-->
+        <!--"stockInfo": {-->
+            <!--"prod_name": "东方财富",-->
+            <!--"trade_status": "TRADE",-->
+            <!--"update_time": 1552975038,-->
+            <!--"last_px": 19.64,-->
+            <!--"px_change": -0.3299999999999983,-->
+            <!--"px_change_rate": -1.652478718077107,-->
+            <!--"preclose_px": 19.97,-->
+            <!--"open_px": 19.79,-->
+            <!--"high_px": 19.99,-->
+            <!--"low_px": 19.63,-->
+            <!--"amplitude": 1.8027040560841237,-->
+            <!--"turnover_ratio": 3.4311545326095856,-->
+            <!--"pe_rate": 105.87601078167117,-->
+            <!--"dyn_pe": 105.878,-->
+            <!--"dyn_pb_rate": 7.011781506604784,-->
+            <!--"market_value": 101505117910.64,-->
+            <!--"circulation_value": 81575024190.8,-->
+            <!--"turnover_volume": 142513500,-->
+            <!--"turnover_value": 2822678313.89,-->
+            <!--"hq_type_code": "",-->
+            <!--"securities_type": "stock",-->
+            <!--"volume_ratio": 0.6229591659967539,-->
+            <!--"circulation_shares": 4153514470,-->
+            <!--"total_shares": 5168285026,-->
+            <!--"bps": 2.801-->
+        <!--},-->
+        <!--"zhuti": null,-->
+        <!--"news": null,-->
+        <!--"newsMark": null-->
+    <!--}],-->
+    <!--"error": null,-->
+    <!--"state": {-->
+        <!--"auth": {"token": null, "headers": {}, "req": {}},-->
+        <!--"bubble": {"themePcr": [], "bubbleList": [], "yidong": []},-->
+        <!--"external": {"baiduTTSToken": {}},-->
+        <!--"home": {"ads": [], "hided": false},-->
+        <!--"homeMsgs": {-->
+            <!--"activeFixedSubjects": [],-->
+            <!--"hotSubjects": [],-->
+            <!--"activeHotSubjects": null,-->
+            <!--"msgs": [],-->
+            <!--"pushSettingsOpen": false,-->
+            <!--"push": {"notification": true, "audio": true, "tts": true},-->
+            <!--"isFetching": false,-->
+            <!--"reachedEnd": false,-->
+            <!--"cursor": {"headmark": "", "tailmark": "", "msgIdMark": "", "hasExplain": ""},-->
+            <!--"entities": {"msgs": {}},-->
+            <!--"entries": {"msgList": []},-->
+            <!--"mode": "live",-->
+            <!--"searchInfo": {"keyword": "", "total": "", "startDate": "", "endDate": "", "offset": 0},-->
+            <!--"loading": false-->
+        <!--},-->
+        <!--"kline": {-->
+            <!--"count": 200,-->
+            <!--"countStep": 400,-->
+            <!--"zhutiKline": [],-->
+            <!--"stockKline": {},-->
+            <!--"stockKlineFields": [],-->
+            <!--"nomoreKline": false-->
+        <!--},-->
+        <!--"login": {"login": {"show": false, "mode": 0}},-->
+        <!--"lugutong": {-->
+            <!--"financeTrendingParams": {"date": "", "limit": 10, "type": 0},-->
+            <!--"analysisParams": {"date": "20180728", "type": 0},-->
+            <!--"holdingChange": null,-->
+            <!--"financeTrendingData": {-->
+                <!--"increseHoldingStock": [],-->
+                <!--"decreseHoldingStock": [],-->
+                <!--"heavyHoldingStock": [],-->
+                <!--"profitHoldingStock": [],-->
+                <!--"deficitHoldingStock": [],-->
+                <!--"activeHoldingStock": []-->
+            <!--},-->
+            <!--"widgetsData": {-->
+                <!--"increseHoldingStock": null,-->
+                <!--"decreseHoldingStock": null,-->
+                <!--"heavyHoldingStock": null,-->
+                <!--"profitHoldingStock": null,-->
+                <!--"deficitHoldingStock": null,-->
+                <!--"activeHoldingStock": null-->
+            <!--},-->
+            <!--"basicAnalysis": {},-->
+            <!--"holdingChangeAnalysis": {}-->
+        <!--},-->
+        <!--"market": {-->
+            <!--"indexes": [{"Name": "上证指数", "Symbol": "000001.SS"}, {-->
+                <!--"Name": "深证成指",-->
+                <!--"Symbol": "399001.SZ"-->
+            <!--}, {"Name": "创业板指", "Symbol": "399006.SZ"}], "quoteChange": {}, "thermometer": {}-->
+        <!--},-->
+        <!--"premium": {"params": {"page": 1, "limit": 10}, "msgs": [], "hotMsgs": [], "subjectInfo": {}, "trialMsgs": []},-->
+        <!--"purchasedMsgs": {"params": {"limit": 10, "page": 1}, "msgs": null},-->
+        <!--"search": {-->
+            <!--"tabItems": [{"index": 0, "label": "主题", "page": 1, "checked": true}, {-->
+                <!--"index": 1,-->
+                <!--"label": "股票",-->
+                <!--"page": 1,-->
+                <!--"checked": false-->
+            <!--}, {"index": 2, "label": "文章", "page": 1, "checked": false}, {-->
+                <!--"index": 3,-->
+                <!--"label": "快讯",-->
+                <!--"page": 1,-->
+                <!--"checked": false-->
+            <!--}],-->
+            <!--"startDate": 1521439040812,-->
+            <!--"endDate": 1552975040812,-->
+            <!--"text": null,-->
+            <!--"refresh": {"zhuti": null, "stock": null, "article": null, "news": null},-->
+            <!--"result": {"zhuti": null, "stock": null, "article": null, "news": null}-->
+        <!--},-->
+        <!--"settings": {"trending": [], "ambush": [], "settings": {"JinRiJiHuiQianZhan": [], "ZhongChangXianJiHui": []}},-->
+        <!--"stock": {"real": {}, "stocks": []},-->
+        <!--"stockImage": {"stockImage": {}},-->
+        <!--"stockSummary": {-->
+            <!--"fluctuationContrastData": null,-->
+            <!--"behaviorKlineData": null,-->
+            <!--"limitContrastData": null,-->
+            <!--"raiseIncompletedKlineData": null,-->
+            <!--"temperatureVal": null,-->
+            <!--"fluctuationDistributionData": null-->
+        <!--},-->
+        <!--"stockTrend": {"trend": null, "stockList": null, "preValue": null},-->
+        <!--"subscribe": {-->
+            <!--"balance": 0,-->
+            <!--"isModalOpen": false,-->
+            <!--"message": null,-->
+            <!--"subject": {},-->
+            <!--"subjectItems": {"index": 0, "items": []},-->
+            <!--"selectedType": "",-->
+            <!--"payMethod": "",-->
+            <!--"payStatus": 0,-->
+            <!--"order": {},-->
+            <!--"errmsg": ""-->
+        <!--},-->
+        <!--"theme": {-->
+            <!--"themeInfo": null,-->
+            <!--"themeMsg": {},-->
+            <!--"plateSetInfo": {},-->
+            <!--"excpetionTheme": ["24291465", "24898553", "17864537", "19322062", "17136297", "17290881", "27912881", "27924249"],-->
+            <!--"themeStockSymbol": [],-->
+            <!--"outerStockSymbol": [],-->
+            <!--"themeStockList": [],-->
+            <!--"themeCount": {"raise": 0, "down": 0, "stable": 0},-->
+            <!--"stockReal": {},-->
+            <!--"stockLabel": {},-->
+            <!--"themeSets": [],-->
+            <!--"accessMode": 1,-->
+            <!--"stockFlow": null,-->
+            <!--"themeJinRiLongTou": null,-->
+            <!--"themeRenQiLongTou": null,-->
+            <!--"themeGoodBad": [],-->
+            <!--"eventHoverTime": null,-->
+            <!--"hideEvents": [],-->
+            <!--"financeDate": null,-->
+            <!--"finance": null,-->
+            <!--"themeFinance": null-->
+        <!--},-->
+        <!--"topgainer": {-->
+            <!--"day": null,-->
+            <!--"tags": null,-->
+            <!--"details": {},-->
+            <!--"boards": {},-->
+            <!--"offsetTopPoints": {},-->
+            <!--"activeMenuIndex": 0-->
+        <!--},-->
+        <!--"tuoshui": {-->
+            <!--"params": {"page": 1, "limit": 10},-->
+            <!--"Messages": {},-->
+            <!--"Subject": {},-->
+            <!--"NextMark": null,-->
+            <!--"hotMsgs": [],-->
+            <!--"trialMsgs": []-->
+        <!--},-->
+        <!--"user": {"userInfo": {"isLogged": false, "Token": "", "nickname": ""}},-->
+        <!--"yuanchuang": {"top": [], "latest": [], "dayRank": [], "weekRank": [], "msgs": {}},-->
+        <!--"zaozhidao": {-->
+            <!--"params": {"page": 1, "limit": 10},-->
+            <!--"Messages": {},-->
+            <!--"Subject": {},-->
+            <!--"NextMark": null,-->
+            <!--"hotMsgs": [],-->
+            <!--"trialMsgs": []-->
+        <!--},-->
+        <!--"zhutiChart": {-->
+            <!--"mode": "fenshi",-->
+            <!--"diejia": [],-->
+            <!--"originIndex": [{-->
+                <!--"name": "沪深300",-->
+                <!--"symbol": "000300.SS",-->
+                <!--"px": null,-->
+                <!--"checked": true,-->
+                <!--"_index": 0-->
+            <!--}, {"name": "深证成指", "symbol": "399001.SZ", "px": null, "checked": false, "_index": 1}, {-->
+                <!--"name": "创业板指",-->
+                <!--"symbol": "399006.SZ",-->
+                <!--"px": null,-->
+                <!--"checked": false,-->
+                <!--"_index": 2-->
+            <!--}],-->
+            <!--"timeRange": []-->
+        <!--},-->
+        <!--"zhutiTongji": {"tongji": null, "tongjiMap": {}, "stockClose": {}, "tongjiTime": null, "tongjiLoading": false},-->
+        <!--"zhutiTrend": {"trend": null, "zhutiId": null, "preValue": null},-->
+        <!--"zhutiku": {"zhutikuAsc": [], "zhutikuDesc": []}-->
+    <!--},-->
+    <!--"serverRendered": true-->
+<!--};</script>-->
+<!--<script src="https://static-alpha.wallstreetcn.com/clay/manifest.0c3dea71f6657938845b.js" defer></script>-->
+<!--<script src="https://static-alpha.wallstreetcn.com/clay/layouts/default.4bb18cc3d84b27f0e03a.js" defer></script>-->
+<!--<script src="https://static-alpha.wallstreetcn.com/clay/pages/stock/_symbol.d75a2b48b42b738b4a10.js" defer></script>-->
+<!--<script src="https://static-alpha.wallstreetcn.com/clay/vendor.0bc6b2086969cbe3314f.js" defer></script>-->
+<!--<script src="https://static-alpha.wallstreetcn.com/clay/app.d81165cd82c341503a1c.js" defer></script>-->
+
 </body>
 </html>

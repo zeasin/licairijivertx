@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_header(~{::title})">
+    <title>我的自选股-投资日记</title>
+</head>
+<body th:replace="layout :: common_body(~{::div.contain_content})">
+
+
+<div class="contain_content">
+<!--<link rel="stylesheet" href="/static/layui/css/layui.css" media="all">-->
+    <link href="/static/css/stock.css" rel="stylesheet" type="text/css"/>
+<div class="section">
+    <div class="container">
+        <div class="tile">
+            <div class="tile is-vertical is-parent">
+                <div class="box">
+                    <div class="media">
+                        <blockquote class="layui-elem-quote layui-text">
+                            我的自选股，时间久了，这就是你的大数据。1. <a href="/stock/add">添加自选股</a>
+                        </blockquote>
+                    </div>
+
+                </div>
+                <div class="box">
+                    <div class="media" th:each="item:${stock_list}">
+                        <script type="text/javascript" th:src="${'http://hq.sinajs.cn/list='+item.ecode}"
+                                charset="gb2312">
+                        </script>
+                        <div class="media-content">
+                            <div class="content">
+                                <p>
+                                    <a th:href="${'/stock/detail/'+item.code}" target="_blank">
+                                        <strong th:text="${item.name}">协程的好处有哪些？</strong>[<span th:text="${item.code}"></span>]
+                                    </a>
+                                    【<strong th:text="${item.board}"></strong>】
+                                    【<strong th:text="${item.plate}"></strong>】
+                                    <a href="javascript:;" style="color:#1E9FFF" class="chat_k" th:attr="ecode=${item.ecode}">K线图</a>
+                                    <span style="float: right;font-size:12px;color:#AAAAAA"  ><span th:text="${item.createOn}">2019-08-02 11:12</span>(<span  th:text="${#numbers.formatDecimal(item.joinPrice,0,2)}"></span>)</span>
+                                </p>
+
+                                <!--<p>-->
+                                    <!--<a class="tag is-medium is-lightblue has-addons">-->
+                                        <!--<i class="fa fa-caret-up"></i>-->
+                                        <!--<span class="icon is-medium" ><script>document.write(hq_str_[[${item.ecode}]].split(",")[3])</script></span>-->
+                                    <!--</a>-->
+                                    <!--<a class="tag is-medium is-lightblue">-->
+                                        <!--<i class="fa fa-caret-down"></i>-->
+                                    <!--</a>-->
+                                    <!--<a href="#" class="ml-10">-->
+                                        <!--<i class="fa fa-comment"></i>-->
+                                        <!--<span>成交额：<b><script>document.write(parseFloat(hq_str_[[${item.ecode}]].split(",")[9] / 100000000).toFixed(2)+"亿")</script></b></span>-->
+                                    <!--</a>-->
+                                <!--</p>-->
+                                <p class="stock_detail" >
+                                <table style="background-color: #EBEBEB">
+                                    <tbody>
+                                    <tr>
+                                        <td class="price">
+                                            <span class="price_arrow down"><strong class="cGreen" id="price">19.76</strong></span>
+                                            <em class="cGreen" id="updown">-0.21</em><br>
+                                            <em class="cGreen" id="percent">-1.05%</em>
+                                        </td>
+                                        <td>今开：<strong class="cGreen" id="open">19.79</strong><br>
+                                            昨收：<strong class="cGreen" id="yestclose">19.97</strong>
+                                        </td>
+                                        <td>最高：<strong id="high" class="cGreen">19.79</strong><br>
+                                            最低：<strong id="low" class="cGreen">19.68</strong></td>
+                                        <td>成交量：<strong id="volume">111.52万手</strong><br>
+                                            成交额：<strong id="turnover">22.11亿</strong>
+                                        </td>
+                                        <td>量比：<strong id="liangbi">0.73</strong><br>换手：<strong id="huanshou">2.68%</strong>
+                                        </td>
+
+                                    </tr>
+                                    <tr class="stock_bref">
+                                        <td>流通市值：<span id="ltsz">820.73亿</span></td>
+                                        <td>
+                                            总市值：<span id="zsz">1021.25亿</span><br>
+                                        </td>
+                                        <td title="市盈率=最新股价/最近四个季度每股收益之和">市盈率：<span id="syl">106.53</span>
+
+                                        </td>
+                                        <td>市净率：<span id="sjl">7.05</span></td>
+                                        <td>
+                                            振 幅：<span class="cRed" id="zhenfu">1.55%</span>
+                                            <!--52周最低：<span class="cGreen">10.03</span>-->
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                </p>
+                                <p >
+                                    <span th:text="${item.comment}"></span>
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form box">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="">
+                            <col width="">
+                            <col width="">
+                            <col width="">
+                            <col width="">
+
+                        </colgroup>
+                        <thead>
+                        <tr>
+
+                            <th>股票</th>
+                            <th></th>
+                            <th>信息</th>
+
+                            <th>持股</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item:${stock_list}">
+
+                            <td>
+                                <a style="color:#1E9FFF" target="_blank" th:href="${'/stock/detail/'+item.code}">
+                                <strong th:text="${item.code}">贤心</strong><br/>
+                                <b th:text="${item.name}"></b>
+                                </a><br/><br/>
+                                <a href="javascript:;" style="color:#1E9FFF" class="chat_k"
+                                   th:attr="ecode=${item.ecode}">K线图</a><br/>
+                                <!--<br />-->
+                                <!--<br />-->
+                                <!--<a style="color:#1E9FFF" th:href="${'/stock/detail/'+item.code}">技术分析</a><br/>-->
+                            </td>
+                            <td>
+
+                                <span>今开：<script>document.write(hq_str_[[${item.ecode}]].split(",")[1])</script></span><br/>
+                                <span>昨收：<script>document.write(hq_str_[[${item.ecode}]].split(",")[2])</script></span><br/>
+                                <span style="color: red;">当前：<script>document.write(hq_str_[[${item.ecode}]].split(",")[3])</script></span><br/>
+                                <span>最高：<script>document.write(hq_str_[[${item.ecode}]].split(",")[4])</script></span><br/>
+                                <span>最低：<script>document.write(hq_str_[[${item.ecode}]].split(",")[5])</script></span><br/>
+                                <span>成交额：<script>document.write(parseFloat(hq_str_[[${item.ecode}]].split(",")[9] / 100000000).toFixed(2)+"亿")</script></span>
+
+                            </td>
+                            <td>
+                                <b th:text="${item.board}"></b><br/>
+                                <span th:text="${item.plate}"></span><br/>
+                                备注：<span th:text="${item.comment}"></span><br/>
+                                <span>加入时间：<span th:text="${item.createOn}"></span></span><br/>
+                                <span>加入时价格：<b th:text="${#numbers.formatDecimal(item.joinPrice,0,2)}"></b></span>
+                            </td>
+
+                            <td>
+                                <strong style="color:red" th:text="${item.quantity}"></strong><br/>
+                                <a th:href="${'/invest/list?code='+item.code}" style="color:#1E9FFF">交易历史</a><br/>
+                            </td>
+
+
+
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="/static/layui/layui.js" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+    <script>
+        var $;
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form
+                , layer = layui.layer
+                , laydate = layui.laydate;
+            $ = layui.jquery;
+            var openWinIndex;
+            $(function () {
+
+                $(".chat_k").on({
+                    mouseover: function () {
+                        var code = $(this).attr("ecode")
+                        openWinIndex = layer.open({
+                            type: 2,
+                            title: false,
+                            closeBtn: 1,
+                            shadeClose: true,
+
+                            area: ['565px', '320px'],
+                            content: 'http://image.sinajs.cn/newchart/daily/n/' + code + '.gif'
+                        });
+                    },
+                    // mouseenter: function () {
+                    //
+                    //     layer.close(openWinIndex);
+                    // }
+                });
+
+
+                // $(".chat_k").mouseover(function () {
+                //     var code = $(this).attr("ecode")
+                //     openWinIndex = layer.open({
+                //         type: 2,
+                //         title: false,
+                //         closeBtn: 1,
+                //         shadeClose: true,
+                //
+                //         area: ['565px', '320px'],
+                //         content: 'http://image.sinajs.cn/newchart/daily/n/' + code + '.gif'
+                //     });
+                //
+                // });
+                // $(".chat_k").mouseout(function () {
+                //     layer.close(openWinIndex);
+                // })
+                $(".chat_k").click(function () {
+                    var code = $(this).attr("ecode")
+                    layer.open({
+                        type: 2,
+                        title: false,
+                        closeBtn: 1,
+                        shadeClose: true,
+
+                        area: ['565px', '320px'],
+                        content: 'http://image.sinajs.cn/newchart/daily/n/' + code + '.gif'
+                    });
+
+                });
+            })
+
+            $("#add_log").click(function () {
+                var investId = $(this).attr("invest_id");
+                //prompt层
+
+                layer.prompt({title: '输入收盘价，并确认', formType: 0}, function (price, index) {
+                    // debugger;
+                    // layer.msg(price);
+                    if (isNaN(price)) {
+                        layer.msg("请输入收盘价");
+                    } else {
+                        layer.close(index);
+                        layer.prompt({title: '记录涨跌幅，并确认', formType: 0}, function (rate, index) {
+                            if (isNaN(rate)) {
+                                layer.msg("请记录涨跌幅");
+                            } else {
+                                layer.close(index);
+                                layer.prompt({title: '记录一下今天的心得，并确认', formType: 2}, function (text, index) {
+                                    layer.close(index);
+                                    var data = {
+                                        investId: investId,
+                                        price: price,
+                                        rate: rate,
+                                        comment: text
+                                    };
+                                    // layer.msg(JSON.stringify(data));
+                                    $.ajax({
+                                        url: "/invest/add_log_post",
+                                        type: "POST",
+                                        dataType: "JSON",
+                                        data: JSON.stringify(data),
+                                        success: function (res) {
+                                            if (res.code == 0) {
+                                                layer.msg("添加成功");
+                                            } else {
+                                                layer.msg(res.msg);
+                                            }
+                                        }
+                                    });
+                                    //AJAX保存
+                                    // layer.msg('演示完毕！收盘价：' + price + '<br>涨跌幅度：' + rate + '<br>您最后写下了：' + text);
+                                });
+                            }
+                        })
+                    }
+
+                });
+
+            })
+
+            $("#log_list").click(function () {
+                var investId = $(this).attr("invest_id");
+                layer.open({
+                    type: 2,
+                    title: '查看记录',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: false, //开启最大化最小化按钮
+                    area: ['600px', '600px'],
+                    content: '/invest/log_list?id=' + investId
+                });
+            })
+        })
+    </script>
+</div>
+
+</body>
+</html>
