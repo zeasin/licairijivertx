@@ -54,6 +54,7 @@ public class StockHandler extends AbstractHandler {
      * @param routingContext
      */
     public void handleStockList(RoutingContext routingContext) {
+
         String sql = "SELECT * FROM  stock order by last_trade_time desc";
         mySQLClient.getConnection(res -> {
             if (res.failed()) {
@@ -63,6 +64,8 @@ public class StockHandler extends AbstractHandler {
 
 
             conn.query(sql, query -> {
+                String prod_code="";
+
                 List<JsonObject> list = query.result().getRows();
 
                 List<StockEntity> investList = new ArrayList<>();
@@ -86,12 +89,17 @@ public class StockHandler extends AbstractHandler {
                     else if (child.getString("board").equalsIgnoreCase("CYB"))
                         entity.setBoard("创业板");
 
+                    prod_code += child.getString("code")+"."+child.getString("bourse")+",";
+
                     investList.add(entity);
                 }
+                if(StringUtils.isNullOrEmpty(prod_code)==false) prod_code = prod_code.substring(0,prod_code.length()-1);
+
                 conn.close();
                 routingContext.put("stock_list", investList);
+                routingContext.put("prod_code", prod_code);
 
-                render(routingContext, "/stock/list");
+                render(routingContext, "/stock/list22222");
             });
 
         });
