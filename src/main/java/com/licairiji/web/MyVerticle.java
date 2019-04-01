@@ -435,6 +435,8 @@ public class MyVerticle extends AbstractVerticle {
         //文章模块
         router.get("/article/list").handler(articleHandler::handleList);
         router.get("/article/publish").handler(articleHandler::handlePublishGet);
+        router.get("/article/add_url").handler(articleHandler::handleAddPDFGet);
+        router.post("/article/add_url").handler(articleHandler::handleAddPDFPost);
         router.post("/article/publish").handler(articleHandler::handlePublishPost);
         router.get("/article/detail").handler(articleHandler::handleDetailGet);
 
