@@ -8,8 +8,10 @@ import com.licairiji.web.entity.ArticleEntity;
 import com.licairiji.web.entity.InvestLogEntity;
 import com.licairiji.web.entity.StockEntity;
 import com.licairiji.web.entity.TopicEntity;
+import com.licairiji.web.utils.ClearBufferThread;
 import com.licairiji.web.utils.DownloadPdf;
 import com.licairiji.web.utils.HTMLSpirit;
+import com.licairiji.web.utils.HtmlToPdfInterceptor;
 import com.licairiji.web.vo.ArticlePublishVo;
 import com.lowagie.text.DocumentException;
 import io.netty.util.internal.StringUtil;
@@ -221,7 +223,6 @@ public class ArticleHandler extends AbstractHandler {
     }
 
 
-
     public void handleAddPDFGet(RoutingContext routingContext) {
         mySQLClient.getConnection(connection -> {
             if (connection.succeeded()) {
@@ -255,7 +256,7 @@ public class ArticleHandler extends AbstractHandler {
 //        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 //        String s= classLoader.getResource(File.separator).getPath();
         String s = ArticleHandler.class.getResource(File.separator).getPath();
-        fp.addDirectory(s+"/fonts/"); // 自定义字体路径、解决中文,可先用绝对路径测试。
+        fp.addDirectory(s + "/fonts/"); // 自定义字体路径、解决中文,可先用绝对路径测试。
         props.setFontProvider(fp);
         // props.setBaseUri(baseResource); // 设置html资源的相对路径
         HtmlConverter.convertToPdf(html, outputStream, props); // 无法灵活设置页边距等
@@ -263,6 +264,35 @@ public class ArticleHandler extends AbstractHandler {
         outputStream.close();
         return result;
     }
+
+    /**
+     * 将HTML字符串转换为HTML文件
+     *
+     * @param htmlStr HTML字符串
+     * @return HTML文件的绝对路径
+     */
+    public static String strToHtmlFile(String htmlStr, String htmlFilePath) {
+        OutputStream outputStream = null;
+        try {
+//            String htmlFilePath = TEMP_DIR_PATH + UUID.randomUUID().toString() + ".html";
+            outputStream = new FileOutputStream(htmlFilePath);
+            outputStream.write(htmlStr.getBytes("UTF-8"));
+            return htmlFilePath;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (outputStream != null) {
+                    outputStream.close();
+                    outputStream = null;
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
     /**
      * 发布文章POST
      *
@@ -270,9 +300,10 @@ public class ArticleHandler extends AbstractHandler {
      */
     public void handleAddPDFPost(RoutingContext routingContext) {
         HttpServerRequest request = routingContext.request();
-        String title = request.getParam("title");
-        String content = request.getParam("content");
-        String tags = request.getParam("tags");
+        String url = request.getParam("url");
+//        String content = request.getParam("content");
+        String code = request.getParam("code");
+        String plate = request.getParam("plate");
 
 //        String content = routingContext.getBodyAsString();
         //返回内容
@@ -281,54 +312,63 @@ public class ArticleHandler extends AbstractHandler {
         response.setStatusCode(200);
         response.putHeader("Content-Type", "application/json");
 
-        if (StringUtil.isNullOrEmpty(title) || StringUtil.isNullOrEmpty(content)) {
-            jsonObject.put("code", 1).put("msg", "标题和内容不能为空");
+        if (StringUtil.isNullOrEmpty(url)) {
+            jsonObject.put("code", 1).put("msg", "url不能为空");
             response.end(jsonObject.encode());
         }
 
-//        String[] info = new String[4];
-        String  blogURL ="https://mp.weixin.qq.com/s?src=11&timestamp=1554135447&ver=1520&signature=vdGI2wKdwBnQ2IkZSYuc*Q01yQSI3NQCD97STrNT7imM1UqFHtnmdIENd3P5JqnQaRj22QxZXkhMAYQXoQ12qQ7yzsHN9J4Kvbwbn5UxcTLKG09zt1p33YXVIvPUVQYU&new=1";
-//        org.jsoup.nodes.Document doc = null;
-//        try {
-////            doc = Jsoup.connect(blogURL).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31").timeout(10000).get();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-//        org.jsoup.nodes.Element e_title = doc.select("title").first();
-//        info[0] = e_title.text();
-
-
-//        OutputStream os = new FileOutputStream(outputFile);
-//        ITextRenderer renderer = new ITextRenderer();
-//        InputStream inputStream = new ByteArrayInputStream(Jsoup.connect(url).get().html().getBytes());
-//        String urlStr = IOUtils.toString(inputStream);
-//        renderer.setDocumentFromString(urlStr);
-//        try {
-//            DownloadPdf.downLoadByUrl(blogURL,"abc.pdf",ArticleHandler.class.getResource(File.separator).getPath());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        OutputStream os = null;
-        String b = ArticleHandler.class.getResource("").getPath();
-//        getServletContext()
-        String a = getClass().getResource(File.separator).getPath();
-//        ClassLoaber.getResource()
-//         null;
+        String rootPath = getClass().getResource(File.separator).getPath();
+        String filePath = rootPath + "static/yanbao/";
         try {
-//            org.jsoup.nodes.Document doc = Jsoup.connect(blogURL).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31").timeout(10000).get();
-//            os = new FileOutputStream("/Users/qiliping/Project/licairijivertx/aaa.pdf");
-//            ITextRenderer renderer = new ITextRenderer();
-            InputStream inputStream = new ByteArrayInputStream(Jsoup.connect(blogURL).get().html().getBytes());
-            String urlStr = IOUtils.toString(inputStream,"UTF-8");
+            org.jsoup.nodes.Document doc = null;
+            doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31").timeout(10000).get();
+            String title = "";//文章标题
+            InputStream inputStream = new ByteArrayInputStream(doc.html().getBytes());
+            String urlStr = IOUtils.toString(inputStream, "UTF-8");
 
-            String html = "<p><span style=\"font-family: Microsoft YaHei;\">微软雅黑: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
-                    "<p><span style=\"font-family: SimSun;\">宋体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
-                    "<p><span style=\"font-family: STHeiti;\">黑体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>" +
-                    "<p><span style=\"font-family: Times New Roman;\">Times New Roman: pre bdA<strong>AbdA</strong>Aaft bd</span></p>\n";
-            FileOutputStream fileOutputStream = new FileOutputStream(a+"/a.pdf");
-            fileOutputStream.write(convert(urlStr));
-            fileOutputStream.close();
+            if (url.startsWith("https://mp.weixin.qq.com")) {
+                //微信公众号文章
+                title = doc.select(".rich_media_title").text();
+                title = title.replace(" ","");
+                if (StringUtil.isNullOrEmpty(title) == false) {
+                    //Jsoup.connect(url).get().html().getBytes()
+                    urlStr = urlStr.replace("data-src=\"", "src=\"");
+                    String htmlFilePath = filePath + title + ".html";
+                    String pdfFilePath = filePath + title + ".pdf";
+                    //生成html
+                    FileOutputStream fileOutputStream = new FileOutputStream(htmlFilePath);
+                    fileOutputStream.write(urlStr.getBytes("UTF-8"));
+                    fileOutputStream.close();
+                    //获取系统
+                    String osName = System.getProperty("os.name");
+                    String command = String.format("wkhtmltopdf %s %s", htmlFilePath, pdfFilePath);
+
+
+//                    Process process = Runtime.getRuntime().exec(command);
+//
+//                    new Thread(new ClearBufferThread(process.getInputStream())).start();
+//                    new Thread(new ClearBufferThread(process.getErrorStream())).start();
+//                    process.waitFor();
+                    Process proc = Runtime.getRuntime().exec(command);
+                    HtmlToPdfInterceptor error = new HtmlToPdfInterceptor(proc.getErrorStream());
+                    HtmlToPdfInterceptor output = new HtmlToPdfInterceptor(proc.getInputStream());
+                    error.start();
+                    output.start();
+                    proc.waitFor();
+                }
+            }else{
+                jsonObject.put("code", 500).put("msg", "暂时只支持微信公众号文章");
+                response.end(jsonObject.encode());
+            }
+
+
+//            String html = "<p><span style=\"font-family: Microsoft YaHei;\">微软雅黑: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
+//                    "<p><span style=\"font-family: SimSun;\">宋体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
+//                    "<p><span style=\"font-family: STHeiti;\">黑体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>" +
+//                    "<p><span style=\"font-family: Times New Roman;\">Times New Roman: pre bdA<strong>AbdA</strong>Aaft bd</span></p>\n";
+//            FileOutputStream fileOutputStream = new FileOutputStream(a+"/a.pdf");
+//            fileOutputStream.write(convert(urlStr));
+//            fileOutputStream.close();
 //             convert(urlStr);
 //            renderer.setDocumentFromString(urlStr);
 //            renderer.setDocument((Document) doc,blogURL);
@@ -350,15 +390,17 @@ public class ArticleHandler extends AbstractHandler {
 //            os.flush();
 //            os.close();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            jsonObject.put("code", 500).put("msg", e.getMessage());
+            response.end(jsonObject.encode());
         }
-
 
 
         jsonObject.put("code", 0).put("msg", "SUCCESS");
         response.end(jsonObject.encode());
     }
+
     /**
      * 文章详情
      *

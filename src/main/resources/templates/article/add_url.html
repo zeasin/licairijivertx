@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>写文章</title>
+    <title>添加文章</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
     <script src="/static/layui/layui.js"></script>
     <style>
@@ -356,25 +356,40 @@
 
         <!--star标题-->
         <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
-            <input type="text" id="title" placeholder="填写文章网址，例如：http://www.xxx.com/article/122.html" style="height: 32px;"></input>
+            <input type="text" id="url" placeholder="填写文章网址，例如：http://www.xxx.com/article/122.html" style="height: 32px;width:100%;"></input>
         </div>
         <!--end标题-->
 
         <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
             <!--<textarea rows="1" class="Input" id="tags" placeholder="标签（多标签以逗号隔开）" style="height: 62px;"></textarea>-->
-            <select id="tags" class="select">
+            <select id="code" class="select" style="height: 32px;">
                 <option value="">--所属股票--</option>
                 <option th:each="item:${stocks}"  th:value="${item.code}" th:text="${item.name}">随记</option>
 
             </select>
         </div>
+        <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
+            <!--<textarea rows="1" class="Input" id="tags" placeholder="标签（多标签以逗号隔开）" style="height: 62px;"></textarea>-->
+            <select id="plate" class="select" style="height: 32px;">
+                <option value="">--所属板块--</option>
+                <option value="LED" >LED</option>
+                <option value="5G" >5G</option>
+                <option value="半导体" >半导体</option>
+                <option value="券商" >券商</option>
+                <option value="银行" >银行</option>
+                <option value="保险" >保险</option>
+                <option value=" 计算机应用" > 计算机应用</option>
+                <option value=" 视听器材" > 视听器材</option>
+
+            </select>
+        </div>
 
         <!--star编辑器的代理-->
-        <div class="isy_edit">
-            <textarea id="demo" style="display: none;"></textarea>
-            <div class="wordMore" id="L_layerTips"><i class="layui-icon layui-icon-more" style="font-size: 30px;"></i>
-            </div>
-        </div>
+        <!--<div class="isy_edit">-->
+            <!--<textarea id="demo" style="display: none;"></textarea>-->
+            <!--<div class="wordMore" id="L_layerTips"><i class="layui-icon layui-icon-more" style="font-size: 30px;"></i>-->
+            <!--</div>-->
+        <!--</div>-->
         <!--end编辑器的代理-->
     </div>
     <!--end 内容-->
@@ -407,78 +422,80 @@
         })
 
         var layedit = layui.layedit;
-        var edithtml = layedit.build('demo', {
-            uploadImage: {
-                url: '/upload_image',
-                type: 'POST'
-            }
-        }); //建立编辑器
+        // var edithtml = layedit.build('demo', {
+        //     uploadImage: {
+        //         url: '/upload_image',
+        //         type: 'POST'
+        //     }
+        // }); //建立编辑器
 
         //上传（文档导入）-编辑器后面
-        upload.render({
-            elem: '#_uploadword'
-            // , url: '/upload_word'
-            // ,ext: 'doc|pdf|docx|txt'
-            , done: function (res) {
-                // alert(JSON.stringify(res));
-                if (res.code == 0) {
-                    $('#word_upload').removeClass('upload_hover');
-
-                    // var content = layedit.getContent(edithtml);
-                    // var newContent = content + "asd中暑的宫缩高故事帝国时代三国时代";
-                    layedit.setContent(edithtml, res.data.title);
-
-                }else{
-                    layer.msg(res.msg);
-                }
-                console.log(res)
-            }
-        });
+        // upload.render({
+        //     elem: '#_uploadword'
+        //     // , url: '/upload_word'
+        //     // ,ext: 'doc|pdf|docx|txt'
+        //     , done: function (res) {
+        //         // alert(JSON.stringify(res));
+        //         if (res.code == 0) {
+        //             $('#word_upload').removeClass('upload_hover');
+        //
+        //             // var content = layedit.getContent(edithtml);
+        //             // var newContent = content + "asd中暑的宫缩高故事帝国时代三国时代";
+        //             layedit.setContent(edithtml, res.data.title);
+        //
+        //         }else{
+        //             layer.msg(res.msg);
+        //         }
+        //         console.log(res)
+        //     }
+        // });
 
         //执行实例（封面图片上传）
-        var uploadInst = upload.render({
-            elem: '#uploadImg' //绑定元素
-            , url: '/upload_image' //上传接口
-            , done: function (res) {
-                //上传完毕回调
-                // alert(res.data.src);
-                if (res.code == 0) {
-                    $("#image").val(res.data.src);
-                    $("#uploadImg").css({"background": "url(" + res.data.src + ")"});
-                    $("#uploadImg").css({"background-position": "center center"});
-                    $("#uploadImg").css({"background-repeat": "no-repeat"});
-                    $("#uploadImg").css({"background-size": "cover"});
-                    // $("#uploadImg").style = "background:url(" + res.data.src + ")";
-                } else {
-                    alert(res.msg);
-                }
-            }
-            , error: function () {
-                //请求异常回调
-            }
-        });
+        // var uploadInst = upload.render({
+        //     elem: '#uploadImg' //绑定元素
+        //     , url: '/upload_image' //上传接口
+        //     , done: function (res) {
+        //         //上传完毕回调
+        //         // alert(res.data.src);
+        //         if (res.code == 0) {
+        //             $("#image").val(res.data.src);
+        //             $("#uploadImg").css({"background": "url(" + res.data.src + ")"});
+        //             $("#uploadImg").css({"background-position": "center center"});
+        //             $("#uploadImg").css({"background-repeat": "no-repeat"});
+        //             $("#uploadImg").css({"background-size": "cover"});
+        //             // $("#uploadImg").style = "background:url(" + res.data.src + ")";
+        //         } else {
+        //             alert(res.msg);
+        //         }
+        //     }
+        //     , error: function () {
+        //         //请求异常回调
+        //     }
+        // });
 
 
         $("#btn_publish").click(function () {
 
-            var title = $("#title").val();
-            layedit.sync(edithtml);
-            var content = $("#demo").val();
-            var tags = $("#tags").val();
+            var url = $("#url").val();
+            // layedit.sync(edithtml);
+            // var content = $("#demo").val();
+            var code = $("#code").val();
+            var plate = $("#plate").val();
             // var content = layedit.getContent(edithtml);
             // var cont = {
             //     image: image,
             //     title: title,
             //     content: content
             // };
-            if (title == "" || content == "") {
+            if (url == "") {
                 layer.msg('请输入url');
             } else {
 
                 var formdata=new FormData();
-                formdata.append('title',title);
-                formdata.append('content',content);
-                formdata.append('tags',tags);
+                formdata.append('url',url);
+                // formdata.append('content',content);
+                formdata.append('code',code);
+                formdata.append('plate',plate);
 
                 $.ajax({
                     url: "/article/add_url",
