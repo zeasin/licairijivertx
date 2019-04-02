@@ -11,7 +11,6 @@ import com.licairiji.web.entity.TopicEntity;
 import com.licairiji.web.utils.DownloadPdf;
 import com.licairiji.web.utils.HTMLSpirit;
 import com.licairiji.web.vo.ArticlePublishVo;
-import com.lowagie.text.DocumentException;
 import io.netty.util.internal.StringUtil;
 import io.vertx.core.Context;
 import io.vertx.core.http.HttpServerRequest;
