@@ -64,6 +64,7 @@ public class MyVerticle extends AbstractVerticle {
     private StockHandler stockHandler;
     private StockAnalyseHandler analyseHandler;
     private TopicHandler topicHandler;
+    private UserAccountHandler userAccountHandler;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -99,6 +100,7 @@ public class MyVerticle extends AbstractVerticle {
         stockHandler = new StockHandler(context, templateEngine, mySQLClient);
         analyseHandler = new StockAnalyseHandler(context, templateEngine, mySQLClient);
         topicHandler = new TopicHandler(context, templateEngine, mySQLClient);
+        userAccountHandler = new UserAccountHandler(context, templateEngine, mySQLClient);
     }
 
 
@@ -463,6 +465,9 @@ public class MyVerticle extends AbstractVerticle {
         //股票分析
         router.get("/stock/analyse").handler(analyseHandler::handleStockAnalyse);
 //        analyseHandler
+
+        //用户资金账户
+        router.post("/user/account").handler(userAccountHandler::handleGetAccount);
 
         //定义服务器
         HttpServer server = vertx.createHttpServer();

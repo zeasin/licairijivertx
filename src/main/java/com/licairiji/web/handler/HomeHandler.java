@@ -38,8 +38,6 @@ public class HomeHandler extends AbstractHandler {
                 JsonObject jsonObject = new JsonObject();
                 if(query.result()!=null) {
                     List<JsonObject> list = query.result().getRows();
-
-
                     List<UserDynamicEntity> dynamics = new ArrayList<>();
                     for (JsonObject child : list) {
                         UserDynamicEntity entity = new UserDynamicEntity();
@@ -58,24 +56,26 @@ public class HomeHandler extends AbstractHandler {
                         dynamics.add(entity);
                     }
                     routingContext.put("dynamics", dynamics);
+
+                    //查询TAGS
+                    conn.query("SELECT * FROM tag", query1 -> {
+                        JsonObject jsonObject1 = new JsonObject();
+                        List<JsonObject> list2 = query1.result().getRows();
+                        List<TopicEntity> topics = new ArrayList<>();
+                        for (JsonObject child : list2) {
+                            TopicEntity entity2 = new TopicEntity();
+                            entity2.setId(child.getInteger("id"));
+                            entity2.setTitle(child.getString("title"));
+                            entity2.setContent(child.getString("content"));
+                            topics.add(entity2);
+                        }
+
+                        routingContext.put("tags", topics);
+                        render(routingContext, "/index");
+
+                    });
                 }
-                conn.query("SELECT * FROM tag", query1 -> {
-                    JsonObject jsonObject1 = new JsonObject();
-                    List<JsonObject> list2 = query1.result().getRows();
-                    List<TopicEntity> topics = new ArrayList<>();
-                    for (JsonObject child : list2) {
-                        TopicEntity entity2 = new TopicEntity();
-                        entity2.setId(child.getInteger("id"));
-                        entity2.setTitle(child.getString("title"));
-                        entity2.setContent(child.getString("content"));
-                        topics.add(entity2);
-                    }
 
-
-                    routingContext.put("tags", topics);
-                    render(routingContext, "/index");
-
-                });
 
 
             });
