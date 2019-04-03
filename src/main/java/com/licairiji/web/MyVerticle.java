@@ -444,8 +444,10 @@ public class MyVerticle extends AbstractVerticle {
 
         //投资模块
         router.get("/invest/add").handler(investHandler::handleAddGet);
+        router.get("/invest/sell").handler(investHandler::handleSellGet);
         router.get("/invest/list").handler(investHandler::handleInvestList);
         router.post("/invest/add_post").handler(investHandler::handleInvestAddPost);
+        router.post("/invest/sell_post").handler(investHandler::handleInvestSellPost);
 //        router.post("/invest/add_log_post").handler(investHandler::handleInvestLogAdd);
 //        router.get("/invest/log_list").handler(investHandler::handleInvestLogList);
 

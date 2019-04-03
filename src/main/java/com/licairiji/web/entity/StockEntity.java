@@ -18,6 +18,15 @@ public class StockEntity {
     private String createOn;
     private String comment;
     private int quantity;
+    private Double avgPrice;
+
+    public Double getAvgPrice() {
+        return avgPrice;
+    }
+
+    public void setAvgPrice(Double avgPrice) {
+        this.avgPrice = avgPrice;
+    }
 
     public String getBourse() {
         return bourse;

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout :: common_header(~{::title})">
+    <title>买入股票-投资日记</title>
+</head>
+<body th:replace="layout :: common_body(~{::div.contain_content})">
+
+
+<div class="contain_content">
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+<div class="section">
+    <div class="container">
+        <div class="tile">
+            <div class="tile is-vertical is-parent ">
+                <div class="box">
+                    <div class="media">
+                        <blockquote class="layui-elem-quote layui-text">
+                            股票投资记录，时间久了，这就是你的大数据。1. <a href="/invest/list">查看我的交易记录</a>
+                        </blockquote>
+                    </div>
+
+                </div>
+                <div class="box">
+
+                    <form class="layui-form" action="">
+                        <!--<div class="layui-form-item">-->
+                            <!--<label class="layui-form-label" style="width: 120px;">交易类型</label>-->
+                            <!--<div class="layui-input-block">-->
+                                <!--<input type="radio" name="transaction_type" value="1" title="买入" checked="checked">-->
+                                <!--<input type="radio" name="transaction_type" value="2" title="卖出">-->
+
+                            <!--</div>-->
+                        <!--</div>-->
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 120px;">股票代码</label>
+                                <div class="layui-input-inline">
+                                    <select name="code" lay-verify="required" lay-search="">
+                                        <option value="">输入股票代码</option>
+                                        <option th:each="item:${stock_list}" th:value="${item.code}"
+                                                th:text="${item.code+item.name}">600283
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 120px;">交易价格</label>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" name="price" lay-verify="number|required" autocomplete="off"
+                                           placeholder="￥买入价" class="layui-input">
+                                </div>
+                                <!--<div class="layui-form-mid">-</div>-->
+                                <!--<div class="layui-input-inline" style="width: 100px;">-->
+                                <!--<input type="text" name="price_cost" lay-verify="number|required" autocomplete="off" placeholder="￥成本价" class="layui-input">-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 120px;">交易数量</label>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" name="count" lay-verify="number|required" autocomplete="off"
+                                           placeholder="交易数量" class="layui-input">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 120px;">交易金额</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="amount" lay-verify="number|required"
+                                           placeholder="交易金额" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 120px;">交易时间</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="transaction_date" id="date" lay-verify="datetime|required"
+                                           placeholder="yyyy-MM-dd HH:mm" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label" style="width: 120px;">交易策略</label>
+                                <div class="layui-input-inline">
+                                    <select name="strategy" lay-verify="required" lay-search="">
+                                        <option value="短线交易(持股1周-10%--20%)">短线交易(持股1周-10%--20%)</option>
+                                        <option value="中短线持有(持有1个月)">中短线持有(持有1个月)</option>
+                                        <option value="中线持有(持有2个月)">中线持有(持有2个月)</option>
+                                        <option value="中线持有(持有3个月)">中线持有(持有3个月)</option>
+                                        <option value="长线持有(持有半年)">长线持有(持有半年)</option>
+                                        <option value="长线持有(持有一年)">长线持有(持有一年)</option>
+                                        <option value="长线持有(持有更长)">长线持有(持有更长)</option>
+
+                                    </select>
+                                    <!--<input type="text" name="sell_drop_rate" autocomplete="off" lay-verify="number|required" placeholder="-10%"  class="layui-input">-->
+                                </div>
+                                <!--<div class="layui-form-mid">-</div>-->
+                                <!--<div class="layui-input-inline" style="width: 100px;">-->
+                                <!--<input type="text" name="sell_up_rate" autocomplete="off" lay-verify="number|required" placeholder="+30%" class="layui-input">-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item layui-form-text">
+                            <label class="layui-form-label" style="width: 120px;">交易备注</label>
+                            <div class="layui-input-block">
+                                <textarea placeholder="请输入交易备注" name="comment" class="layui-textarea"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                                <button class="layui-btn" lay-submit="" lay-filter="demo1">立即买入</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+    <script src="/static/layui/layui.js" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+    <script>
+        layui.use(['form', 'laydate'], function () {
+            var form = layui.form
+                , $ = layui.jquery
+                , layer = layui.layer
+                , laydate = layui.laydate;
+
+            //日期
+            laydate.render({
+                elem: '#date',
+                type: "datetime"
+            });
+
+            //创建一个编辑器
+            // var editIndex = layedit.build('LAY_demo_editor');
+
+            //监听提交
+            form.on('submit(demo1)', function (data) {
+                // layer.alert(JSON.stringify(data.field), {
+                //     title: '最终的提交信息'
+                // });
+                $.ajax({
+                    url: "/invest/add_post",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: JSON.stringify(data.field),
+                    success: function (res) {
+                        if (res.code == 0) {
+                            // alert(JSON.stringify(res));
+                            window.location.href = "/";
+                        } else {
+                            alert(res.msg);
+                        }
+                        // alert(JSON.stringify(res));
+                        return false;
+                    }
+                });
+                return false;
+            });
+
+            //表单初始赋值
+            // form.val('example', {
+            //     "username": "贤心" // "name": "value"
+            //     ,"password": "123456"
+            //     ,"interest": 1
+            //     ,"like[write]": true //复选框选中状态
+            //     ,"close": true //开关状态
+            //     ,"sex": "1"
+            //     ,"desc": "我爱 layui"
+            // })
+
+
+        });
+    </script>
+</div>
+</body>
+</html>

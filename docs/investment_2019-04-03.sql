@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: 127.0.0.1 (MySQL 5.6.40)
+# Host: localhost (MySQL 5.7.25)
 # Database: investment
-# Generation Time: 2019-04-03 10:14:19 +0000
+# Generation Time: 2019-04-03 14:44:33 +0000
 # ************************************************************
 
 
@@ -170,8 +170,9 @@ CREATE TABLE `stock` (
   `bourse` enum('SS','SZ') DEFAULT NULL,
   `name` varchar(10) NOT NULL DEFAULT '',
   `plate` varchar(50) NOT NULL DEFAULT '' COMMENT '行业板块',
-  `join_price` double NOT NULL,
+  `join_price` decimal(10,3) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT '0' COMMENT '持股数量',
+  `avg_price` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '持股均价',
   `comment` varchar(100) DEFAULT NULL COMMENT '备注',
   `create_on` int(11) NOT NULL,
   `last_trade_time` int(11) DEFAULT NULL COMMENT '最后交易时间',
@@ -181,15 +182,16 @@ CREATE TABLE `stock` (
 LOCK TABLES `stock` WRITE;
 /*!40000 ALTER TABLE `stock` DISABLE KEYS */;
 
-INSERT INTO `stock` (`id`, `code`, `ecode`, `board`, `bourse`, `name`, `plate`, `join_price`, `quantity`, `comment`, `create_on`, `last_trade_time`)
+INSERT INTO `stock` (`id`, `code`, `ecode`, `board`, `bourse`, `name`, `plate`, `join_price`, `quantity`, `avg_price`, `comment`, `create_on`, `last_trade_time`)
 VALUES
-	(1,'600703','sh600703','ZB','SS','三安光电','LED',10.28,0,'高效LED 龙头',1548233669,NULL),
-	(2,'002041','sz002041','ZSB','SZ','登海种业','种业',5.67,0,'国内玉米种子繁育推广一体化龙头企业',1548233669,NULL),
-	(3,'601336','sh601336','ZB','SS','新华保险','保险',53.8,0,'保险龙头股',1551692286,NULL),
-	(4,'600016','sh600016','ZB','SS','民生银行','银行',6.74,0,'',1551692841,NULL),
-	(28,'300059','sz300059','CYB','SZ','东方财富','券商',19.25,0,'券商',1552871342,1552871342),
-	(29,'300682','sz300682','CYB','SZ','朗新科技',' 计算机应用',0,0,'专注于公用事业领域业务信息化系统的技术与服务提供商',1552961881,NULL),
-	(30,'000810','sz000810','ZB','SZ','创维数字','视听器材',0,0,'数字电视智能终端及软件系统与平台的研究、开发、生产、销售、运营与服务。',1552961955,NULL);
+	(1,'600703','sh600703','ZB','SS','三安光电','LED',10.280,0,0.000,'高效LED 龙头',1548233669,1554299997),
+	(2,'002041','sz002041','ZSB','SZ','登海种业','种业',5.670,0,0.000,'国内玉米种子繁育推广一体化龙头企业',1548233669,1554293342),
+	(3,'601336','sh601336','ZB','SS','新华保险','保险',53.800,100,50.650,'保险龙头股',1551692286,1554302300),
+	(4,'600016','sh600016','ZB','SS','民生银行','银行',6.740,0,0.000,'',1551692841,NULL),
+	(28,'300059','sz300059','CYB','SZ','东方财富','券商',19.250,0,0.000,'券商',1552871342,1552871342),
+	(29,'300682','sz300682','CYB','SZ','朗新科技',' 计算机应用',0.000,0,0.000,'专注于公用事业领域业务信息化系统的技术与服务提供商',1552961881,NULL),
+	(30,'000810','sz000810','ZB','SZ','创维数字','视听器材',0.000,400,10.710,'数字电视智能终端及软件系统与平台的研究、开发、生产、销售、运营与服务。',1552961955,1554302221),
+	(31,'000063','sz000063','ZB','SZ','中兴通讯','5G',0.000,100,29.150,'',1554302446,1554302570);
 
 /*!40000 ALTER TABLE `stock` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2430,11 +2432,13 @@ CREATE TABLE `stock_trade` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` char(6) NOT NULL DEFAULT '',
   `type` int(10) NOT NULL DEFAULT '0' COMMENT '交易类型1买入2卖出',
-  `price` decimal(6,2) NOT NULL DEFAULT '0.00' COMMENT '交易价格',
+  `price` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '交易价格',
   `transaction_time` int(11) DEFAULT NULL COMMENT '交易时间',
   `strategy` varchar(200) DEFAULT NULL COMMENT '交易策略',
   `comment` varchar(300) DEFAULT NULL COMMENT '交易说明',
-  `count` int(11) DEFAULT NULL,
+  `count` int(11) NOT NULL,
+  `profit` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '盈利',
+  `amount` decimal(10,3) NOT NULL COMMENT '交易金额',
   `create_on` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2442,10 +2446,11 @@ CREATE TABLE `stock_trade` (
 LOCK TABLES `stock_trade` WRITE;
 /*!40000 ALTER TABLE `stock_trade` DISABLE KEYS */;
 
-INSERT INTO `stock_trade` (`id`, `code`, `type`, `price`, `transaction_time`, `strategy`, `comment`, `count`, `create_on`)
+INSERT INTO `stock_trade` (`id`, `code`, `type`, `price`, `transaction_time`, `strategy`, `comment`, `count`, `profit`, `amount`, `create_on`)
 VALUES
-	(5,'300059',1,19.25,1551923460,'短线交易(持股1周-10%--20%)','追高',100,1552880662),
-	(6,'300059',2,18.24,1552880717,'短线交易(持股1周-10%--20%)','形势不妙',100,1552880735);
+	(1,'000810',1,10.710,1553132552,'短线交易(持股1周-10%--20%)','',400,0.000,4284.000,1554302221),
+	(2,'601336',1,50.650,1553737784,'短线交易(持股1周-10%--20%)','',100,0.000,5065.000,1554302300),
+	(3,'000063',1,29.150,1553750804,'短线交易(持股1周-10%--20%)','',100,0.000,2915.000,1554302570);
 
 /*!40000 ALTER TABLE `stock_trade` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2492,9 +2497,9 @@ CREATE TABLE `user_account` (
   `user_name` varchar(15) DEFAULT NULL,
   `mobile` varchar(11) DEFAULT NULL,
   `pwd` varchar(36) DEFAULT NULL,
-  `capital_total` float NOT NULL DEFAULT '0' COMMENT '资金账户总额',
-  `invest_amount` float NOT NULL DEFAULT '0' COMMENT '投资金额',
-  `income_amount` float NOT NULL DEFAULT '0' COMMENT '累积收益',
+  `capital_total` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '资金账户总额',
+  `invest_amount` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '投资金额',
+  `income_amount` decimal(10,3) NOT NULL DEFAULT '0.000' COMMENT '累积收益',
   `create_on` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2504,7 +2509,7 @@ LOCK TABLES `user_account` WRITE;
 
 INSERT INTO `user_account` (`id`, `user_name`, `mobile`, `pwd`, `capital_total`, `invest_amount`, `income_amount`, `create_on`)
 VALUES
-	(1,'zeasin','15818590119','123456',38500,26033.8,0,0);
+	(1,'zeasin','15818590119','123456',38500.000,12264.000,0.000,0);
 
 /*!40000 ALTER TABLE `user_account` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2537,20 +2542,10 @@ LOCK TABLES `user_dynamic` WRITE;
 
 INSERT INTO `user_dynamic` (`id`, `user_id`, `title`, `content`, `imgs`, `tags`, `type`, `url`, `data_id`, `num_sc`, `num_zan`, `num_ping`, `create_on`)
 VALUES
-	(2,1,'一位深藏不露交易员交易心得','炒股时间长了，越来越觉得要在股市中生存，需要的不是掌握多少技术指标，而是要树立正确的理念，也就是说股市检验的是你的性格。股市如人生，炒股即 做人，贪婪、恐惧、多疑、浮躁，人性的弱点都在股市中暴露无遗，可以说炒股的过程就是锻炼人性的过程，当你的性格变的勇敢、冷静、专注、不悔时，你就达到 了成功的顶峰。','','策略',1,'/article/detail?id=9','9',0,0,0,1552630432),
-	(21,1,'添加[300059东方财富]到自选股','300059东方财富现价：￥19.25，所属行业：券商，备注：券商','','自选股',2,'/stock/detail/300059','300059',0,0,0,1552871352),
-	(22,1,'买入股票【300059】','买入股票300059价格：￥19.25，数量：100，交易时间：2019-03-07 09:51:00，设定策略：短线交易(持股1周-10%--20%)  追高','','交易',2,'/stock/detail/300059','300059',0,0,0,1552880662),
-	(23,1,'卖出股票【300059】','卖出股票300059价格：￥18.24，数量：100，交易时间：2019-03-18 11:45:17，备注：形势不妙','','交易',2,'/stock/detail/300059','300059',0,0,0,1552880735),
-	(24,1,'A股有望展开下一阶段行情 优选科技成长股','导语：A股早盘震荡走高，联讯证券认为，在经济面可控、政策面呵护、流动性支持等长线逻辑下，A股有望在波动中展开下一阶段行情。沪深两市早盘震荡走高，三大股指全线涨超1%，沪指午间收涨1.26%，深成指大涨1.66%，创业板指涨1.32%。贵州茅台股价盘中突破800元整数关口，创下814.53元的历史新高','','股评',1,'/article/detail?id=13','13',0,0,0,1552885415),
-	(26,1,'收评：沪指涨2.47% 逼近3100点','证券时报网 赖少华　　证券时报e公司讯，两市股指今日双双高开，开盘后表现强劲，市场呈现普涨格局，热点纷呈。截至收盘，上证指数涨2.47%，报3096.42点，深证成指涨3.07%，创业板指涨2.67%。盘面上，行业板块全线上涨，白酒股大涨，钢铁、有色、煤炭、食品饮料、保险等板块涨幅居前。个股方面，贵','','股评',1,'/article/detail?id=14','14',0,0,0,1552901105),
-	(27,1,'量比','量比是衡量相对成交量的指标。它是指股市开市后平均每分钟的成交量与过去5个交易日平均每分钟成交量之比。其计算公式为：量比=（现成交总手数 / 现累计开市时间(分) ）/ 过去5日平均每分钟成交量量比这个指标所反映出来的是当前盘口的成交力度与最近五天的成交力度的差别，这个差别的值越大表明盘口成交越趋活跃','','学堂',1,'/article/detail?id=15','15',0,0,0,1552909782),
-	(28,1,'添加[300682]到自选股','300682现价：￥0.0，所属行业： 计算机应用，备注：专注于公用事业领域业务信息化系统的技术与服务提供商','','自选股',2,'/stock/detail/300682','300682',0,0,0,1552961881),
-	(29,1,'添加[000810]到自选股','000810现价：￥0.0，所属行业：视听器材，备注：数字电视智能终端及软件系统与平台的研究、开发、生产、销售、运营与服务。','','自选股',2,'/stock/detail/000810','000810',0,0,0,1552961955),
-	(30,1,'全面屏风潮致COF基板严重短缺，厂家酝酿二季度涨价15%，用量新高下这些公司望率先受益','http://licai.xiguanapp.com/FpkhVmAhUEZiMm28Abbag1mai5j7','','随记',1,'http://licai.xiguanapp.com/FpkhVmAhUEZiMm28Abbag1mai5j7','21',0,0,0,1554277705),
-	(31,1,'全面屏风潮致COF基板严重短缺，厂家酝酿二季度涨价15%，用量新高下这些公司望率先受益','http://licai.xiguanapp.com/Fn0iP0HwkGxFs7B8c6Yu3uYOOk8y','','随记',1,'http://licai.xiguanapp.com/Fn0iP0HwkGxFs7B8c6Yu3uYOOk8y','22',0,0,0,1554278602),
-	(32,1,'全面屏风潮致COF基板严重短缺，厂家酝酿二季度涨价15%，用量新高下这些公司望率先受益','http://licai.xiguanapp.com/Fuh1AAXGp0gwtd6PkqsJeev4K6LO','','随记',1,'http://licai.xiguanapp.com/Fuh1AAXGp0gwtd6PkqsJeev4K6LO','23',0,0,0,1554278705),
-	(33,1,'全面屏风潮致COF基板严重短缺，厂家酝酿二季度涨价15%，用量新高下这些公司望率先受益','http://licai.xiguanapp.com/FqzZyC4GzGBoNQ6n11bUR_KsVBkf','','随记',1,'http://licai.xiguanapp.com/FqzZyC4GzGBoNQ6n11bUR_KsVBkf','24',0,0,0,1554278879),
-	(34,1,'全面屏风潮致COF基板严重短缺，厂家酝酿二季度涨价15%，用量新高下这些公司望率先受益','全面屏风潮致COF基板严重短缺，厂家酝酿二季度涨价15%，用量新高下这些公司望率先受益【相关股票：002036】【板块：5G】','','市场',1,'http://licai.xiguanapp.com/FqGh1kcXHNPbRONa1F8xH5yUgs5K','25',0,0,0,1554278950);
+	(1,1,'买入股票【000810】','买入股票000810价格：￥10.71，数量：400，交易时间：2019-03-21 09:42:32，设定策略：短线交易(持股1周-10%--20%)  ','','交易',2,'/stock/detail/000810','000810',0,0,0,1554302221),
+	(2,1,'买入股票【601336】','买入股票601336价格：￥50.65，数量：100，交易时间：2019-03-28 09:49:44，设定策略：短线交易(持股1周-10%--20%)  ','','交易',2,'/stock/detail/601336','601336',0,0,0,1554302300),
+	(3,0,'添加[000063]到自选股','000063现价：￥0.0，所属行业：5G，备注：','','自选股',2,'/stock/detail/000063','000063',0,0,0,1554302446),
+	(4,1,'买入股票【000063】','买入股票000063价格：￥29.15，数量：100，交易时间：2019-03-28 13:26:44，设定策略：短线交易(持股1周-10%--20%)  ','','交易',2,'/stock/detail/000063','000063',0,0,0,1554302570);
 
 /*!40000 ALTER TABLE `user_dynamic` ENABLE KEYS */;
 UNLOCK TABLES;

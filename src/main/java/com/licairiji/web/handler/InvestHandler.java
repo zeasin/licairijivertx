@@ -36,7 +36,7 @@ public class InvestHandler extends AbstractHandler {
     }
 
     /**
-     * 添加投资
+     * 买入股票
      *
      * @param routingContext
      */
@@ -68,7 +68,7 @@ public class InvestHandler extends AbstractHandler {
 //                response.end(jsonObject.encode());
                 routingContext.put("stock_list", stockList);
 //
-                render(routingContext, "/invest/add");
+                render(routingContext, "/invest/buy");
             });
 
         });
@@ -78,7 +78,7 @@ public class InvestHandler extends AbstractHandler {
 
 
     /**
-     * 添加投资记录POST
+     * 买入股票POST
      *
      * @param routingContext
      */
@@ -116,65 +116,255 @@ public class InvestHandler extends AbstractHandler {
         mySQLClient.getConnection(connection -> {
             if (connection.succeeded()) {
                 SQLConnection conn = connection.result();
-                String sql = "INSERT INTO stock_trade (code,type,price,transaction_time,strategy,comment,count,create_on) VALUE (?,?,?,?,?,?,?,?)";
-                JsonArray params = new JsonArray();
-                params.add(finalVo.getCode());
-                params.add(finalVo.getTransaction_type());
-                params.add(finalVo.getPrice());
-                params.add(DateUtil.dateToStamp(finalVo.getTransaction_date()));
-                params.add(finalVo.getStrategy());
-                params.add(finalVo.getComment());
-                params.add(finalVo.getCount());
-                params.add(System.currentTimeMillis() / 1000);
-                int count = finalVo.getCount();
-                if (finalVo.getTransaction_type() == 2) {
-                    //卖出
-                    count = -finalVo.getCount();
-                }
-                int finalCount = count;
-                conn.updateWithParams(sql, params, r -> {
-                    if (r.succeeded()) {
-                        //更新stock 自选股持股数量
-                        JsonArray upParams = new JsonArray();
-                        upParams.add(finalCount);
-                        upParams.add(System.currentTimeMillis() / 1000);
-                        upParams.add(finalVo.getCode());
-                        conn.updateWithParams("UPDATE stock SET quantity=quantity+?,last_trade_time=? WHERE code=?", upParams, r1 -> {
+
+
+                //查询股票
+                conn.querySingleWithParams("SELECT quantity,avg_price FROM stock WHERE code=?", new JsonArray().add(finalVo.getCode()), query -> {
+                    if (query.result() != null) {
+                        StockEntity stock = new StockEntity();
+                        stock.setQuantity(query.result().getInteger(0));
+                        stock.setAvgPrice(query.result().getDouble(1));
+
+                        //计算均价 =(购买数量*购买价格 + 已够数量*已购价格)总额 / (购买数量+已购数量)总数量
+                        Double avgPrice = (finalVo.getPrice() * finalVo.getCount() + stock.getQuantity() * stock.getAvgPrice()) / (finalVo.getCount() + stock.getQuantity());
+
+                        //添加投资记录
+                        String sql = "INSERT INTO stock_trade (code,type,price,transaction_time,strategy,comment,count,create_on,amount) VALUE (?,?,?,?,?,?,?,?,?)";
+                        JsonArray params = new JsonArray();
+                        params.add(finalVo.getCode());
+                        params.add(1);//买入
+                        params.add(finalVo.getPrice());
+                        params.add(DateUtil.dateToStamp(finalVo.getTransaction_date()));
+                        params.add(finalVo.getStrategy());
+                        params.add(finalVo.getComment());
+                        params.add(finalVo.getCount());
+                        params.add(System.currentTimeMillis() / 1000);
+                        params.add(finalVo.getAmount());
+
+                        conn.updateWithParams(sql, params, r -> {
+                            if (r.succeeded()) {
+                                //更新stock 自选股持股数量
+                                JsonArray upParams = new JsonArray();
+                                upParams.add(finalVo.getCount());
+                                upParams.add(avgPrice);
+                                upParams.add(System.currentTimeMillis() / 1000);
+                                upParams.add(finalVo.getCode());
+                                conn.updateWithParams("UPDATE stock SET quantity=quantity+?,avg_price=?,last_trade_time=? WHERE code=?", upParams, r1 -> {
+                                });
+
+                                //添加用户动态
+                                String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
+                                JsonArray dParams = new JsonArray();
+                                dParams.add(1);
+//                        if (finalVo.getTransaction_type() == 1) {
+                                dParams.add("买入股票【" + finalVo.getCode() + "】");
+                                dParams.add("买入股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，设定策略：" + finalVo.getStrategy() + "  " + finalVo.getComment());
+//                        } else {
+//                            dParams.add("卖出股票【" + finalVo.getCode() + "】");
+//                            dParams.add("卖出股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，备注：" + finalVo.getComment());
+//                        }
+                                dParams.add("");
+                                dParams.add("交易");
+                                dParams.add(2);
+                                dParams.add(finalVo.getCode());
+                                dParams.add("/stock/detail/" + finalVo.getCode());
+                                dParams.add(System.currentTimeMillis() / 1000);
+                                conn.updateWithParams(dSql, dParams, r1 -> {
+                                });
+
+                                //更新资金账户的投资金额
+                                JsonArray accountParams = new JsonArray();
+                                accountParams.add(finalVo.getAmount());
+                                accountParams.add(1);
+                                conn.updateWithParams("UPDATE user_account SET invest_amount=invest_amount+? WHERE id=?", accountParams, r3 -> {
+                                });
+
+                                jsonObject.put("code", 0).put("msg", "SUCCESS");
+
+                                response.end(jsonObject.encode());
+                            }
                         });
-
-                        //添加用户动态
-                        String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
-
-                        JsonArray dParams = new JsonArray();
-                        dParams.add(0);
-                        if (finalVo.getTransaction_type() == 1) {
-                            dParams.add("买入股票【" + finalVo.getCode() + "】");
-                            dParams.add("买入股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，设定策略：" + finalVo.getStrategy() + "  " + finalVo.getComment());
-                        } else {
-                            dParams.add("卖出股票【" + finalVo.getCode() + "】");
-                            dParams.add("卖出股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，备注：" + finalVo.getComment());
-                        }
-                        dParams.add("");
-                        dParams.add("交易");
-                        dParams.add(2);
-                        dParams.add(finalVo.getCode());
-                        dParams.add("/stock/detail/" + finalVo.getCode());
-                        dParams.add(System.currentTimeMillis() / 1000);
-                        conn.updateWithParams(dSql, dParams, r1 -> {
-//                                if (r1.succeeded()) {
-//                                    jsonObject.put("code", 0).put("msg", "SUCCESS");
-//                                    response.end(jsonObject.encode());
-//                                }
-                        });
-
-                        jsonObject.put("code", 0).put("msg", "SUCCESS");
-
+                    }else{
+                        connection.cause().printStackTrace();
+                        System.err.println(connection.cause().getMessage());
+                        jsonObject.put("code", 404).put("msg", "没找到股票信息");
                         response.end(jsonObject.encode());
                     }
                 });
+
+
             } else {
                 connection.cause().printStackTrace();
                 System.err.println(connection.cause().getMessage());
+            }
+        });
+    }
+
+
+    /**
+     * 卖出股票
+     *
+     * @param routingContext
+     */
+    public void handleSellGet(RoutingContext routingContext) {
+        String sql = "SELECT * FROM stock WHERE quantity>0";
+        mySQLClient.getConnection(res -> {
+            if (res.failed()) {
+                throw new RuntimeException(res.cause());
+            }
+            SQLConnection conn = res.result();
+
+
+            conn.query(sql, query -> {
+//                JsonObject jsonObject = new JsonObject();
+                List<JsonObject> list = query.result().getRows();
+
+                List<StockEntity> stockList = new ArrayList<>();
+
+                for (JsonObject child : list) {
+                    StockEntity stock = new StockEntity();
+                    stock.setCode(child.getString("code"));
+                    stock.setName(child.getString("name"));
+                    stockList.add(stock);
+                }
+//                jsonObject.put("code", 0).put("msg", "OK").put("data", list);
+//                HttpServerResponse response = routingContext.response();
+//                response.setStatusCode(200);
+//                response.putHeader("Content-Type", "application/json");
+//                response.end(jsonObject.encode());
+                routingContext.put("stock_list", stockList);
+//
+                render(routingContext, "/invest/sell");
+            });
+
+        });
+
+
+    }
+
+
+    /**
+     * 卖出股票POST
+     *
+     * @param routingContext
+     */
+    public void handleInvestSellPost(RoutingContext routingContext) {
+        String content = routingContext.getBodyAsString();
+
+
+        //返回内容
+        JsonObject jsonObject = new JsonObject();
+        HttpServerResponse response = routingContext.response();
+        response.setStatusCode(200);
+        response.putHeader("Content-Type", "application/json");
+
+        if (StringUtil.isNullOrEmpty(content)) {
+            jsonObject.put("code", 1).put("msg", "参数错误");
+            response.end(jsonObject.encode());
+        }
+
+        InvestAddVo vo = null;
+        try {
+            vo = Json.decodeValue(content, InvestAddVo.class);
+        } catch (Exception e) {
+            vo = null;
+        }
+
+        if (vo == null) {
+            jsonObject.put("code", 1).put("msg", "参数错误");
+            response.end(jsonObject.encode());
+        } else if (StringUtil.isNullOrEmpty(vo.getCode()) || vo.getPrice() <= 0 || vo.getCount() <= 0 || StringUtil.isNullOrEmpty(vo.getTransaction_date())) {
+            jsonObject.put("code", 1).put("msg", "参数错误");
+            response.end(jsonObject.encode());
+        }
+
+        InvestAddVo finalVo = vo;
+        mySQLClient.getConnection(connection -> {
+            if (connection.succeeded()) {
+                SQLConnection conn = connection.result();
+
+//                JsonArray params1 = new JsonArray();
+//                params1.add(finalVo.getCode());
+                //查询股票持仓数据
+                conn.querySingleWithParams("SELECT quantity,avg_price FROM stock WHERE code=?", new JsonArray().add(finalVo.getCode()), query -> {
+                    if (query.result() != null) {
+                        StockEntity stock = new StockEntity();
+                        stock.setQuantity(query.result().getInteger(0));
+                        stock.setAvgPrice(query.result().getDouble(1));
+
+                        if (stock.getQuantity() < finalVo.getCount()) {
+                            jsonObject.put("code", 404).put("msg", "持股数量不足");
+                            response.end(jsonObject.encode());
+                        }
+                        //投资金额 = 卖出数量 * 持股均价
+                        Double investAmount = stock.getAvgPrice().doubleValue() * finalVo.getCount();
+                        //计算盈利 = 卖出数量*卖出价格 - 投资金额
+                        Double profit = finalVo.getPrice() * finalVo.getCount() - investAmount;
+
+                        //添加投资记录
+                        String sql = "INSERT INTO stock_trade (code,type,price,transaction_time,comment,count,create_on,amount,profit) VALUE (?,?,?,?,?,?,?,?,?)";
+                        JsonArray params = new JsonArray();
+                        params.add(finalVo.getCode());
+                        params.add(2);//卖出
+                        params.add(finalVo.getPrice());
+                        params.add(DateUtil.dateToStamp(finalVo.getTransaction_date()));
+//                params.add(finalVo.getStrategy());
+                        params.add(finalVo.getComment());
+                        params.add(finalVo.getCount());
+                        params.add(System.currentTimeMillis() / 1000);
+                        params.add(finalVo.getPrice() * finalVo.getCount());
+                        params.add(profit);
+
+                        conn.updateWithParams(sql, params, r -> {
+                            if (r.succeeded()) {
+                                //更新stock 自选股持股数量
+                                JsonArray upParams = new JsonArray();
+                                upParams.add(finalVo.getCount());
+                                upParams.add(System.currentTimeMillis() / 1000);
+                                upParams.add(finalVo.getCode());
+                                conn.updateWithParams("UPDATE stock SET quantity=quantity-?,last_trade_time=? WHERE code=?", upParams, r1 -> {
+                                });
+
+                                //添加用户动态
+                                String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
+                                JsonArray dParams = new JsonArray();
+                                dParams.add(1);
+//                        if (finalVo.getTransaction_type() == 1) {
+//                        dParams.add("买入股票【" + finalVo.getCode() + "】");
+//                        dParams.add("买入股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，设定策略：" + finalVo.getStrategy() + "  " + finalVo.getComment());
+//                        } else {
+                                dParams.add("卖出股票【" + finalVo.getCode() + "】");
+                                dParams.add("卖出股票" + finalVo.getCode() + "价格：￥" + finalVo.getPrice() + "，数量：" + finalVo.getCount() + "，交易时间：" + finalVo.getTransaction_date() + "，备注：" + finalVo.getComment());
+//                        }
+                                dParams.add("");
+                                dParams.add("交易");
+                                dParams.add(2);
+                                dParams.add(finalVo.getCode());
+                                dParams.add("/stock/detail/" + finalVo.getCode());
+                                dParams.add(System.currentTimeMillis() / 1000);
+                                conn.updateWithParams(dSql, dParams, r1 -> {
+                                });
+
+                                //更新资金账户的投资金额、计算收益
+                                JsonArray accountParams = new JsonArray();
+                                accountParams.add(investAmount);
+                                accountParams.add(profit);
+                                accountParams.add(1);
+                                conn.updateWithParams("UPDATE user_account SET invest_amount=invest_amount-?,income_amount=income_amount+? WHERE id=?", accountParams, r3 -> {
+                                });
+
+                                jsonObject.put("code", 0).put("msg", "SUCCESS");
+
+                                response.end(jsonObject.encode());
+                            }
+                        });
+                    } else {
+                        connection.cause().printStackTrace();
+                        System.err.println(connection.cause().getMessage());
+                        jsonObject.put("code", 404).put("msg", "该股票没有持仓数据");
+                        response.end(jsonObject.encode());
+                    }
+                });
             }
         });
     }

@@ -11,9 +11,9 @@ public class UserAccountEntity {
     private String userName;
     private String mobile;
     private String pwd;
-    private Float capitalTotal;
-    private Float investAmount;
-    private Float incomeAmount;
+    private Double capitalTotal;
+    private Double investAmount;
+    private Double incomeAmount;
     private Integer createOn;
 
     public Integer getId() {
@@ -48,27 +48,27 @@ public class UserAccountEntity {
         this.pwd = pwd;
     }
 
-    public Float getCapitalTotal() {
+    public Double getCapitalTotal() {
         return capitalTotal;
     }
 
-    public void setCapitalTotal(Float capitalTotal) {
+    public void setCapitalTotal(Double capitalTotal) {
         this.capitalTotal = capitalTotal;
     }
 
-    public Float getInvestAmount() {
+    public Double getInvestAmount() {
         return investAmount;
     }
 
-    public void setInvestAmount(Float investAmount) {
+    public void setInvestAmount(Double investAmount) {
         this.investAmount = investAmount;
     }
 
-    public Float getIncomeAmount() {
+    public Double getIncomeAmount() {
         return incomeAmount;
     }
 
-    public void setIncomeAmount(Float incomeAmount) {
+    public void setIncomeAmount(Double incomeAmount) {
         this.incomeAmount = incomeAmount;
     }
 

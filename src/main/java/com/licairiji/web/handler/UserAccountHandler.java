@@ -76,9 +76,9 @@ public class UserAccountHandler extends AbstractHandler {
                     account.setId(child.getInteger(0));
                     account.setUserName(child.getString(1));
                     account.setMobile(child.getString(2));
-                    account.setCapitalTotal(child.getFloat(4));
-                    account.setInvestAmount(child.getFloat(5));
-                    account.setIncomeAmount(child.getFloat(6));
+                    account.setCapitalTotal(child.getDouble(4));
+                    account.setInvestAmount(child.getDouble(5));
+                    account.setIncomeAmount(child.getDouble(6));
                     jsonObject.put("code", 0).put("msg", "SUCCESS");
                     jsonObject.put("data",JsonObject.mapFrom(account));
                     response.end(jsonObject.encode());

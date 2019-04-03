@@ -158,16 +158,17 @@
                             <td data-v-8a7c16ee="" class="td-center">68.8亿</td>
                             <td data-v-8a7c16ee="" class="td-center">68.8亿</td>
                             <td data-v-8a7c16ee="" class="td-center">9.56</td>
-                            <td data-v-8a7c16ee="" class="td-center td-flow">
-                            <svg data-v-24ec15b8="" data-v-8a7c16ee="" viewBox="0 0 56 40" width="56" height="40">
-                            <line data-v-24ec15b8="" x1="0" y1="20" x2="56" y2="20" stroke-width="1" stroke="#efefef"></line>
-                            <polygon data-v-24ec15b8="" fill="#EB4651" points="5 20,5 8,11 8,11 20"></polygon>
-                            <polygon data-v-24ec15b8="" fill="#1CBF7B" points="15 20,15 40,21 40,21 20"></polygon>
-                            <polygon data-v-24ec15b8="" fill="#EB4651" points="25 20,25 7,31 7,31 20"></polygon>
-                            <polygon data-v-24ec15b8="" fill="#1CBF7B" points="35 20,35 27,41 27,41 20"></polygon>
-                            <polygon data-v-24ec15b8="" fill="#EB4651" points="45 20,45 16,51 16,51 20"></polygon></svg>
+                            <td data-v-8a7c16ee="" class="td-center td-flow" th:text="${item.quantity}">
+                            <!--<svg data-v-24ec15b8="" data-v-8a7c16ee="" viewBox="0 0 56 40" width="56" height="40">-->
+                            <!--<line data-v-24ec15b8="" x1="0" y1="20" x2="56" y2="20" stroke-width="1" stroke="#efefef"></line>-->
+                            <!--<polygon data-v-24ec15b8="" fill="#EB4651" points="5 20,5 8,11 8,11 20"></polygon>-->
+                            <!--<polygon data-v-24ec15b8="" fill="#1CBF7B" points="15 20,15 40,21 40,21 20"></polygon>-->
+                            <!--<polygon data-v-24ec15b8="" fill="#EB4651" points="25 20,25 7,31 7,31 20"></polygon>-->
+                            <!--<polygon data-v-24ec15b8="" fill="#1CBF7B" points="35 20,35 27,41 27,41 20"></polygon>-->
+                            <!--<polygon data-v-24ec15b8="" fill="#EB4651" points="45 20,45 16,51 16,51 20"></polygon></svg>-->
                         </td>
-                            <td data-v-8a7c16ee="" class="diejia"><span data-v-8a7c16ee=""><!----><i data-v-8a7c16ee="" class="iconfont"></i></span></td>
+                            <td data-v-8a7c16ee="" class="diejia">
+                                <span data-v-8a7c16ee="" th:text="${item.avgPrice}"><!----><i data-v-8a7c16ee="" class="iconfont"></i></span></td>
                         </tr>
 
                         </tbody>

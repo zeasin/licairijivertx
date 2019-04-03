@@ -88,6 +88,8 @@ public class StockHandler extends AbstractHandler {
                         entity.setBoard("中小板");
                     else if (child.getString("board").equalsIgnoreCase("CYB"))
                         entity.setBoard("创业板");
+                    entity.setQuantity(child.getInteger("quantity"));
+                    entity.setAvgPrice(child.getDouble("avg_price"));
 
                     prod_code += child.getString("code")+"."+child.getString("bourse")+",";
 

@@ -11,6 +11,7 @@ public class InvestAddVo {
     private String code;
     private int transaction_type;
     private double price;
+    private double amount;
     private String transaction_date;
     private String strategy;
     private int count;
@@ -46,6 +47,14 @@ public class InvestAddVo {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public int getTransaction_type() {
