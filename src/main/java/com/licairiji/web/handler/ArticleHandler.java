@@ -1,5 +1,6 @@
 package com.licairiji.web.handler;
 
+import com.google.gson.Gson;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import com.itextpdf.layout.font.FontProvider;
@@ -8,11 +9,15 @@ import com.licairiji.web.entity.ArticleEntity;
 import com.licairiji.web.entity.InvestLogEntity;
 import com.licairiji.web.entity.StockEntity;
 import com.licairiji.web.entity.TopicEntity;
-import com.licairiji.web.utils.ClearBufferThread;
-import com.licairiji.web.utils.DownloadPdf;
-import com.licairiji.web.utils.HTMLSpirit;
-import com.licairiji.web.utils.HtmlToPdfInterceptor;
+import com.licairiji.web.utils.*;
 import com.licairiji.web.vo.ArticlePublishVo;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.http.Response;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.util.Auth;
 import io.netty.util.internal.StringUtil;
 import io.vertx.core.Context;
 import io.vertx.core.http.HttpServerRequest;
@@ -34,6 +39,7 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 描述：
@@ -227,17 +233,18 @@ public class ArticleHandler extends AbstractHandler {
             if (connection.succeeded()) {
                 SQLConnection conn = connection.result();
 
-                conn.query("SELECT * FROM stock", query1 -> {
+                conn.query("SELECT * FROM tag", query1 -> {
                     List<JsonObject> list2 = query1.result().getRows();
-                    List<StockEntity> topics = new ArrayList<>();
+                    List<TopicEntity> topics = new ArrayList<>();
                     for (JsonObject child : list2) {
-                        StockEntity entity2 = new StockEntity();
+                        TopicEntity entity2 = new TopicEntity();
                         entity2.setId(child.getInteger("id"));
-                        entity2.setCode(child.getString("code"));
-                        entity2.setName(child.getString("name"));
+                        entity2.setTitle(child.getString("title"));
+                        entity2.setContent(child.getString("content"));
                         topics.add(entity2);
                     }
-                    routingContext.put("stocks", topics);
+
+                    routingContext.put("tags", topics);
 
                     render(routingContext, "/article/add_url");
 
@@ -247,22 +254,6 @@ public class ArticleHandler extends AbstractHandler {
         });
     }
 
-    public byte[] convert(String html) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ConverterProperties props = new ConverterProperties();
-        FontProvider fp = new FontProvider(); // 提供解析用的字体
-        fp.addStandardPdfFonts(); // 添加标准字体库、无中文
-//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//        String s= classLoader.getResource(File.separator).getPath();
-        String s = ArticleHandler.class.getResource(File.separator).getPath();
-        fp.addDirectory(s + "/fonts/"); // 自定义字体路径、解决中文,可先用绝对路径测试。
-        props.setFontProvider(fp);
-        // props.setBaseUri(baseResource); // 设置html资源的相对路径
-        HtmlConverter.convertToPdf(html, outputStream, props); // 无法灵活设置页边距等
-        byte[] result = outputStream.toByteArray();
-        outputStream.close();
-        return result;
-    }
 
     /**
      * 将HTML字符串转换为HTML文件
@@ -270,26 +261,26 @@ public class ArticleHandler extends AbstractHandler {
      * @param htmlStr HTML字符串
      * @return HTML文件的绝对路径
      */
-    public static String strToHtmlFile(String htmlStr, String htmlFilePath) {
-        OutputStream outputStream = null;
-        try {
-//            String htmlFilePath = TEMP_DIR_PATH + UUID.randomUUID().toString() + ".html";
-            outputStream = new FileOutputStream(htmlFilePath);
-            outputStream.write(htmlStr.getBytes("UTF-8"));
-            return htmlFilePath;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (outputStream != null) {
-                    outputStream.close();
-                    outputStream = null;
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
+//    public static String strToHtmlFile(String htmlStr, String htmlFilePath) {
+//        OutputStream outputStream = null;
+//        try {
+////            String htmlFilePath = TEMP_DIR_PATH + UUID.randomUUID().toString() + ".html";
+//            outputStream = new FileOutputStream(htmlFilePath);
+//            outputStream.write(htmlStr.getBytes("UTF-8"));
+//            return htmlFilePath;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        } finally {
+//            try {
+//                if (outputStream != null) {
+//                    outputStream.close();
+//                    outputStream = null;
+//                }
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//    }
 
 
     /**
@@ -322,18 +313,63 @@ public class ArticleHandler extends AbstractHandler {
             org.jsoup.nodes.Document doc = null;
             doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31").timeout(10000).get();
             String title = "";//文章标题
-            InputStream inputStream = new ByteArrayInputStream(doc.html().getBytes());
-            String urlStr = IOUtils.toString(inputStream, "UTF-8");
-
+            String htmlFilePath = "";//html路径
+            String pdfFilePath = "";//pdf路径
             if (url.startsWith("https://mp.weixin.qq.com")) {
+                InputStream inputStream = new ByteArrayInputStream(doc.html().getBytes());
+                String urlStr = IOUtils.toString(inputStream, "UTF-8");
                 //微信公众号文章
                 title = doc.select(".rich_media_title").text();
                 title = title.replace(" ","");
                 if (StringUtil.isNullOrEmpty(title) == false) {
                     //Jsoup.connect(url).get().html().getBytes()
                     urlStr = urlStr.replace("data-src=\"", "src=\"");
-                    String htmlFilePath = filePath + title + ".html";
-                    String pdfFilePath = filePath + title + ".pdf";
+                     htmlFilePath = filePath + title + ".html";
+                     pdfFilePath = filePath + title + ".pdf";
+                    //生成html
+                    FileOutputStream fileOutputStream = new FileOutputStream(htmlFilePath);
+                    fileOutputStream.write(urlStr.getBytes("UTF-8"));
+                    fileOutputStream.close();
+
+
+
+
+
+
+                    //获取系统
+                    String osName = System.getProperty("os.name");
+                    String command = String.format("wkhtmltopdf %s %s", htmlFilePath, pdfFilePath);
+
+
+//                    Process process = Runtime.getRuntime().exec(command);
+//
+//                    new Thread(new ClearBufferThread(process.getInputStream())).start();
+//                    new Thread(new ClearBufferThread(process.getErrorStream())).start();
+//                    process.waitFor();
+                    Process proc = Runtime.getRuntime().exec(command);
+                    HtmlToPdfInterceptor error = new HtmlToPdfInterceptor(proc.getErrorStream());
+                    HtmlToPdfInterceptor output = new HtmlToPdfInterceptor(proc.getInputStream());
+                    error.start();
+                    output.start();
+                    proc.waitFor();
+                }
+            }else if (url.startsWith("https://xuangubao.cn")) {
+                //文章来自于选股宝
+                title = doc.select(".article-meta-title").text();
+                title = title.replace(" ","");
+                String content = doc.select(".article").html();
+                String body = doc.select("body").html();
+                doc.select("body").html(content);
+
+                InputStream inputStream = new ByteArrayInputStream(doc.html().getBytes());
+                String urlStr = IOUtils.toString(inputStream, "UTF-8");
+
+
+                urlStr = urlStr.replace(doc.select("body").html(),content);
+
+                if (StringUtil.isNullOrEmpty(title) == false) {
+                     htmlFilePath = filePath + title + ".html";
+                     pdfFilePath = filePath + title + ".pdf";
                     //生成html
                     FileOutputStream fileOutputStream = new FileOutputStream(htmlFilePath);
                     fileOutputStream.write(urlStr.getBytes("UTF-8"));
@@ -355,12 +391,48 @@ public class ArticleHandler extends AbstractHandler {
                     output.start();
                     proc.waitFor();
                 }
+
             }else{
                 jsonObject.put("code", 500).put("msg", "暂时只支持微信公众号文章");
                 response.end(jsonObject.encode());
             }
 
+            //...生成上传凭证，然后准备上传
+            String accessKey = "sDfL7yNlSy16MqL7vh6M_UaPgKscCbiti5GWZJmu";
+            String secretKey = "utM-_huV78h7GaWWsxKDl97P5EFK5jmb0ba-3HIG";
+            String bucket = "licairiji";
+            String imgDomain = "licai.xiguanapp.com";
+            Auth auth = Auth.create(accessKey, secretKey);
 
+            String upToken = auth.uploadToken(bucket);//上传的凭据
+
+            //构造一个带指定Zone对象的配置类
+            Configuration cfg = new Configuration(Zone.zone2());
+
+            UploadManager uploadManager = new UploadManager(cfg);
+            //默认不指定key的情况下，以文件内容的hash值作为文件名
+//                    String key = null;
+            //将html上传到七牛云
+            if(StringUtil.isNullOrEmpty(htmlFilePath) == false) {
+
+                try {
+                    Response qiniu_response = uploadManager.put(htmlFilePath, title + ".html", upToken);
+                    //解析上传成功的结果
+                    DefaultPutRet putRet = new Gson().fromJson(qiniu_response.bodyString(), DefaultPutRet.class);
+                    System.out.println(putRet.key);
+                    System.out.println(putRet.hash);
+
+                    UploadImageResult uploadImageResult = new UploadImageResult();
+                    uploadImageResult.setSrc(imgDomain + putRet.key);
+
+
+                } catch (QiniuException ex) {
+                    Response r = ex.response;
+
+                    System.err.println(r.toString());
+                }
+
+            }
 //            String html = "<p><span style=\"font-family: Microsoft YaHei;\">微软雅黑: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
 //                    "<p><span style=\"font-family: SimSun;\">宋体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
 //                    "<p><span style=\"font-family: STHeiti;\">黑体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>" +

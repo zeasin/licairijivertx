@@ -36,29 +36,29 @@ public class HomeHandler extends AbstractHandler {
 
             conn.query(sql, query -> {
                 JsonObject jsonObject = new JsonObject();
+                if(query.result()!=null) {
+                    List<JsonObject> list = query.result().getRows();
 
-                List<JsonObject> list = query.result().getRows();
 
-
-                List<UserDynamicEntity> dynamics = new ArrayList<>();
-                for (JsonObject child : list) {
-                    UserDynamicEntity entity = new UserDynamicEntity();
-                    entity.setId(child.getInteger("id"));
-                    entity.setTitle(child.getString("title"));
-                    entity.setType(child.getInteger("type"));
-                    entity.setDataId(child.getString("data_id"));
-                    entity.setUrl(child.getString("url"));
-                    entity.setImgs(child.getString("imgs"));
-                    entity.setTags(child.getString("tags"));
-                    entity.setContent(child.getString("content"));
-                    entity.setCreateOn(child.getInteger("create_on"));
-                    entity.setNumSc(child.getInteger("num_sc"));
-                    entity.setNumPing(child.getInteger("num_ping"));
-                    entity.setNumZan(child.getInteger("num_zan"));
-                    dynamics.add(entity);
+                    List<UserDynamicEntity> dynamics = new ArrayList<>();
+                    for (JsonObject child : list) {
+                        UserDynamicEntity entity = new UserDynamicEntity();
+                        entity.setId(child.getInteger("id"));
+                        entity.setTitle(child.getString("title"));
+                        entity.setType(child.getInteger("type"));
+                        entity.setDataId(child.getString("data_id"));
+                        entity.setUrl(child.getString("url"));
+                        entity.setImgs(child.getString("imgs"));
+                        entity.setTags(child.getString("tags"));
+                        entity.setContent(child.getString("content"));
+                        entity.setCreateOn(child.getInteger("create_on"));
+                        entity.setNumSc(child.getInteger("num_sc"));
+                        entity.setNumPing(child.getInteger("num_ping"));
+                        entity.setNumZan(child.getInteger("num_zan"));
+                        dynamics.add(entity);
+                    }
+                    routingContext.put("dynamics", dynamics);
                 }
-                routingContext.put("dynamics", dynamics);
-
                 conn.query("SELECT * FROM tag", query1 -> {
                     JsonObject jsonObject1 = new JsonObject();
                     List<JsonObject> list2 = query1.result().getRows();

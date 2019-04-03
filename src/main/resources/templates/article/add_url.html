@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>添加文章</title>
+    <title>记录重要资讯</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
     <script src="/static/layui/layui.js"></script>
     <style>
@@ -332,11 +332,11 @@
     <div class="Layout-navbarHolder">
         <div class="Navbar">
             <div class="Navbar-logo-wrapper">
-                <a class="Navbar-logo" href="/article/list">心得</a>
+                <a class="Navbar-logo" href="/">记录</a>
             </div>
             <div class="Navbar-title">
                 <div class="WriteIndex-pageTitleWrapper">
-                    <div class="WriteIndex-pageTitle">添加文章</div>
+                    <div class="WriteIndex-pageTitle"></div>
                     <!--<div class="WriteIndex-pageSubTitle">草稿已保存</div>-->
                 </div>
             </div>
@@ -356,15 +356,17 @@
 
         <!--star标题-->
         <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
-            <input type="text" id="url" placeholder="填写文章网址，例如：http://www.xxx.com/article/122.html" style="height: 32px;width:100%;"></input>
+                <input type="text" id="url" placeholder="填写文章网址，例如：http://www.xxx.com/article/122.html" style="height: 32px;width:100%;"></input>
         </div>
         <!--end标题-->
-
+        <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
+            <input type="text" id="code" placeholder="相关股票，填写股票代码，以英文逗号隔开" style="height: 32px;width:100%;"></input>
+        </div>
         <div class="WriteIndex-titleInput Input-wrapper Input-wrapper--multiline">
             <!--<textarea rows="1" class="Input" id="tags" placeholder="标签（多标签以逗号隔开）" style="height: 62px;"></textarea>-->
-            <select id="code" class="select" style="height: 32px;">
-                <option value="">--所属股票--</option>
-                <option th:each="item:${stocks}"  th:value="${item.code}" th:text="${item.name}">随记</option>
+            <select id="tag" class="select" style="height: 32px;">
+                <option value="">--标签--</option>
+                <option th:each="item:${tags}"  th:value="${item.title}" th:text="${item.content}">随记</option>
 
             </select>
         </div>
@@ -481,6 +483,7 @@
             // var content = $("#demo").val();
             var code = $("#code").val();
             var plate = $("#plate").val();
+            var tag = $("#tag").val();
             // var content = layedit.getContent(edithtml);
             // var cont = {
             //     image: image,
@@ -493,7 +496,7 @@
 
                 var formdata=new FormData();
                 formdata.append('url',url);
-                // formdata.append('content',content);
+                formdata.append('tag',tag);
                 formdata.append('code',code);
                 formdata.append('plate',plate);
 

@@ -157,11 +157,11 @@
 
 
     <!-- https://mvnrepository.com/artifact/com.itextpdf/itext7-core -->
-    <dependency>
-    <groupId>com.itextpdf</groupId>
-    <artifactId>itext7-core</artifactId>
-    <version>7.1.5</version>
-    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>com.itextpdf</groupId>-->
+    <!--<artifactId>itext7-core</artifactId>-->
+    <!--<version>7.1.5</version>-->
+    <!--</dependency>-->
     <!-- https://mvnrepository.com/artifact/com.itextpdf/html2pdf -->
     <dependency>
       <groupId>com.itextpdf</groupId>
@@ -169,6 +169,12 @@
       <version>2.1.2</version>
     </dependency>
 
+    <!--七牛云-->
+    <dependency>
+      <groupId>com.qiniu</groupId>
+      <artifactId>qiniu-java-sdk</artifactId>
+      <version>[7.2.0, 7.2.99]</version>
+    </dependency>
 
 
   </dependencies>
