@@ -1,15 +1,10 @@
 package com.licairiji.web.handler;
 
 import com.google.gson.Gson;
-import com.itextpdf.html2pdf.ConverterProperties;
-import com.itextpdf.html2pdf.HtmlConverter;
-import com.itextpdf.layout.font.FontProvider;
-import com.itextpdf.text.pdf.BaseFont;
 import com.licairiji.web.entity.ArticleEntity;
-import com.licairiji.web.entity.InvestLogEntity;
-import com.licairiji.web.entity.StockEntity;
 import com.licairiji.web.entity.TopicEntity;
-import com.licairiji.web.utils.*;
+import com.licairiji.web.utils.HTMLSpirit;
+import com.licairiji.web.utils.HtmlToPdfInterceptor;
 import com.licairiji.web.vo.ArticlePublishVo;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
@@ -22,7 +17,6 @@ import io.netty.util.internal.StringUtil;
 import io.vertx.core.Context;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.SQLClient;
@@ -32,14 +26,13 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
 import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
-import org.w3c.dom.Document;
-import org.xhtmlrenderer.pdf.ITextFontResolver;
-import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 描述：
@@ -255,7 +248,6 @@ public class ArticleHandler extends AbstractHandler {
     }
 
 
-
     /**
      * 发布文章POST
      *
@@ -295,12 +287,12 @@ public class ArticleHandler extends AbstractHandler {
                 String urlStr = IOUtils.toString(inputStream, "UTF-8");
                 //微信公众号文章
                 title = doc.select(".rich_media_title").text();
-                title = title.replace(" ","");
+                title = title.replace(" ", "");
                 if (StringUtil.isNullOrEmpty(title) == false) {
                     //Jsoup.connect(url).get().html().getBytes()
                     urlStr = urlStr.replace("data-src=\"", "src=\"");
-                     htmlFilePath = filePath + title + ".html";
-                     pdfFilePath = filePath + title + ".pdf";
+                    htmlFilePath = filePath + title + ".html";
+                    pdfFilePath = filePath + title + ".pdf";
                     //生成html
                     FileOutputStream fileOutputStream = new FileOutputStream(htmlFilePath);
                     fileOutputStream.write(urlStr.getBytes("UTF-8"));
@@ -323,10 +315,10 @@ public class ArticleHandler extends AbstractHandler {
                     output.start();
                     proc.waitFor();
                 }
-            }else if (url.startsWith("https://xuangubao.cn")) {
+            } else if (url.startsWith("https://xuangubao.cn")) {
                 //文章来自于选股宝
                 title = doc.select(".article-meta-title").text();
-                title = title.replace(" ","");
+                title = title.replace(" ", "");
                 String content = doc.select(".article").html();
                 String body = doc.select("body").html();
                 doc.select("body").html(content);
@@ -335,11 +327,11 @@ public class ArticleHandler extends AbstractHandler {
                 String urlStr = IOUtils.toString(inputStream, "UTF-8");
 
 
-                urlStr = urlStr.replace(doc.select("body").html(),content);
+                urlStr = urlStr.replace(doc.select("body").html(), content);
 
                 if (StringUtil.isNullOrEmpty(title) == false) {
-                     htmlFilePath = filePath + title + ".html";
-                     pdfFilePath = filePath + title + ".pdf";
+                    htmlFilePath = filePath + title + ".html";
+                    pdfFilePath = filePath + title + ".pdf";
                     //生成html
                     FileOutputStream fileOutputStream = new FileOutputStream(htmlFilePath);
                     fileOutputStream.write(urlStr.getBytes("UTF-8"));
@@ -356,7 +348,7 @@ public class ArticleHandler extends AbstractHandler {
                     proc.waitFor();
                 }
 
-            }else{
+            } else {
                 jsonObject.put("code", 500).put("msg", "暂时只支持微信公众号文章");
                 response.end(jsonObject.encode());
             }
@@ -377,7 +369,7 @@ public class ArticleHandler extends AbstractHandler {
             //默认不指定key的情况下，以文件内容的hash值作为文件名
 //                    String key = null;
             //将html上传到七牛云
-            if(StringUtil.isNullOrEmpty(htmlFilePath) == false) {
+            if (StringUtil.isNullOrEmpty(htmlFilePath) == false) {
 
                 try {
                     Response qiniu_response = uploadManager.put(htmlFilePath, null, upToken);
@@ -399,7 +391,7 @@ public class ArticleHandler extends AbstractHandler {
             }
 
             //将pdf上传到七牛云
-            if(StringUtil.isNullOrEmpty(pdfFilePath) == false) {
+            if (StringUtil.isNullOrEmpty(pdfFilePath) == false) {
 
                 try {
                     Response qiniu_response = uploadManager.put(pdfFilePath, null, upToken);
@@ -429,7 +421,7 @@ public class ArticleHandler extends AbstractHandler {
             mySQLClient.getConnection(connection -> {
                 if (connection.succeeded()) {
                     SQLConnection conn = connection.result();
-                    String sql = "INSERT INTO article (title,image,tags,content,create_on,html_path,html_url,pdf_path,pdf_url) VALUE (?,?,?,?,?,?,?,?,?)";
+                    String sql = "INSERT INTO article (title,image,tags,content,create_on,html_path,html_url,pdf_path,pdf_url,stock_code,plate) VALUE (?,?,?,?,?,?,?,?,?,?,?)";
                     JsonArray params = new JsonArray();
                     params.add(finalTitle);
                     params.add("");
@@ -440,6 +432,8 @@ public class ArticleHandler extends AbstractHandler {
                     params.add(finalHtmlUrl);
                     params.add(finalPdfFilePath);
                     params.add(finalPdfUrl);
+                    params.add(code);
+                    params.add(plate);
                     //返回自增id
                     conn.setOptions(new SQLOptions().setAutoGeneratedKeys(true));
 
@@ -447,13 +441,22 @@ public class ArticleHandler extends AbstractHandler {
                         if (r.succeeded()) {
                             JsonArray js = r.result().getKeys();
                             Integer articleId = js.getInteger(0);
+                            String dcontent = finalTitle;
+                            if(StringUtil.isNullOrEmpty(code)==false){
+                                dcontent += "【相关股票："+code+"】";
+                            }
+
+                            if(StringUtil.isNullOrEmpty(plate)==false){
+                                dcontent += "【板块："+plate+"】";
+                            }
+
                             //加入动态
                             String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on,num_sc,num_zan,num_ping) VALUE (?,?,?,?,?,?,?,?,?,0,0,0)";
 
                             JsonArray dParams = new JsonArray();
                             dParams.add(0);
                             dParams.add(finalTitle);
-                            dParams.add(finalPdfUrl);
+                            dParams.add(dcontent);
                             dParams.add("");
                             dParams.add(tag);
                             dParams.add(1);
