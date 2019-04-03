@@ -193,7 +193,7 @@ public class ArticleHandler extends AbstractHandler {
                         JsonArray js = r.result().getKeys();
                         Integer articleId = js.getInteger(0);
                         //加入动态
-                        String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
+                        String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on,num_sc,num_zan,num_ping) VALUE (?,?,?,?,?,?,?,?,?,0,0,0)";
                         String dContent = HTMLSpirit.delHTMLTag(vo.getContent());
                         if (dContent.length() > 150) dContent = dContent.substring(0, 150);
 
@@ -255,33 +255,6 @@ public class ArticleHandler extends AbstractHandler {
     }
 
 
-    /**
-     * 将HTML字符串转换为HTML文件
-     *
-     * @param htmlStr HTML字符串
-     * @return HTML文件的绝对路径
-     */
-//    public static String strToHtmlFile(String htmlStr, String htmlFilePath) {
-//        OutputStream outputStream = null;
-//        try {
-////            String htmlFilePath = TEMP_DIR_PATH + UUID.randomUUID().toString() + ".html";
-//            outputStream = new FileOutputStream(htmlFilePath);
-//            outputStream.write(htmlStr.getBytes("UTF-8"));
-//            return htmlFilePath;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        } finally {
-//            try {
-//                if (outputStream != null) {
-//                    outputStream.close();
-//                    outputStream = null;
-//                }
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-//    }
-
 
     /**
      * 发布文章POST
@@ -291,10 +264,14 @@ public class ArticleHandler extends AbstractHandler {
     public void handleAddPDFPost(RoutingContext routingContext) {
         HttpServerRequest request = routingContext.request();
         String url = request.getParam("url");
-//        String content = request.getParam("content");
+        String tag = request.getParam("tag");
         String code = request.getParam("code");
         String plate = request.getParam("plate");
-
+        String htmlUrl = "";//资讯html 地址
+        String pdfUrl = "";//资讯pdf 地址
+        String title = "";//文章标题
+        String htmlFilePath = "";//html路径
+        String pdfFilePath = "";//pdf路径
 //        String content = routingContext.getBodyAsString();
         //返回内容
         JsonObject jsonObject = new JsonObject();
@@ -312,9 +289,7 @@ public class ArticleHandler extends AbstractHandler {
         try {
             org.jsoup.nodes.Document doc = null;
             doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.64 Safari/537.31").timeout(10000).get();
-            String title = "";//文章标题
-            String htmlFilePath = "";//html路径
-            String pdfFilePath = "";//pdf路径
+
             if (url.startsWith("https://mp.weixin.qq.com")) {
                 InputStream inputStream = new ByteArrayInputStream(doc.html().getBytes());
                 String urlStr = IOUtils.toString(inputStream, "UTF-8");
@@ -330,11 +305,6 @@ public class ArticleHandler extends AbstractHandler {
                     FileOutputStream fileOutputStream = new FileOutputStream(htmlFilePath);
                     fileOutputStream.write(urlStr.getBytes("UTF-8"));
                     fileOutputStream.close();
-
-
-
-
-
 
                     //获取系统
                     String osName = System.getProperty("os.name");
@@ -378,12 +348,6 @@ public class ArticleHandler extends AbstractHandler {
                     String osName = System.getProperty("os.name");
                     String command = String.format("wkhtmltopdf %s %s", htmlFilePath, pdfFilePath);
 
-
-//                    Process process = Runtime.getRuntime().exec(command);
-//
-//                    new Thread(new ClearBufferThread(process.getInputStream())).start();
-//                    new Thread(new ClearBufferThread(process.getErrorStream())).start();
-//                    process.waitFor();
                     Process proc = Runtime.getRuntime().exec(command);
                     HtmlToPdfInterceptor error = new HtmlToPdfInterceptor(proc.getErrorStream());
                     HtmlToPdfInterceptor output = new HtmlToPdfInterceptor(proc.getInputStream());
@@ -401,7 +365,7 @@ public class ArticleHandler extends AbstractHandler {
             String accessKey = "sDfL7yNlSy16MqL7vh6M_UaPgKscCbiti5GWZJmu";
             String secretKey = "utM-_huV78h7GaWWsxKDl97P5EFK5jmb0ba-3HIG";
             String bucket = "licairiji";
-            String imgDomain = "licai.xiguanapp.com";
+            String imgDomain = "http://licai.xiguanapp.com/";
             Auth auth = Auth.create(accessKey, secretKey);
 
             String upToken = auth.uploadToken(bucket);//上传的凭据
@@ -416,14 +380,14 @@ public class ArticleHandler extends AbstractHandler {
             if(StringUtil.isNullOrEmpty(htmlFilePath) == false) {
 
                 try {
-                    Response qiniu_response = uploadManager.put(htmlFilePath, title + ".html", upToken);
+                    Response qiniu_response = uploadManager.put(htmlFilePath, null, upToken);
                     //解析上传成功的结果
                     DefaultPutRet putRet = new Gson().fromJson(qiniu_response.bodyString(), DefaultPutRet.class);
                     System.out.println(putRet.key);
                     System.out.println(putRet.hash);
-
-                    UploadImageResult uploadImageResult = new UploadImageResult();
-                    uploadImageResult.setSrc(imgDomain + putRet.key);
+                    htmlUrl = imgDomain + putRet.key;
+//                    UploadImageResult uploadImageResult = new UploadImageResult();
+//                    uploadImageResult.setSrc(imgDomain + putRet.key);
 
 
                 } catch (QiniuException ex) {
@@ -433,33 +397,82 @@ public class ArticleHandler extends AbstractHandler {
                 }
 
             }
-//            String html = "<p><span style=\"font-family: Microsoft YaHei;\">微软雅黑: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
-//                    "<p><span style=\"font-family: SimSun;\">宋体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>\n" +
-//                    "<p><span style=\"font-family: STHeiti;\">黑体: 粗体前A<strong>A粗体A</strong>A粗体后</span></p>" +
-//                    "<p><span style=\"font-family: Times New Roman;\">Times New Roman: pre bdA<strong>AbdA</strong>Aaft bd</span></p>\n";
-//            FileOutputStream fileOutputStream = new FileOutputStream(a+"/a.pdf");
-//            fileOutputStream.write(convert(urlStr));
-//            fileOutputStream.close();
-//             convert(urlStr);
-//            renderer.setDocumentFromString(urlStr);
-//            renderer.setDocument((Document) doc,blogURL);
 
-//            ITextRenderer render = new ITextRenderer();
-//            renderer.getFontResolver().addFont(fontPath, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-//        // 解决中文支持问题
-//            ITextFontResolver fontResolver = renderer.getFontResolver();
-//            fontResolver.addFont(SystemConstant.local_dir + "/simsun.ttc", BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
-            //解决图片的相对路径问题，绝对路径不需要写
-//        renderer.getSharedContext().setBaseURL("file:/D:/");
-//            renderer.layout();
-//            try {
-//                renderer.createPDF(os);
-//            } catch (DocumentException e) {
-//                e.printStackTrace();
-//            }
+            //将pdf上传到七牛云
+            if(StringUtil.isNullOrEmpty(pdfFilePath) == false) {
 
-//            os.flush();
-//            os.close();
+                try {
+                    Response qiniu_response = uploadManager.put(pdfFilePath, null, upToken);
+                    //解析上传成功的结果
+                    DefaultPutRet putRet = new Gson().fromJson(qiniu_response.bodyString(), DefaultPutRet.class);
+                    System.out.println(putRet.key);
+                    System.out.println(putRet.hash);
+                    pdfUrl = imgDomain + putRet.key;
+//                    UploadImageResult uploadImageResult = new UploadImageResult();
+//                    uploadImageResult.setSrc(imgDomain + putRet.key);
+
+
+                } catch (QiniuException ex) {
+                    Response r = ex.response;
+
+                    System.err.println(r.toString());
+                }
+
+            }
+
+            //写入数据库
+            String finalTitle = title;
+            String finalHtmlFilePath = htmlFilePath;
+            String finalHtmlUrl = htmlUrl;
+            String finalPdfFilePath = pdfFilePath;
+            String finalPdfUrl = pdfUrl;
+            mySQLClient.getConnection(connection -> {
+                if (connection.succeeded()) {
+                    SQLConnection conn = connection.result();
+                    String sql = "INSERT INTO article (title,image,tags,content,create_on,html_path,html_url,pdf_path,pdf_url) VALUE (?,?,?,?,?,?,?,?,?)";
+                    JsonArray params = new JsonArray();
+                    params.add(finalTitle);
+                    params.add("");
+                    params.add(tag);
+                    params.add("");
+                    params.add(System.currentTimeMillis() / 1000);
+                    params.add(finalHtmlFilePath);
+                    params.add(finalHtmlUrl);
+                    params.add(finalPdfFilePath);
+                    params.add(finalPdfUrl);
+                    //返回自增id
+                    conn.setOptions(new SQLOptions().setAutoGeneratedKeys(true));
+
+                    conn.updateWithParams(sql, params, r -> {
+                        if (r.succeeded()) {
+                            JsonArray js = r.result().getKeys();
+                            Integer articleId = js.getInteger(0);
+                            //加入动态
+                            String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on,num_sc,num_zan,num_ping) VALUE (?,?,?,?,?,?,?,?,?,0,0,0)";
+
+                            JsonArray dParams = new JsonArray();
+                            dParams.add(0);
+                            dParams.add(finalTitle);
+                            dParams.add(finalPdfUrl);
+                            dParams.add("");
+                            dParams.add(tag);
+                            dParams.add(1);
+                            dParams.add(articleId);
+                            dParams.add(finalPdfUrl);
+                            dParams.add(System.currentTimeMillis() / 1000);
+                            conn.updateWithParams(dSql, dParams, r1 -> {
+                                String s = "";
+                            });
+
+                            conn.close();
+                        }
+                    });
+                } else {
+                    connection.cause().printStackTrace();
+                    System.err.println(connection.cause().getMessage());
+                }
+            });
+
 
         } catch (Exception e) {
             e.printStackTrace();
