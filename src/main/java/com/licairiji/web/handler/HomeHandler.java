@@ -26,7 +26,7 @@ public class HomeHandler extends AbstractHandler {
 
     public void handleHome(RoutingContext routingContext) {
 
-        String sql = "SELECT * FROM user_dynamic order by id desc limit 0,20;";
+        var sql = "SELECT * FROM user_dynamic order by id desc limit 0,20;";
         mySQLClient.getConnection(res -> {
             if (res.failed()) {
                 throw new RuntimeException(res.cause());
