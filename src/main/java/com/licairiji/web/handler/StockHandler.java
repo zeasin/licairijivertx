@@ -8,6 +8,7 @@ import com.licairiji.web.utils.HTMLSpirit;
 import com.licairiji.web.utils.UrlStreamUtils;
 import com.licairiji.web.vo.MessagesResult;
 import com.licairiji.web.vo.Stock163;
+import com.licairiji.web.vo.StockListAjaxVo;
 import com.qiniu.util.Json;
 import com.qiniu.util.StringUtils;
 import io.netty.util.internal.StringUtil;
@@ -47,6 +48,41 @@ public class StockHandler extends AbstractHandler {
         super(context, templateEngine, mySQLClient);
     }
 
+    /**
+     * 自选股列表
+     * @param routingContext
+     */
+    public void handleStockListAjax(RoutingContext routingContext) {
+        JsonObject jsonObject = new JsonObject();
+        HttpServerResponse response = routingContext.response();
+        response.setStatusCode(200);
+        response.putHeader("Content-Type", "application/json");
+
+        String sql = "SELECT code,name FROM  stock order by id desc";
+        mySQLClient.getConnection(res -> {
+            if (res.failed()) {
+                throw new RuntimeException(res.cause());
+            }
+            SQLConnection conn = res.result();
+            conn.query(sql, query -> {
+//                List<JsonObject> list = query.result().getRows();
+
+                List<StockListAjaxVo> stocks = new ArrayList<>();
+
+                for (JsonObject child : query.result().getRows()) {
+                    StockListAjaxVo entity = new StockListAjaxVo();
+                    entity.setCode(child.getString("code"));
+                    entity.setName(child.getString("name"));
+                    stocks.add(entity);
+                }
+                conn.close();
+                jsonObject.put("code", 0).put("msg", "SUCCESS");
+                jsonObject.put("data",stocks);
+                response.end(jsonObject.encode());
+            });
+
+        });
+    }
     /**
      * 自选股列表
      *
@@ -162,108 +198,108 @@ public class StockHandler extends AbstractHandler {
         else if (bourse.equalsIgnoreCase("SS")) url163 += "0" + code;
         try {
             Long time = System.currentTimeMillis() / 1000;
-//            URL url = new URL(url163);
-//            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-//            //设置超时间为3秒
-//            httpConn.setConnectTimeout(3 * 1000);
-//            //防止屏蔽程序抓取而返回403错误
-//            httpConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-////            conn.setRequestProperty("lfwywxqyh_token",toekn);
-//
-//            //得到输入流
-//            InputStream inputStream = httpConn.getInputStream();
-//            //获取自己数组
-////            byte[] getData = UrlStreamUtils.readInputStream(inputStream);
-//            CsvReader csvReader = new CsvReader(inputStream, ',', Charset.forName("GBK"));
-//            if (csvReader.readRecord()) {
-//                while (csvReader.readRecord()) {
-//                    String line = csvReader.getRawRecord();
-////                    String[] lineArr = line.split(",");
-//
-////                    StockDataEntity d = new StockDataEntity();
-//                    JsonArray dataParams = new JsonArray();
-//                    dataParams.add(code);
-//
-//
-//                    String dataStr = line.split(",")[0];//时间
-////                    Date da = DateUtil.stringtoDate(dataStr, "yyyy-MM-dd");
-////                    d.setDate(dataStr + " 09:00:00");
-//                    dataParams.add(dataStr + " 09:00:00");
-//                    dataParams.add(DateUtil.date2TimeStamp(dataStr + " 09:00:00", "yyyy-MM-dd HH:mm:ss"));
-////                    d.setDatetime(DateUtil.date2TimeStamp(dataStr + " 09:00:00", "yyyy-MM-dd HH:mm:ss"));
-////                    d.setCode(code);
-//                    name = line.split(",")[2];//股票名称
-////                    d.setName(name);
-//                    dataParams.add(name);
-//
-//                    String price_sp = line.split(",")[3];//收盘价
-//                    if (price_sp.equals("None")) {
-////                        d.setPrice_end(0);
-//                        dataParams.add(0);
-//                    } else {
-//                        if (price <= 0) price = Float.valueOf(price_sp);
-////                        d.setPrice_end(Float.valueOf(price_sp));
-//                        dataParams.add(Float.valueOf(price_sp));
-//                    }
-//
-//                    String price_max = line.split(",")[4];//最高价
-////                    d.setPrice_max(price_max.equals("None") ? 0 : Float.valueOf(price_max));
-//                    dataParams.add(price_max.equals("None") ? 0 : Float.valueOf(price_max));
-//
-//                    String price_min = line.split(",")[5];//最低价
-////                    d.setPrice_min(price_min.equals("None") ? 0 : Float.valueOf(price_min));
-//                    dataParams.add(price_min.equals("None") ? 0 : Float.valueOf(price_min));
-//
-//                    String price_kp = line.split(",")[6];//开盘价
-////                    d.setPrice_start(price_kp.equals("None") ? 0 : Float.valueOf(price_kp));
-//                    dataParams.add(price_kp.equals("None") ? 0 : Float.valueOf(price_kp));
-//
-//                    String price_qsp = line.split(",")[7];//前收盘
-////                    d.setPrice_end_yesterday(price_qsp.equals("None") ? 0 : Float.valueOf(price_qsp));
-//                    dataParams.add(price_qsp.equals("None") ? 0 : Float.valueOf(price_qsp));
-//
-//                    String zd_money = line.split(",")[8];//涨跌额
-////                    d.setUp_down_money(zd_money.equals("None") ? 0 : Float.valueOf(zd_money));
-//                    dataParams.add(zd_money.equals("None") ? 0 : Float.valueOf(zd_money));
-//
-//                    String zd_rate = line.split(",")[9];//涨跌幅
-////                    d.setUp_down_rate(zd_rate.equals("None") ? 0 : Float.valueOf(zd_rate));
-//                    dataParams.add(zd_rate.equals("None") ? 0 : Float.valueOf(zd_rate));
-//
-//                    String huan_rate = line.split(",")[10];//换手率
-////                    d.setTurnover_rate(huan_rate.equals("None") ? 0 : Float.valueOf(huan_rate));
-//                    dataParams.add(huan_rate.equals("None") ? 0 : Float.valueOf(huan_rate));
-//
-//                    String cjl = line.split(",")[11];//成交量
-////                    d.setTransaction_volume(cjl.equals("None") ? 0 : Double.valueOf(cjl));
-//                    dataParams.add(cjl.equals("None") ? 0 : Double.valueOf(cjl));
-//
-//                    String cje = line.split(",")[12];//成交金额
-////                    d.setTransaction_money(cje.equals("None") ? 0 : Double.valueOf(cje));
-//                    dataParams.add(cje.equals("None") ? 0 : Double.valueOf(cje));
-//
-//                    String cjb = line.split(",")[15];//成交笔数
-////                    d.setTransaction_count(cjb.equals("None") ? 0 : Double.valueOf(cjb));
-//                    dataParams.add(cjb.equals("None") ? 0 : Double.valueOf(cjb));
-//
-//                    String zsz = line.split(",")[13];//总市值
-////                    d.setTotal_value(zsz.equals("None") ? 0 : Double.valueOf(zsz));
-//                    dataParams.add(zsz.equals("None") ? 0 : Double.valueOf(zsz));
-//
-//                    String ltsz = line.split(",")[14];//流通市值
-////                    d.setMarket_value(ltsz.equals("None") ? 0 : Double.valueOf(ltsz));
-//                    dataParams.add(ltsz.equals("None") ? 0 : Double.valueOf(ltsz));
-//
-//                    dataParams.add(time);
-//                    batch.add(dataParams);
-//
-////                    // 读一整行
-//                    System.out.println(csvReader.getRawRecord());
-////                    // 读这行的某一列
-////                    System.out.println(csvReader.get("名称"));
-////                    stockDataList.add(d);
-//                }
-//            }
+            URL url = new URL(url163);
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
+            //设置超时间为3秒
+            httpConn.setConnectTimeout(3 * 1000);
+            //防止屏蔽程序抓取而返回403错误
+            httpConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+//            conn.setRequestProperty("lfwywxqyh_token",toekn);
+
+            //得到输入流
+            InputStream inputStream = httpConn.getInputStream();
+            //获取自己数组
+//            byte[] getData = UrlStreamUtils.readInputStream(inputStream);
+            CsvReader csvReader = new CsvReader(inputStream, ',', Charset.forName("GBK"));
+            if (csvReader.readRecord()) {
+                while (csvReader.readRecord()) {
+                    String line = csvReader.getRawRecord();
+//                    String[] lineArr = line.split(",");
+
+//                    StockDataEntity d = new StockDataEntity();
+                    JsonArray dataParams = new JsonArray();
+                    dataParams.add(code);
+
+
+                    String dataStr = line.split(",")[0];//时间
+//                    Date da = DateUtil.stringtoDate(dataStr, "yyyy-MM-dd");
+//                    d.setDate(dataStr + " 09:00:00");
+                    dataParams.add(dataStr + " 09:00:00");
+                    dataParams.add(DateUtil.date2TimeStamp(dataStr + " 09:00:00", "yyyy-MM-dd HH:mm:ss"));
+//                    d.setDatetime(DateUtil.date2TimeStamp(dataStr + " 09:00:00", "yyyy-MM-dd HH:mm:ss"));
+//                    d.setCode(code);
+                    name = line.split(",")[2];//股票名称
+//                    d.setName(name);
+                    dataParams.add(name);
+
+                    String price_sp = line.split(",")[3];//收盘价
+                    if (price_sp.equals("None")) {
+//                        d.setPrice_end(0);
+                        dataParams.add(0);
+                    } else {
+                        if (price <= 0) price = Float.valueOf(price_sp);
+//                        d.setPrice_end(Float.valueOf(price_sp));
+                        dataParams.add(Float.valueOf(price_sp));
+                    }
+
+                    String price_max = line.split(",")[4];//最高价
+//                    d.setPrice_max(price_max.equals("None") ? 0 : Float.valueOf(price_max));
+                    dataParams.add(price_max.equals("None") ? 0 : Float.valueOf(price_max));
+
+                    String price_min = line.split(",")[5];//最低价
+//                    d.setPrice_min(price_min.equals("None") ? 0 : Float.valueOf(price_min));
+                    dataParams.add(price_min.equals("None") ? 0 : Float.valueOf(price_min));
+
+                    String price_kp = line.split(",")[6];//开盘价
+//                    d.setPrice_start(price_kp.equals("None") ? 0 : Float.valueOf(price_kp));
+                    dataParams.add(price_kp.equals("None") ? 0 : Float.valueOf(price_kp));
+
+                    String price_qsp = line.split(",")[7];//前收盘
+//                    d.setPrice_end_yesterday(price_qsp.equals("None") ? 0 : Float.valueOf(price_qsp));
+                    dataParams.add(price_qsp.equals("None") ? 0 : Float.valueOf(price_qsp));
+
+                    String zd_money = line.split(",")[8];//涨跌额
+//                    d.setUp_down_money(zd_money.equals("None") ? 0 : Float.valueOf(zd_money));
+                    dataParams.add(zd_money.equals("None") ? 0 : Float.valueOf(zd_money));
+
+                    String zd_rate = line.split(",")[9];//涨跌幅
+//                    d.setUp_down_rate(zd_rate.equals("None") ? 0 : Float.valueOf(zd_rate));
+                    dataParams.add(zd_rate.equals("None") ? 0 : Float.valueOf(zd_rate));
+
+                    String huan_rate = line.split(",")[10];//换手率
+//                    d.setTurnover_rate(huan_rate.equals("None") ? 0 : Float.valueOf(huan_rate));
+                    dataParams.add(huan_rate.equals("None") ? 0 : Float.valueOf(huan_rate));
+
+                    String cjl = line.split(",")[11];//成交量
+//                    d.setTransaction_volume(cjl.equals("None") ? 0 : Double.valueOf(cjl));
+                    dataParams.add(cjl.equals("None") ? 0 : Double.valueOf(cjl));
+
+                    String cje = line.split(",")[12];//成交金额
+//                    d.setTransaction_money(cje.equals("None") ? 0 : Double.valueOf(cje));
+                    dataParams.add(cje.equals("None") ? 0 : Double.valueOf(cje));
+
+                    String cjb = line.split(",")[15];//成交笔数
+//                    d.setTransaction_count(cjb.equals("None") ? 0 : Double.valueOf(cjb));
+                    dataParams.add(cjb.equals("None") ? 0 : Double.valueOf(cjb));
+
+                    String zsz = line.split(",")[13];//总市值
+//                    d.setTotal_value(zsz.equals("None") ? 0 : Double.valueOf(zsz));
+                    dataParams.add(zsz.equals("None") ? 0 : Double.valueOf(zsz));
+
+                    String ltsz = line.split(",")[14];//流通市值
+//                    d.setMarket_value(ltsz.equals("None") ? 0 : Double.valueOf(ltsz));
+                    dataParams.add(ltsz.equals("None") ? 0 : Double.valueOf(ltsz));
+
+                    dataParams.add(time);
+                    batch.add(dataParams);
+
+//                    // 读一整行
+                    System.out.println(csvReader.getRawRecord());
+//                    // 读这行的某一列
+//                    System.out.println(csvReader.get("名称"));
+//                    stockDataList.add(d);
+                }
+            }
 
 
 //            if (batch != null && batch.size() > 0) {
@@ -313,7 +349,7 @@ public class StockHandler extends AbstractHandler {
                         String dSql = "INSERT INTO user_dynamic (user_id,title,content,imgs,tags,type,data_id,url,create_on) VALUE (?,?,?,?,?,?,?,?,?)";
 
                         JsonArray dParams = new JsonArray();
-                        dParams.add(0);
+                        dParams.add(1);
                         dParams.add("添加[" + code + finalName + "]到自选股");
                         dParams.add(code + finalName + "现价：￥" + finalPrice + "，所属行业：" + plate + "，备注：" + comment);
                         dParams.add("");
@@ -398,7 +434,7 @@ public class StockHandler extends AbstractHandler {
                 entity.setPlate(child.getString(6));
                 entity.setJoinPrice(child.getDouble(7));
                 entity.setQuantity(child.getInteger(8));
-                entity.setComment(child.getString(9));
+                entity.setComment(child.getString(10));
 
                 //读取https://api.xuangubao.cn/资讯
                 try {

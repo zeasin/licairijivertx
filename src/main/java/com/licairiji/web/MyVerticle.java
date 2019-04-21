@@ -65,6 +65,8 @@ public class MyVerticle extends AbstractVerticle {
     private StockAnalyseHandler analyseHandler;
     private TopicHandler topicHandler;
     private UserAccountHandler userAccountHandler;
+    private TagsHandler tagsHandler;
+    private CommonAjaxHanlder commonAjaxHanlder;
 
     @Override
     public void init(Vertx vertx, Context context) {
@@ -101,6 +103,8 @@ public class MyVerticle extends AbstractVerticle {
         analyseHandler = new StockAnalyseHandler(context, templateEngine, mySQLClient);
         topicHandler = new TopicHandler(context, templateEngine, mySQLClient);
         userAccountHandler = new UserAccountHandler(context, templateEngine, mySQLClient);
+        tagsHandler = new TagsHandler(context, templateEngine, mySQLClient);
+        commonAjaxHanlder = new CommonAjaxHanlder(context, templateEngine, mySQLClient);
     }
 
 
@@ -434,8 +438,12 @@ public class MyVerticle extends AbstractVerticle {
 
         router.get("/").handler(homeHandler::handleHome);
 
+        router.get("/api/tag_stock_plate").handler(commonAjaxHanlder::handleTagsStocksPlatesAjax);
+
         //文章模块
         router.get("/article/list").handler(articleHandler::handleList);
+        router.get("/tags/list_ajax").handler(tagsHandler::handleTagsAjax);
+
         router.get("/article/publish").handler(articleHandler::handlePublishGet);
         router.get("/article/add_url").handler(articleHandler::handleAddPDFGet);
         router.post("/article/add_url").handler(articleHandler::handleAddPDFPost);
@@ -453,6 +461,7 @@ public class MyVerticle extends AbstractVerticle {
 
         //自选股
         router.get("/stock/list").handler(stockHandler::handleStockList);
+        router.get("/stock/list_ajax").handler(stockHandler::handleStockListAjax);
         router.get("/stock/detail/:code").handler(stockHandler::handleStockDetail);
         router.get("/stock/kdata/:code").handler(stockHandler::handleStockKData);
         router.get("/stock/kdata2/:code").handler(stockHandler::handleStockKData2);

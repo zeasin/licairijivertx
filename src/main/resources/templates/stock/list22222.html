@@ -124,12 +124,15 @@
                                     data-v-a5b1c7d4="">市盈率</span><span data-v-a5b1c7d4="" class="arrow-container"><i
                                     data-v-a5b1c7d4="" class="iconfont"></i></span></th>
                             <th data-v-a5b1c7d4="" data-v-e5a98d34="" class="" style="width: 90px;">
-                                <span data-v-a5b1c7d4="">研报</span><span data-v-a5b1c7d4="" class="arrow-container">
+                                <span data-v-a5b1c7d4="">持股数</span><span data-v-a5b1c7d4="" class="arrow-container">
                                 <!--<i data-v-a5b1c7d4="" class="iconfont"></i>-->
                                 </span>
                             </th>
                             <th data-v-e5a98d34="" class="stocklist-pool-th stocklist-pool-th-diejia" style="width: 70px;">
-                                资讯
+                                <span data-v-a5b1c7d4="">均价</span>
+                            </th>
+                            <th data-v-e5a98d34="" class="stocklist-pool-th stocklist-pool-th-diejia" style="width: 70px;">
+                                <span data-v-a5b1c7d4="">盈利</span>
                             </th>
                         </tr>
                         </thead>
@@ -158,7 +161,8 @@
                             <td data-v-8a7c16ee="" class="td-center">68.8亿</td>
                             <td data-v-8a7c16ee="" class="td-center">68.8亿</td>
                             <td data-v-8a7c16ee="" class="td-center">9.56</td>
-                            <td data-v-8a7c16ee="" class="td-center td-flow" th:text="${item.quantity}">
+                            <td data-v-8a7c16ee="" class="td-center td-flow" th:attr="quantity=${item.quantity}">
+                                <span data-v-8a7c16ee="" class="-market-color--rise" th:text="${item.quantity}"></span>
                             <!--<svg data-v-24ec15b8="" data-v-8a7c16ee="" viewBox="0 0 56 40" width="56" height="40">-->
                             <!--<line data-v-24ec15b8="" x1="0" y1="20" x2="56" y2="20" stroke-width="1" stroke="#efefef"></line>-->
                             <!--<polygon data-v-24ec15b8="" fill="#EB4651" points="5 20,5 8,11 8,11 20"></polygon>-->
@@ -167,8 +171,12 @@
                             <!--<polygon data-v-24ec15b8="" fill="#1CBF7B" points="35 20,35 27,41 27,41 20"></polygon>-->
                             <!--<polygon data-v-24ec15b8="" fill="#EB4651" points="45 20,45 16,51 16,51 20"></polygon></svg>-->
                         </td>
+                            <td data-v-8a7c16ee="" class="diejia" th:attr="avg_price=${item.avgPrice}">
+                                <span data-v-8a7c16ee="" th:text="${item.avgPrice}"><!----><i data-v-8a7c16ee="" class="iconfont"></i></span>
+                            </td>
                             <td data-v-8a7c16ee="" class="diejia">
-                                <span data-v-8a7c16ee="" th:text="${item.avgPrice}"><!----><i data-v-8a7c16ee="" class="iconfont"></i></span></td>
+                                <span data-v-8a7c16ee="" class="-market-color--rise"></span>
+                            </td>
                         </tr>
 
                         </tbody>
@@ -198,6 +206,8 @@
                             var ltsz = $(obj)[4];//流通市值
                             var zsz = $(obj)[5];//总市值
                             var syl = $(obj)[6];//市盈率
+                            var quantity = $($(obj)[7]).attr('quantity');//持股数量
+                            var avg_price = $($(obj)[8]).attr('avg_price');//均价
 
                             var px_change = r[1]; //涨跌
                             if(px_change>0){
@@ -225,6 +235,30 @@
                             $(ltsz).text((r[5]/100000000).toFixed(1)+"亿");
                             $(zsz).text((r[7]/100000000).toFixed(1)+"亿");
                             $(syl).text(r[9].toFixed(2));
+
+                            if(quantity > 0 && avg_price > 0){
+
+                                //计算盈利=（现价-均价）* 数量
+                                var profix = (r[2] - avg_price) * quantity;
+                                console.log(profix)
+                                // alert(quantity);
+                                // alert(avg_price);
+                                var p = $($(obj)[9]).children("span");
+                                console.log(p)
+                                var pp = (profix / (avg_price * quantity))*100;
+                                if(profix>0){
+                                    //涨
+
+                                    $($(obj)[9]).children("span").text( profix.toFixed(2) +"  "+ pp.toFixed(2)+"%");
+                                    $($(obj)[9]).children("span").removeClass("-market-color--decline");
+                                    $($(obj)[9]).children("span").addClass("-market-color--rise");
+                                }else{
+                                    //跌
+                                    $($(obj)[9]).children("span").text(profix.toFixed(2) +"  "+ pp.toFixed(2)+"%");
+                                    $($(obj)[9]).children("span").addClass("-market-color--decline");
+                                    $($(obj)[9]).children("span").removeClass("-market-color--rise");
+                                }
+                            }
                             // console.log(obj)
 
 
