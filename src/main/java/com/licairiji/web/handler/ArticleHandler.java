@@ -15,6 +15,7 @@ import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import io.netty.util.internal.StringUtil;
 import io.vertx.core.Context;
+import io.vertx.core.Future;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
@@ -254,6 +255,7 @@ public class ArticleHandler extends AbstractHandler {
      * @param routingContext
      */
     public void handleAddPDFPost(RoutingContext routingContext) {
+//        Future<> future = Future.future();
         HttpServerRequest request = routingContext.request();
         String url = request.getParam("url");
         String tag = request.getParam("tag");
