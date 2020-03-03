@@ -26,6 +26,7 @@
 
 #### pdf生成
 利用wkhtmltopdf生成pdf，所以运行的本机需要安装wkhtmltopdf
+为什么要生产pdf，主要是因为怕网上的资源无法访问了，特别是微信公众号的文章访问url是动态的。
 ##### wkhtmltopdf环境安装
 + Windows安装
 ```

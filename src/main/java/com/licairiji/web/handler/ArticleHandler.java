@@ -326,6 +326,7 @@ public class ArticleHandler extends AbstractHandler {
 
 
         String sysPath = "";
+        String projectPath = "";
         String rootPath = "";
         try {
             //获取系统
@@ -333,7 +334,7 @@ public class ArticleHandler extends AbstractHandler {
             //读取配置文件
             Properties properties = new Properties();
             //当前项目根目录
-//            rootPath = System.getProperty("user.dir");
+            projectPath = System.getProperty("user.dir");
 
             //获取类运行的根目录
             sysPath = ArticleHandler.class.getResource("/").getPath();
@@ -377,7 +378,7 @@ public class ArticleHandler extends AbstractHandler {
 
                 pdfGenerate(url,pdfFilePath);
                 //保存到项目文件夹
-//                pdfGenerate(url,pdfFilePath);
+                pdfGenerate(url,projectPath+"\\src\\main\\resources\\"+rootPath+"\\"+title+".pdf");
                 url = "/" +rootPath +"/"+ title + ".pdf";
             } else if (url.startsWith("https://xuangubao.cn")) {
                 //文章来自于选股宝
