@@ -295,7 +295,7 @@ public class ArticleHandler extends AbstractHandler {
             response.end(jsonObject.encode());
         }
 
-        String rootPath = getClass().getResource(File.separator).getPath();
+        String rootPath = getClass().getResource(File.separator).getPath().replace("classes/","").replace("target/","");
         String filePath = rootPath + "static/yanbao/";
         try {
             org.jsoup.nodes.Document doc = null;
@@ -368,7 +368,7 @@ public class ArticleHandler extends AbstractHandler {
                 }
 
             } else {
-                jsonObject.put("code", 500).put("msg", "暂时只支持微信公众号文章");
+                jsonObject.put("code", 500).put("msg", "暂时只支持微信公众号和选股宝文章");
                 response.end(jsonObject.encode());
             }
 
