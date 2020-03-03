@@ -3,13 +3,23 @@ package com.licairiji.web.handler;
 import com.licairiji.web.entity.ArticleEntity;
 import com.licairiji.web.entity.TopicEntity;
 import com.licairiji.web.entity.UserDynamicEntity;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.vertx.core.Context;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.file.AsyncFile;
+import io.vertx.core.file.OpenOptions;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.SQLClient;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.templ.thymeleaf.ThymeleafTemplateEngine;
+import io.vertx.reactivex.FlowableHelper;
+import io.vertx.reactivex.ObservableHelper;
+import io.vertx.reactivex.RxHelper;
 
+import java.nio.file.FileSystem;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +34,13 @@ public class HomeHandler extends AbstractHandler {
         super(context, templateEngine, mySQLClient);
     }
 
+
     public void handleHome(RoutingContext routingContext) {
+        HttpServerRequest request = routingContext.request();
+
+        Observable<Buffer> subscriber =Observable.create(m->{
+
+        });
 
         var sql = "SELECT * FROM user_dynamic order by id desc limit 0,20;";
         mySQLClient.getConnection(res -> {

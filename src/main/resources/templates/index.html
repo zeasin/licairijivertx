@@ -17,7 +17,7 @@
                 <!--<a href="#" class="navbar-item is-tab">专栏</a>-->
                 <!--<a href="#" class="navbar-item is-tab">Live</a>-->
                 <!--<a href="#" class="navbar-item is-tab">私家课</a>-->
-                <!--<a href="#" class="navbar-item is-tab">电子书</a>-->
+                <a href="javascript:;" onclick="open53()" class="navbar-item is-tab">联系客服</a>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
         <div class="container">
             <div class="tile">
                 <div class="tile is-vertical is-parent is-8">
-                    <div class="box">
+                    <div class="box" onclick="open53()">
 
                         <div class="media">
                             <div class="stock_info" id="shangzheng">
@@ -415,7 +415,40 @@
             });
         })
     </script>
+
+    <script>(function() {
+        var _53code = document.createElement("script");
+        _53code.src = "https://tb.53kf.com/code/code/32563a83288ebdb7f6c8f780a90c8234/1";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(_53code, s);})();
+    </script>
+
+    <script>
+        function open53() {
+            alert("aaa")
+
+
+
+
+            var _53 = $53.createApi();
+            _53.push('cmd', 'kfclient');
+            _53.push('type', 'popup');
+            _53.query();
+
+            _53.push('cmd','comeinfo');
+            _53.push('title','标题');
+            _53.push('logo','http://www5.53kf.com/style/setting/ver07/img/mobile_config/icon2.png');
+            _53.push('content','内容111');
+            _53.push('curl','http://www.53kf.com');
+            _53.query();
+
+
+        }
+    </script>
+
+
 </div>
+
 </body>
 </html>
 
