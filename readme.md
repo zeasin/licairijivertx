@@ -8,7 +8,14 @@
 ### 功能介绍
 #### pdf生成
 利用wkhtmltopdf生成pdf，所以运行的本机需要安装wkhtmltopdf
-
+##### wkhtmltopdf环境安装
++ Windows安装
+```
+下载exe安装包，安装
+配置path
+C:\Program Files\wkhtmltopdf\bin
+```
++ mac安装
 #### 股票数据
 主要利用xuangubao.cn接口获取最新股票数据
 
