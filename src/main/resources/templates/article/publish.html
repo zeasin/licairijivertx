@@ -304,24 +304,36 @@
 <script>
     //新加的
     var data = {
-        "English": [],
-        'Chinese':["T随记","T交易","T策略","T市场","T市场判断","T自选股","T股评","T学堂"],
-        'JAPAN':["A随记","A交易","A策略","A市场","A市场判断","A自选股","A股评","A学堂"],
+        "Stock": [],
+        'Tag':[],
+        'Plate':[],
     };
     //AJAX获取股票信息
     $(function () {
         $.ajax({
-            url:"/tags/list_ajax",
+            url:"/api/tag_stock_plate",
             type:"get",
             dataType:"json",
             success:function (res) {
                 console.log(res);
                 if(res.code==0){
-                    data.English = [];
-                    $(res.data).each(function(i,d){
-                        console.log(i)
-                        console.log(d.title)
-                        data.English.push("T"+d.title);
+                    data.Stock = [];
+                    data.Tag = [];
+                    data.Plate = [];
+                    $(res.stock).each(function(i,d){
+                        // console.log(i)
+                        // console.log(d.code+d.name)
+                        data.Stock.push("S"+d.code+d.name);
+                    });
+                    $(res.tag).each(function(i,d){
+                        // console.log(i)
+                        // console.log(d.code+d.name)
+                        data.Tag.push("T"+d.title);
+                    });
+                    $(res.plate).each(function(i,d){
+                        // console.log(i)
+                        // console.log(d.code+d.name)
+                        data.Plate.push("P"+d.title);
                     });
 
                     //初始化标签控件
@@ -342,7 +354,7 @@
             group: {
                 template: "{{group}} beers!"
             },
-            maxItemPerGroup: 15,
+            maxItemPerGroup: 25,
             backdrop: {
                 "background-color": "#fff"
             },
@@ -350,8 +362,14 @@
             dropdownFilter: "all beers",
             emptyTemplate: 'No result for "{{query}}"',
             source: {
-                "TAGS": {
-                    data: data.English
+                "相关股票": {
+                    data: data.Stock
+                },
+                "相关主题":{
+                    data:data.Tag
+                },
+                "相关板块":{
+                    data:data.Plate
                 }
             },
             callback: {
@@ -397,7 +415,7 @@
                 var b = "1";
                 var c = parseInt(a)+parseInt(b);
                 //console.log(c)
-                $('#type_select_value').append('<li><span><input type="hidden" name="tags" value="'+i_v.val().replace('T','')+'" /><em>'+i_v.val()+'</em><i onClick="fn_clear(this)">×</i></span></li>');
+                $('#type_select_value').append('<li><span><input type="hidden" name="tags" value="'+i_v.val()+'" /><em>'+i_v.val()+'</em><i onClick="fn_clear(this)">×</i></span></li>');
                 $('#s_length').html(' ( '+ c +' ) ')
                 $('#type_add').show();
                 $('#form_search').hide();

@@ -11,7 +11,25 @@ public class ArticlePublishVo {
     private String image;
     private String title;
     private String tags;
+    private String plate;//板块
+    private String stock;//股票代码
     private String content;
+
+    public String getPlate() {
+        return plate;
+    }
+
+    public void setPlate(String plate) {
+        this.plate = plate;
+    }
+
+    public String getStock() {
+        return stock;
+    }
+
+    public void setStock(String stock) {
+        this.stock = stock;
+    }
 
     public String getTags() {
         return tags;
