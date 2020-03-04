@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="layout :: common_header(~{::title})">
     <title>我的自选股-投资日记</title>
@@ -118,7 +118,7 @@
                             <th>信息</th>
 
                             <th>持股</th>
-
+<th></th>
 
                         </tr>
                         </thead>
@@ -157,6 +157,10 @@
                             <td>
                                 <strong style="color:red" th:text="${item.quantity}"></strong><br/>
                                 <a th:href="${'/invest/list?code='+item.code}" style="color:#1E9FFF">交易历史</a><br/>
+                            </td>
+                            <td>
+                                <a th:href="${'http://stockpage.10jqka.com.cn/'+item.code}" target="_blank">基本面</a>
+                                <a th:href="${'/stock/analyse?code='+item.code}">股票分析</a>
                             </td>
 
 
