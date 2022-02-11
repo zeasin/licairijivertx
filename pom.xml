@@ -17,7 +17,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <java.vsersion>11</java.vsersion>
-    <vertx.vsersion>3.8.5</vertx.vsersion>
+    <vertx.vsersion>3.9.4</vertx.vsersion>
   </properties>
   <repositories>
     <repository>
